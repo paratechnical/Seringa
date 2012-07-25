@@ -92,6 +92,12 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Injectia.Engine\Injectia.Engine.csproj">
+      <Project>{C9D3B8F5-28B4-4CE0-B3CB-71D8767ADCBB}</Project>
+      <Name>Injectia.Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
