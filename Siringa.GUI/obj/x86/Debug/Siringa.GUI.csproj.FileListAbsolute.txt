@@ -28,3 +28,4 @@ D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Debug\Siringa.GUI
 D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Debug\Siringa.GUI.Properties.Resources.resources
 D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Debug\GenerateResource.read.1.tlog
 D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Debug\Siringa.GUI.exe.config

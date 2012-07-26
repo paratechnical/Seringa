@@ -12,27 +12,27 @@
                     <Label Content="Url" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="lblurl" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="37,8,0,0" Name="txtUrl" VerticalAlignment="Top" Width="825" GotFocus="txtUrl_GotFocus" LostFocus="txtUrl_LostFocus" />
                     <Button Content="Execute" Height="23" HorizontalAlignment="Left" Margin="793,257,0,0" Name="btnExecuteCustomQuery" VerticalAlignment="Top" Width="75" />
-                    <ListBox Height="100" HorizontalAlignment="Left" Margin="5,149,0,0" Name="lbDatabases" VerticalAlignment="Top" Width="260" />
-                    <Label Content="Databases" Height="28" HorizontalAlignment="Left" Margin="5,120,0,0" Name="lblDatabases" VerticalAlignment="Top" />
-                    <Button Content="Get databases" Height="23" HorizontalAlignment="Left" Margin="183,121,0,0" Name="btnDatabases" VerticalAlignment="Top" Width="82" Click="btnDatabases_Click" />
+                    <ListBox Height="100" HorizontalAlignment="Left" Margin="5,149,0,0" Name="lbDatabases" VerticalAlignment="Top" Width="260" SelectionChanged="lbDatabases_SelectionChanged" />
+                    <Label Content="Databases" Height="28" HorizontalAlignment="Left" Margin="5,124,0,0" Name="lblDatabases" VerticalAlignment="Top" />
+                    <Button Content="Get databases" Height="23" HorizontalAlignment="Left" Margin="183,123,0,0" Name="btnDatabases" VerticalAlignment="Top" Width="82" Click="btnDatabases_Click" />
                     <ListBox Height="100" HorizontalAlignment="Right" Margin="0,149,303,0" Name="lbTables" VerticalAlignment="Top" Width="260" />
                     <Label Content="Tables" Height="28" HorizontalAlignment="Left" Margin="305,123,0,0" Name="lblTables" VerticalAlignment="Top" />
-                    <Button Content="Get tables" Height="23" HorizontalAlignment="Left" Margin="483,124,0,0" Name="btnTables" VerticalAlignment="Top" Width="82" />
+                    <Button Content="Get tables" Height="23" HorizontalAlignment="Left" Margin="483,124,0,0" Name="btnTables" VerticalAlignment="Top" Width="82" Click="btnTables_Click" />
                     <ListBox Height="100" HorizontalAlignment="Left" Margin="601,149,0,0" Name="lbColumns" VerticalAlignment="Top" Width="260" />
                     <Label Content="Columns" Height="28" HorizontalAlignment="Right" Margin="0,122,211,0" Name="lblColumns" VerticalAlignment="Top" />
                     <Button Content="Get columns" Height="23" HorizontalAlignment="Right" Margin="0,123,7,0" Name="btnColumns" VerticalAlignment="Top" Width="136" />
                     <TextBox Height="93" HorizontalAlignment="Left" Margin="6,282,0,0" Name="txtCustomQuery" VerticalAlignment="Top" Width="862" />
                     <Label Content="Custom query" Height="28" HorizontalAlignment="Left" Margin="0,256,0,0" Name="lblCustomQuery" VerticalAlignment="Top" />
-                    <Button Content="Debug last query" Height="23" HorizontalAlignment="Left" Margin="319,75,0,0" Name="btnDebugLast" VerticalAlignment="Top" Width="142" />
+                    <Button Content="Debug last query" Height="23" HorizontalAlignment="Left" Margin="305,67,0,0" Name="btnDebugLast" VerticalAlignment="Top" Width="114" />
                     <TextBox Height="118" HorizontalAlignment="Left" Margin="2,405,0,0" Name="txtCustomQueryResult" VerticalAlignment="Top" Width="866" />
                     <Label Content="Custom query result" Height="28" HorizontalAlignment="Left" Margin="2,381,0,0" Name="label1" VerticalAlignment="Top" />
-                    <Button Content="Check if vulnerable" Height="23" HorizontalAlignment="Right" Margin="0,76,567,0" Name="btnCheckIfVulnerable" VerticalAlignment="Top" Width="142" Click="btCheckIfVulnerable_Click" />
+                    <Button Content="Check if vulnerable" Height="23" HorizontalAlignment="Right" Margin="0,76,627,0" Name="btnCheckIfVulnerable" VerticalAlignment="Top" Width="106" Click="btCheckIfVulnerable_Click" />
                     <Button Content="Get db version" Height="23" HorizontalAlignment="Left" Margin="762,37,0,0" Name="btnGetVersion" VerticalAlignment="Top" Width="99" Click="btnGetVersion_Click" />
                     <Label Content="Vulnerable" Height="28" HorizontalAlignment="Left" Margin="6,74,0,0" Name="lblVulnerableText" VerticalAlignment="Top" />
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,76,715,0" Name="txtVulnerable" VerticalAlignment="Top" Width="74" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,76,739,0" Name="txtVulnerable" VerticalAlignment="Top" Width="50" />
                     <Label Content="Version" Height="28" HorizontalAlignment="Left" Margin="475,37,0,0" Name="label2" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="550,37,0,0" Name="txtVersion" VerticalAlignment="Top" Width="206" />
-                    <Button Content="Get db username" Height="23" Margin="762,63,7,0" Name="btnGetUser" VerticalAlignment="Top" />
+                    <Button Content="Get db username" Height="23" Margin="762,63,7,0" Name="btnGetUser" VerticalAlignment="Top" Click="btnGetUser_Click" />
                     <Label Content="Current user" Height="28" HorizontalAlignment="Left" Margin="475,62,0,0" Name="label3" VerticalAlignment="Top" Width="75" />
                     <TextBox Height="23" HorizontalAlignment="Right" Margin="0,64,112,0" Name="txtUser" VerticalAlignment="Top" Width="206" />
                     <Label Content="Injection Strategy" Height="28" HorizontalAlignment="Left" Margin="6,32,0,0" Name="label4" VerticalAlignment="Top" />
@@ -40,6 +40,7 @@
                     <Button Content="Get current db" Height="23" HorizontalAlignment="Left" Margin="762,91,0,0" Name="bntCurDb" VerticalAlignment="Top" Width="99" Click="bntCurDb_Click" />
                     <Label Content="Current db" Height="28" HorizontalAlignment="Left" Margin="475,90,0,0" Name="lblCurDb" VerticalAlignment="Top" Width="75" />
                     <TextBox Height="23" HorizontalAlignment="Right" Margin="0,91,112,0" Name="txtCurDb" VerticalAlignment="Top" Width="206" />
+                    <Button Content="Stop current action" Height="23" HorizontalAlignment="Left" Margin="305,95,0,0" Name="btnStopCurAction" VerticalAlignment="Top" Width="114" Click="btnStopCurAction_Click" />
                 </Grid>    
             </TabItem>
             <TabItem Header="Debug" Name="tabDebug"></TabItem>

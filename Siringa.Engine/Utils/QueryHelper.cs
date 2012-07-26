@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Text;
 
 namespace Siringa.Engine.Utils
@@ -11,7 +12,7 @@ namespace Siringa.Engine.Utils
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(url);
-            sb.Append(string.Format(exploit,payload));
+            sb.Append(HttpUtility.UrlPathEncode(string.Format(exploit, payload)));
             return sb.ToString();
         }
     }

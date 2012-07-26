@@ -37,11 +37,24 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         public string Url { get; set; }
 
+        public string SelectedDb { get; set; }
+        public string SelectedTable { get; set; }
+
         public string DisplayName { get { return "Mysql convert method"; } }
 
         public bool TestIfVulnerable()
         {
             return !string.IsNullOrEmpty(GetDbVersion());
+        }
+
+        public int GetTotalNoOfTables()
+        {
+            return 0;
+        }
+
+        public int GetTotalNoOfColumns()
+        {
+            return 0;
         }
 
         public string GetDbVersion()
@@ -113,6 +126,11 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
             //@TODO: actually implement
             return result;
+        }
+
+        public int GetTotalNoOfDbs()
+        {
+            return 0;
         }
 
         #endregion Public

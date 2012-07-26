@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +50,7 @@
     <Compile Include="Interfaces\ITesterStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\QueryHelper.cs" />
+    <Compile Include="Utils\ThreadHelper.cs" />
     <Compile Include="Utils\UrlHelper.cs" />
   </ItemGroup>
   <ItemGroup>

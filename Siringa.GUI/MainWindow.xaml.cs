@@ -9,6 +9,7 @@ using System.Threading;
 using System.Text;
 using Siringa.Engine.Utils;
 using System.Collections.ObjectModel;
+using Siringa.GUI.Extensions;
 
 namespace Siringa.GUI
 {
@@ -18,11 +19,12 @@ namespace Siringa.GUI
     public partial class MainWindow : Window
     {
         #region Private
-        #region Properties
+        #region Fields
+        private bool _stopCurrentAction = false;
         private IList<IInjectionStrategy> _injectionStrategies = null;
         private IList<Type> _concreteInjectionStrategyTypes = null;
         private IInjectionStrategy _currentInjectionStrategy = null;
-        #endregion Properties
+        #endregion Fields
         #region Methods
         private void PopulateInjectionStrategies()
         {
@@ -49,7 +51,7 @@ namespace Siringa.GUI
         {
             _injectionStrategies = new List<IInjectionStrategy>();
             _concreteInjectionStrategyTypes = new List<Type>();
-            DatabaseNames = new ObservableCollection<string>() { "a","n" };
+            DatabaseNames = new ObservableCollection<string>();
             TableNames = new  ObservableCollection<string>();
             ColumnNames = new ObservableCollection<string>();
             //ItemsSource="{Binding Path=DatabaseNames}"
@@ -140,7 +142,6 @@ namespace Siringa.GUI
 
         private void AddOutputToTextBox(TextBox textBox,string text,bool append,bool newLineAfterText)
         {
-            
             if (!textBox.Dispatcher.CheckAccess())
             {
 
@@ -171,7 +172,7 @@ namespace Siringa.GUI
 
         public ObservableCollection<String> DatabaseNames
         {
-            get { return (ObservableCollection<String>)GetValue(DatabaseNamesProperty); }
+            get {  return (ObservableCollection<String>)GetValue(DatabaseNamesProperty); }
             set { SetValue(DatabaseNamesProperty, value); }
         }
 
@@ -272,6 +273,18 @@ namespace Siringa.GUI
             th.Start();
         }
 
+        private void btnGetUser_Click(object sender, RoutedEventArgs e)
+        {
+            DisableAll();
+            var th = new Thread(() =>
+            {
+                string injectionResult = _currentInjectionStrategy.GetDbUserName();
+                AddOutputToTextBox(txtUser, injectionResult, false, false);
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
         private void txtUrl_GotFocus(object sender, RoutedEventArgs e)
         {
             DisableAll();
@@ -284,13 +297,76 @@ namespace Siringa.GUI
 
         private void btnDatabases_Click(object sender, RoutedEventArgs e)
         {
-            DatabaseNames.Add("gigi");
-            DatabaseNames.Add("becali");
+            DisableAll();
+            var th = new Thread(() =>
+            {
+                string result = string.Empty;
+                int total = _currentInjectionStrategy.GetTotalNoOfDbs();
+                for (int i = 0; i < total; i++)
+                {
+                    if (_stopCurrentAction)
+                        break;
+                    result = _currentInjectionStrategy.GetSingleDatabaseName(i);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        lbDatabases.Dispatcher.Invoke(
+                              System.Windows.Threading.DispatcherPriority.Normal,
+                              new Action(
+                                delegate()
+                                {
+                                    DatabaseNames.Add(result);
+                                }
+                            ));
+                    }
+                }
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
+        private void btnStopCurAction_Click(object sender, RoutedEventArgs e)
+        {
+            _stopCurrentAction = true;
+        }
+
+
+        private void btnTables_Click(object sender, RoutedEventArgs e)
+        {
+            DisableAll();
+            var th = new Thread(() =>
+            {
+                string result = string.Empty;
+                int total = _currentInjectionStrategy.GetTotalNoOfTables();
+                for (int i = 0; i < total; i++)
+                {
+                    if (_stopCurrentAction)
+                        break;
+                    result = _currentInjectionStrategy.GetSingleTableName(i);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        lbTables.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    TableNames.AddOnUI(result);
+                                }
+                            ));
+                    }
+                }
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
+        private void lbDatabases_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CurrentInjectionStrategy.SelectedDb = lbDatabases.SelectedValue.ToString();
         }
 
         #endregion Events
-
-        
 
         
     }
