@@ -40,6 +40,8 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         public string SelectedDb { get; set; }
         public string SelectedTable { get; set; }
 
+        public string CustomQuery { get; set; }
+
         public string DisplayName { get { return "Mysql convert method"; } }
 
         public bool TestIfVulnerable()
@@ -96,19 +98,18 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             return result;
         }
 
-        public string GetSingleCustomQueryRow(string query)
+        public int GetTotalNoOfCustomQueryResultRows()
+        {
+            return 0;
+        }
+
+        public string GetSingleCustomQueryResultRow(int startingFrom)
         {
             string result = string.Empty;
             //@TODO: actually implement
             return result;
         }
 
-        public string GetMultipleDatabaseNames(int startingFrom, int count)
-        {
-            string result = string.Empty;
-            //@TODO: actually implement
-            return result;
-        }
         public string GetTableNames(int startingFrom, int count)
         {
             string result = string.Empty;
@@ -121,13 +122,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             //@TODO: actually implement
             return result;
         }
-        public string GetMultipleCustomQueryRow(string query, int count)
-        {
-            string result = string.Empty;
-            //@TODO: actually implement
-            return result;
-        }
-
+        
         public int GetTotalNoOfDbs()
         {
             return 0;

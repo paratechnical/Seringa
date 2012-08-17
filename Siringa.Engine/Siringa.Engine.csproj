@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\SqlInjException.cs" />
     <Compile Include="Implementations\InjectionStrategies\MySql\ErrorBased\ConvertError.cs" />
     <Compile Include="Implementations\InjectionStrategies\MySql\ErrorBased\GroupByIntegrityConstraintViolation.cs" />
     <Compile Include="Implementations\QueryRunner\SimpleQueryRunner.cs" />

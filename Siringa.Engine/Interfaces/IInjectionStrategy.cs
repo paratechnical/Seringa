@@ -31,12 +31,9 @@ namespace Siringa.Engine.Interfaces
         string GetSingleTableName(int startingFrom);
         string GetSingleTableColumnName(int startingFrom);
 
-        string GetSingleCustomQueryRow(string query);
+        string CustomQuery { get; set; }
 
-        string GetMultipleDatabaseNames(int startingFrom,int count);
-        string GetTableNames(int startingFrom,int count);
-        string GetTableColumnName(int startingFrom,int count);
-
-        string GetMultipleCustomQueryRow(string query,int count);
+        int GetTotalNoOfCustomQueryResultRows();
+        string GetSingleCustomQueryResultRow(int startingFrom);
     }
 }

