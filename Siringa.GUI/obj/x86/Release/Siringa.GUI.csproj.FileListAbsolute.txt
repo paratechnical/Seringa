@@ -1,0 +1,16 @@
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Release\Siringa.GUI.exe.config
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Release\Siringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Release\Siringa.GUI.pdb
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Release\Siringa.Engine.dll
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\bin\Release\Siringa.Engine.pdb
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\ResolveAssemblyReference.cache
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\MainWindow.baml
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\MainWindow.g.cs
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\App.g.cs
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\Siringa.GUI_MarkupCompile.cache
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\Siringa.GUI.g.resources
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\Siringa.GUI.Properties.Resources.resources
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\GenerateResource.read.1.tlog
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\GenerateResource.write.1.tlog
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\Siringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Siringa\Siringa.GUI\obj\x86\Release\Siringa.GUI.pdb

@@ -18,6 +18,8 @@ namespace Siringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         #region Public
 
+        public IProxyDetails ProxyDetails { get; set; }
+        public bool UseProxy { get; set; }
         public IQueryRunner QueryRunner { get; set; }
 
         public string DbVulnerableVersionFrom

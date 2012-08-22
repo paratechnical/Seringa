@@ -11,6 +11,7 @@ using Siringa.Engine.Utils;
 using System.Collections.ObjectModel;
 using Siringa.GUI.Extensions;
 using Siringa.Engine.Exceptions;
+using Siringa.Engine.Implementations.Proxy;
 
 namespace Siringa.GUI
 {
@@ -25,6 +26,7 @@ namespace Siringa.GUI
         private IList<IInjectionStrategy> _injectionStrategies = null;
         private IList<Type> _concreteInjectionStrategyTypes = null;
         private IInjectionStrategy _currentInjectionStrategy = null;
+        private IIPObtainerStrategy _currentIpObtainerStrategy = null;
         #endregion Fields
         #region Methods
         private void PopulateInjectionStrategies()
@@ -59,6 +61,9 @@ namespace Siringa.GUI
             lbDatabases.ItemsSource = DatabaseNames;
             lbTables.ItemsSource = TableNames;
             lbColumns.ItemsSource = ColumnNames;
+            _currentIpObtainerStrategy = new Siringa.Engine.Implementations.IPObtainers.CMyIPObtainerStrategy();
+
+            cmbProxyType.SelectedValue = ProxyType.None;
         }
 
         private void ClearAll()
@@ -123,6 +128,7 @@ namespace Siringa.GUI
             if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null)
             {
                 _currentInjectionStrategy.Url = txtUrl.Text;
+                ProxifyInjectionStrategy();
                 EnableAll();
                 ClearAll();
             }
@@ -476,11 +482,73 @@ namespace Siringa.GUI
 
         private void btnCurIP_Click(object sender, RoutedEventArgs e)
         {
+            {
+                DisableAll();
+                var th = new Thread(() =>
+                {
+                    string ip = _currentIpObtainerStrategy.GetIp();
+                    AddOutputToTextBox(txtCurIP, ip, false, false);
+                    EnableAllFromOtherThread();
+                });
+                th.Start();
+            }
+        }
 
+        private void chkUseProxy_Checked(object sender, RoutedEventArgs e)
+        {
+            ProxifyObtainerStrategy();
+            ProxifyInjectionStrategy();
+        }
+
+        private void txtProxyFullAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ProxifyObtainerStrategy();
+            ProxifyInjectionStrategy();
+        }
+
+        private void cmbProxyType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ProxifyObtainerStrategy();
+            ProxifyInjectionStrategy();
         }
 
         #endregion Events
 
-        
+        private void ProxifyObtainerStrategy()
+        {
+            ProxyType proxyType = ProxyType.None;
+            if (cmbProxyType.SelectedValue != null)
+                Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
+
+            if (_currentIpObtainerStrategy != null)
+            {
+                _currentIpObtainerStrategy.UseProxy = chkUseProxy.IsChecked.Value;
+                if (_currentIpObtainerStrategy.UseProxy)
+                    _currentIpObtainerStrategy.ProxyDetails = new ProxyDetails()
+                    {
+                        FullProxyAddress = txtProxyFullAddress.Text,
+                        ProxyType = proxyType
+                    };
+            }
+        }
+
+        private void ProxifyInjectionStrategy()
+        {
+            ProxyType proxyType = ProxyType.None;
+            if (cmbProxyType.SelectedValue != null)
+                Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
+
+            if (_currentInjectionStrategy != null)
+            {
+                _currentInjectionStrategy.UseProxy = chkUseProxy.IsChecked.Value;
+                if (_currentInjectionStrategy.UseProxy)
+                    _currentInjectionStrategy.ProxyDetails = new ProxyDetails()
+                    {
+                        FullProxyAddress = txtProxyFullAddress.Text,
+                        ProxyType = proxyType
+                    };
+            }
+        }
+
     }
 }
