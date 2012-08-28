@@ -1,5 +1,0 @@
-D:\proiecte\Visual Studio Projects\Siringa\Siringa.Engine\bin\Release\Siringa.Engine.dll
-D:\proiecte\Visual Studio Projects\Siringa\Siringa.Engine\bin\Release\Siringa.Engine.pdb
-D:\proiecte\Visual Studio Projects\Siringa\Siringa.Engine\obj\Release\ResolveAssemblyReference.cache
-D:\proiecte\Visual Studio Projects\Siringa\Siringa.Engine\obj\Release\Siringa.Engine.dll
-D:\proiecte\Visual Studio Projects\Siringa\Siringa.Engine\obj\Release\Siringa.Engine.pdb

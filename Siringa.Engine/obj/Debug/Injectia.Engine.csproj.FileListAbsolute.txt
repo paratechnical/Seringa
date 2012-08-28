@@ -1,5 +1,0 @@
-D:\proiecte\Visual Studio Projects\Injectia\Injectia.Engine\bin\Debug\Injectia.Engine.dll
-D:\proiecte\Visual Studio Projects\Injectia\Injectia.Engine\bin\Debug\Injectia.Engine.pdb
-D:\proiecte\Visual Studio Projects\Injectia\Injectia.Engine\obj\Debug\ResolveAssemblyReference.cache
-D:\proiecte\Visual Studio Projects\Injectia\Injectia.Engine\obj\Debug\Injectia.Engine.dll
-D:\proiecte\Visual Studio Projects\Injectia\Injectia.Engine\obj\Debug\Injectia.Engine.pdb
