@@ -31,6 +31,7 @@ namespace Seringa.Engine.Interfaces
         string GetSingleTableName(int startingFrom);
         string GetSingleTableColumnName(int startingFrom);
 
+        bool DetailedExceptions { get; set; }
         string CustomQuery { get; set; }
 
         int GetTotalNoOfCustomQueryResultRows();

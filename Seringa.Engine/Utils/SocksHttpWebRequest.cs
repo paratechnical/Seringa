@@ -13,6 +13,10 @@ namespace Seringa.Engine.Utils
     public class SocksHttpWebRequest : WebRequest
     {
 
+        #region Private
+        private Encoding _correctEncoding;
+        #endregion Private
+
         #region Member Variables
 
         private readonly Uri _requestUri;
@@ -33,6 +37,7 @@ namespace Seringa.Engine.Utils
         private SocksHttpWebRequest(Uri requestUri)
         {
             _requestUri = requestUri;
+            _correctEncoding = Encoding.Default;
         }
 
         #endregion
@@ -201,21 +206,27 @@ namespace Seringa.Engine.Utils
                 _socksConnection.ProxyEndPoint = new IPEndPoint(ipAddress, proxyUri.Port);
                 _socksConnection.ProxyType = ProxyTypes.Socks5;
 
+                
+
                 // open connection
                 _socksConnection.Connect(RequestUri.Host, 80);
                 // send an HTTP request
-                _socksConnection.Send(Encoding.ASCII.GetBytes(RequestMessage));
+                _socksConnection.Send(_correctEncoding.GetBytes(RequestMessage));
                 // read the HTTP reply
                 var buffer = new byte[1024];
 
                 var bytesReceived = _socksConnection.Receive(buffer);
                 while (bytesReceived > 0)
                 {
-                    response.Append(Encoding.ASCII.GetString(buffer, 0, bytesReceived));
+                    string chunk = _correctEncoding.GetString(buffer, 0, bytesReceived);
+                    string encString = EncodingHelper.GetEncodingFromChunk(chunk);
+                    if(!string.IsNullOrEmpty(encString))
+                        _correctEncoding = Encoding.GetEncoding(encString);
+                    response.Append(chunk);
                     bytesReceived = _socksConnection.Receive(buffer);
                 }
             }
-            return new SocksHttpWebResponse(response.ToString());
+            return new SocksHttpWebResponse(response.ToString(),_correctEncoding);
         }
 
         private static IPAddress GetProxyIpAddress(Uri proxyUri)
@@ -239,6 +250,14 @@ namespace Seringa.Engine.Utils
         #endregion
 
         #region Properties
+
+        public Encoding CorrectEncoding
+        {
+            get
+            {
+                return _correctEncoding;
+            }
+        }
 
         public string RequestMessage
         {

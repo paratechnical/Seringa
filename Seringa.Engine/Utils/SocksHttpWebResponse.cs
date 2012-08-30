@@ -22,6 +22,13 @@ namespace Seringa.Engine.Utils
         public SocksHttpWebResponse(string httpResponseMessage)
         {
             SetHeadersAndResponseContent(httpResponseMessage);
+            CorrectEncoding = Encoding.Default;
+        }
+
+        public SocksHttpWebResponse(string httpResponseMessage, Encoding encoding)
+        {
+            SetHeadersAndResponseContent(httpResponseMessage);
+            CorrectEncoding = encoding;
         }
 
         #endregion
@@ -30,7 +37,7 @@ namespace Seringa.Engine.Utils
 
         public override Stream GetResponseStream()
         {
-            return ResponseContent.Length == 0 ? Stream.Null : new MemoryStream(Encoding.UTF8.GetBytes(ResponseContent));
+            return ResponseContent.Length == 0 ? Stream.Null : new MemoryStream(CorrectEncoding.GetBytes(ResponseContent));
         }
 
         public override void Close() { /* the base implementation throws an exception */ }
@@ -88,6 +95,11 @@ namespace Seringa.Engine.Utils
         {
             get { return _responseContent ?? string.Empty; }
             set { _responseContent = value; }
+        }
+
+        public Encoding CorrectEncoding
+        {
+            get;set;
         }
 
         #endregion

@@ -6,11 +6,13 @@ using Seringa.Engine.Interfaces;
 using Seringa.Engine.Implementations.QueryRunner;
 using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
+using Seringa.Engine.Utils.Extensions;
 
 namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 {
     public class GroupByIntegrityConstraintViolation : IInjectionStrategy
     {
+        
         #region Constructor
 
         public GroupByIntegrityConstraintViolation()
@@ -61,7 +63,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Payloads
 
         #region Methods
-        private string GetAnswerFromHtml(string html)
+        private string GetAnswerFromHtml(string html,string query)
         {
             string result = string.Empty;
 
@@ -76,7 +78,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 }
                 catch
                 {
-                    string userFriendlyException = "Could not parse sql injection result";
+                    string userFriendlyException = "Could not parse sql injection result.";
 
                     if(html.IndexOf(_injectionResultDebugLowerBound) > -1 && html.IndexOf(_injectionResultDebugUpperBound) > -1)
                         userFriendlyException = string.Format("Sql exception occured: {0}", 
@@ -84,10 +86,14 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                                                     _injectionResultDebugLowerBound.Length,
                                                     html.IndexOf(_injectionResultDebugUpperBound) - html.IndexOf(_injectionResultDebugLowerBound) -
                                                     _injectionResultDebugLowerBound.Length));
-                    
+
+                    if (DetailedExceptions)
+                        userFriendlyException = string.Format("{0}({1})", userFriendlyException,query);
+
                     throw new SqlInjException(userFriendlyException);
                 }
             }
+            //TODO: cum bag eu asta in xml?!?
             result = result.Remove(result.Length - 1, 1);
 
             return result;
@@ -97,6 +103,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Private
 
         #region Public
+
+        public bool DetailedExceptions { get; set; }
 
         public IQueryRunner QueryRunner { get; set; }
         public IProxyDetails ProxyDetails { get; set; }
@@ -134,7 +142,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url,_exploit,_payloadGetVersion);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy?ProxyDetails:null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
 
@@ -143,7 +151,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetUsername);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
         public string GetCurrentDbName()
@@ -151,7 +159,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetCurrentDatabaseName);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
 
@@ -160,7 +168,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             int count = 0;
             string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetDatabasesCount);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml);
+            string countString = GetAnswerFromHtml(pageHtml,query);
             int.TryParse(countString, out count);
             return count;
         }
@@ -175,7 +183,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 payload = _payloadGetTableCount;
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml);
+            string countString = GetAnswerFromHtml(pageHtml,query);
             int.TryParse(countString, out count);
             return count;
         }
@@ -193,7 +201,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 payload = string.Format(_payloadGetTableColumnCount, SelectedTable);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml);
+            string countString = GetAnswerFromHtml(pageHtml,query);
             int.TryParse(countString, out count);
             return count;
         }
@@ -203,7 +211,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
             string query = QueryHelper.CreateQuery(Url, _exploit, string.Format(_payloadGetSingleDatabaseName, startingFrom.ToString()));
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
         public string GetSingleTableName(int startingFrom)
@@ -216,7 +224,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 payload = string.Format(_payloadGetSingleTableName, startingFrom);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
         public string GetSingleTableColumnName(int startingFrom)
@@ -229,7 +237,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                 payload = string.Format(_payloadGetSingleColumnName, SelectedTable, startingFrom);
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
             return result;
         }
 
@@ -243,14 +251,14 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             if(string.IsNullOrEmpty(CustomQuery))
                 return 0;
 
-            if(CustomQuery.EndsWith("LIMIT 0,1"))
+            if(CustomQuery.Contains("LIMIT",StringComparison.OrdinalIgnoreCase))
                 return 1;
 
             payload = string.Format(_payloadCustomQueryCount,CustomQuery);
 
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml);
+            string countString = GetAnswerFromHtml(pageHtml,query);
             int.TryParse(countString, out count);
             return count;
         }
@@ -260,13 +268,15 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string result = string.Empty;
 
             string payload = string.Empty;
+            
+            if (!CustomQuery.Contains("LIMIT", StringComparison.OrdinalIgnoreCase))
 
-            if (!CustomQuery.Contains("LIMIT"))
                 payload = string.Format("{0} LIMIT {1},1", CustomQuery, startingFrom);
 
             string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml);
+            result = GetAnswerFromHtml(pageHtml,query);
 
             return result;
         }

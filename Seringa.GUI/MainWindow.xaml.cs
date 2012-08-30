@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Seringa.Engine.Interfaces;
-using System.Reflection;
 using System.Windows.Controls;
 using System.Threading;
 using System.Text;
 using Seringa.Engine.Utils;
 using System.Collections.ObjectModel;
-using Seringa.GUI.Extensions;
-using Seringa.Engine.Exceptions;
 using Seringa.Engine.Implementations.Proxy;
+using Seringa.GUI.Extensions;
 
 namespace Seringa.GUI
 {
@@ -44,7 +42,10 @@ namespace Seringa.GUI
             {
                 if (!_concreteInjectionStrategyTypes.Contains(concreteType))
                 {
-                    _injectionStrategies.Add((IInjectionStrategy)Activator.CreateInstance(concreteType));
+                    var strategy = (IInjectionStrategy)Activator.CreateInstance(concreteType);
+                    //@TODO: this value should come from application options
+                    strategy.DetailedExceptions = true;
+                    _injectionStrategies.Add(strategy);
                     _concreteInjectionStrategyTypes.Add(concreteType);
                 }
             }
@@ -391,6 +392,7 @@ namespace Seringa.GUI
                                 delegate()
                                 {
                                     ColumnNames.AddOnUI(result);
+                                    txtCustomQueryResult.Text += string.Format("{0},",result);
                                 }
                             ));
                     }
@@ -435,44 +437,31 @@ namespace Seringa.GUI
             {
                 string result = string.Empty;
 
-                try
+                int total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
+                for (int i = 0; i < total; i++)
                 {
-
-                    int total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
-                    for (int i = 0; i < total; i++)
+                    if (_stopCurrentAction)
+                        break;
+                    try
                     {
-                        if (_stopCurrentAction)
-                            break;
                         result = _currentInjectionStrategy.GetSingleCustomQueryResultRow(i);
-                        if (!string.IsNullOrEmpty(result))
-                        {
-                            txtCustomQueryResult.Dispatcher.Invoke(
-                                    System.Windows.Threading.DispatcherPriority.Normal,
-                                    new Action(
-                                    delegate()
-                                    {
-                                        txtCustomQueryResult.Text += result + Environment.NewLine;
-                                    }
-                                ));
-                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    string userFriendlyException = "An unhandled exception occured"; //@TODO: possibly add the iterator here
-                    if (ex is SqlInjException)
-                        userFriendlyException = ex.Message;
-
-                    txtCustomQueryResult.Dispatcher.Invoke(
-                                    System.Windows.Threading.DispatcherPriority.Normal,
-                                    new Action(
-                                    delegate()
-                                    {
-                                        txtCustomQueryResult.Text += userFriendlyException + Environment.NewLine;
-                                    }
-                                ));
-
-                }
+                    catch (Exception ex)
+                    {
+                        result = ex.Message;
+                    }
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        txtCustomQueryResult.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    txtCustomQueryResult.Text += result + Environment.NewLine;
+                                }
+                            ));
+                    }
+                }                
 
                 _stopCurrentAction = false;
                 EnableAllFromOtherThread();
@@ -516,20 +505,26 @@ namespace Seringa.GUI
 
         private void ProxifyObtainerStrategy()
         {
-            ProxyType proxyType = ProxyType.None;
-            if (cmbProxyType.SelectedValue != null)
-                Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
-
-            if (_currentIpObtainerStrategy != null)
+            if (chkUseProxy.IsChecked.Value)
             {
-                _currentIpObtainerStrategy.UseProxy = chkUseProxy.IsChecked.Value;
-                if (_currentIpObtainerStrategy.UseProxy)
-                    _currentIpObtainerStrategy.ProxyDetails = new ProxyDetails()
-                    {
-                        FullProxyAddress = txtProxyFullAddress.Text,
-                        ProxyType = proxyType
-                    };
+                ProxyType proxyType = ProxyType.None;
+                if (cmbProxyType.SelectedValue != null)
+                    Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
+
+                if (_currentIpObtainerStrategy != null)
+                {
+                    _currentIpObtainerStrategy.UseProxy = chkUseProxy.IsChecked.Value;
+                    if (_currentIpObtainerStrategy.UseProxy)
+                        _currentIpObtainerStrategy.ProxyDetails = new ProxyDetails()
+                        {
+                            FullProxyAddress = txtProxyFullAddress.Text,
+                            ProxyType = proxyType
+                        };
+                }
             }
+            else
+                _currentIpObtainerStrategy.ProxyDetails = null;
+
         }
 
         private void ProxifyInjectionStrategy()

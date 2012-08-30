@@ -18,6 +18,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         #region Public
 
+        public bool DetailedExceptions { get; set; }
+
         public IProxyDetails ProxyDetails { get; set; }
         public bool UseProxy { get; set; }
         public IQueryRunner QueryRunner { get; set; }

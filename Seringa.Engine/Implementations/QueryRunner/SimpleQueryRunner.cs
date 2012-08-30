@@ -6,6 +6,7 @@ using Seringa.Engine.Interfaces;
 using System.Net;
 using System.IO;
 using Seringa.Engine.Utils;
+using Seringa.Engine.Exceptions;
 
 namespace Seringa.Engine.Implementations.QueryRunner
 {
@@ -42,8 +43,9 @@ namespace Seringa.Engine.Implementations.QueryRunner
                 else if (proxyDetails.ProxyType == ProxyType.Socks)
                 {
                     result = SocksHttpWebRequest.Create(url);
-                    result.Proxy = new WebProxy(proxyDetails.FullProxyAddress);//TODO: implement user and password
-                    //((SocksHttpWebRequest)result).UserAgent = _userAgent;
+                    result.Proxy = new WebProxy(proxyDetails.FullProxyAddress);
+                    //TODO: implement user and password
+                    
                 }
                 else if (proxyDetails.ProxyType == ProxyType.None)
                 {
@@ -66,44 +68,54 @@ namespace Seringa.Engine.Implementations.QueryRunner
             string result  = string.Empty;
 
             WebResponse resp = null;
-            WebRequest TestGet = CreateProperRequestType(url, proxyDetails);
-			TestGet.Method = "GET";
+            WebRequest getRequest = CreateProperRequestType(url, proxyDetails);
+			getRequest.Method = "GET";
 
             try
             {
-                resp = TestGet.GetResponse();
+                resp = getRequest.GetResponse();
             }
             catch (WebException wex)
             {
                 if (wex.Status == WebExceptionStatus.ReceiveFailure)
                 {
-                    //@TODO:actually do something to correct this error
-                    //@TODO:actually send error to gui
+                    throw new HtmlObtainingException("Failed to receive html output while trying to obtain page result");                 
                 }
                 else if (wex.Status == WebExceptionStatus.Timeout)
                 {
-                    // Try again I guess.. 
-                    //@TODO:actually do something to correct this error
-                    //@TODO:actually send error to gui
+                    throw new HtmlObtainingException("Timeout occured while trying to obtain page result");                 
                 }
                 else if (wex.Status == WebExceptionStatus.ProtocolError)
                 {
                     resp = wex.Response;
+                    //when using Privoxy this is always triggered but I do get a page back from it
+                    //the actual error is server returned 503
+                    //throw new HtmlObtainingException("Protocol error while trying to obtain page result");                 
                 }
                 else
                 {
-                    //@TODO:actually send error to gui
-                    //ParentOutput(wex.ToString());                    
+                    throw new HtmlObtainingException("Unknown exception occured while trying to obtain page result");                 
                 }
             }
 
             if (resp != null)
             {
+                Encoding encoding = Encoding.Default;
+                if(resp is HttpWebResponse)
+                {
+                    var enc = ((HttpWebResponse)resp).ContentEncoding;
+                    if(!string.IsNullOrEmpty(enc))
+                        encoding = Encoding.GetEncoding(enc);
+                }
+                else if (resp is SocksHttpWebResponse)
+                {
+                    encoding = ((SocksHttpWebResponse)resp).CorrectEncoding;
+                }
                 // Get the stream associated with the response.
                 Stream receiveStream = resp.GetResponseStream();
 
                 // Pipes the stream to a higher level stream reader with the required encoding format. 
-                StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                StreamReader readStream = new StreamReader(receiveStream, encoding);
 
                 result = readStream.ReadToEnd();
                 resp.Close();

@@ -21,7 +21,6 @@ namespace Seringa.GUI.Extensions
             return Enum.GetValues(type).Cast<object>().ToDictionary(e => (int)e, e => Enum.GetName(type, e));
         }
 
-
         #endregion Extensions
     }
 }
