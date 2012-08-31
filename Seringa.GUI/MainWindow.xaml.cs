@@ -109,6 +109,8 @@ namespace Seringa.GUI
             btnGetVersion.IsEnabled = true;
             btnTables.IsEnabled = true;
             bntCurDb.IsEnabled = true;
+            txtSelectedTable.IsEnabled = true;
+            txtSelectedDb.IsEnabled = true;
         }
 
         private void DisableAll()
@@ -122,6 +124,8 @@ namespace Seringa.GUI
             btnGetVersion.IsEnabled = false;
             btnTables.IsEnabled = false;
             bntCurDb.IsEnabled = false;
+            txtSelectedTable.IsEnabled = false;
+            txtSelectedDb.IsEnabled = false;
         }
 
         private void UrlOrStrategyChange()
