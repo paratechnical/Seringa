@@ -181,7 +181,7 @@ namespace Seringa.GUI
             {
                 _currentInjectionStrategy.Url = txtUrl.Text;
                 _currentPayload = null;
-                cb
+                
                 //LoadPayloads(string dbms, IInjectionStrategy injectionStrategy)
         
                 //private void LoadExploits(string dbms, IInjectionStrategy injectionStrategy)
@@ -602,6 +602,11 @@ namespace Seringa.GUI
                         ProxyType = proxyType
                     };
             }
+        }
+
+        private void cbExploits_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            XmlHelpers.GetObjectFromXml<ExploitDetails>(
         }
 
     }

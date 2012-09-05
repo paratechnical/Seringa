@@ -8,7 +8,7 @@ namespace Seringa.Engine.Utils
 {
     public static class XmlHelpers
     {
-        public T GetObjectFromXml<T>(string docName, string elementType, string elementUserFriendlyName)
+        public static T GetObjectFromXml<T>(string docName, string elementType, string elementUserFriendlyName)
         {
             var doc = XDocument.Load(docName);
 
