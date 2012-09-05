@@ -8,7 +8,7 @@ using System.IO;
 using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
 
-namespace Seringa.Engine.Implementations.QueryRunner
+namespace Seringa.Engine.Implementations.QueryRunners
 {
     public class SimpleQueryRunner : IQueryRunner
     {

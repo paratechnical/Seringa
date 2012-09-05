@@ -1,0 +1,22 @@
+<map host="depice.com">
+	<vulnerable-url></vulnerable-url>
+	<dbms>
+		<type></type>
+		<version></version>
+		<users>
+			<user name="name" isdefault="true"  />
+		</users>
+		<host></host>
+	</dbms>
+	<databases>
+		<db name="">
+			<tables>
+				<table name="">
+					<columns>
+						<column></column>
+					</columns>
+				</table>
+			</tables>
+		</db>
+	<databases>
+</map>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Seringa.Engine.Implementations.Exploit;
 
 namespace Seringa.Engine.Interfaces
 {
@@ -23,18 +24,12 @@ namespace Seringa.Engine.Interfaces
         string GetDbUserName();
         string GetCurrentDbName();
 
-        int GetTotalNoOfDbs();
-        int GetTotalNoOfTables();
-        int GetTotalNoOfColumns();
-
-        string GetSingleDatabaseName(int startingFrom);
-        string GetSingleTableName(int startingFrom);
-        string GetSingleTableColumnName(int startingFrom);
-
         bool DetailedExceptions { get; set; }
         string CustomQuery { get; set; }
 
         int GetTotalNoOfCustomQueryResultRows();
         string GetSingleCustomQueryResultRow(int startingFrom);
+
+        ExploitDetails Exploit { get; set; }
     }
 }

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Seringa.Engine.Interfaces;
-using Seringa.Engine.Implementations.QueryRunner;
+using Seringa.Engine.Implementations.QueryRunners;
 using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
 using Seringa.Engine.Utils.Extensions;
 
 namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 {
-    public class GroupByIntegrityConstraintViolation : IInjectionStrategy
+    public class ErrorBased : IInjectionStrategy
     {
         
         #region Constructor
 
-        public GroupByIntegrityConstraintViolation()
+        public ErrorBased()
         {
             QueryRunner = new SimpleQueryRunner();
         }
@@ -23,6 +23,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Constructor
 
         #region Private
+        bool _ignoreLastCharacter = true;
 
         #region Bounds
         private const string _injectionResultLowerBound = "Integrity constraint violation: 1062 Duplicate entry '";
@@ -103,6 +104,18 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Private
 
         #region Public
+
+        public bool IgnoreLastCharacter 
+        {
+            get
+            {
+                return _ignoreLastCharacter;
+            }
+            set
+            {
+                _ignoreLastCharacter = value;
+            }
+        }
 
         public bool DetailedExceptions { get; set; }
 
