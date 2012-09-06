@@ -16,7 +16,7 @@
 		map-to="map/databases/db/tables/table[@name]" >
 		<value>SELECT table_name FROM information_schema.TABLES WHERE table_schema = '{0}'</value><!-- limit {0},1 -->
 		<params>
-			<param name="SelectedDb" position="0">
+			<param name="SelectedDb" position="0"/>
 		</params>
 	</payload>
 	
@@ -24,8 +24,8 @@
 		map-to="map/databases/db/tables/columns/column" >
 		<value>SELECT column_name FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'</value><!-- limit {0},1 -->
 		<params>
-			<param name="SelectedDb" position="0">
-			<param name="SelectedTable" position="1">
+			<param name="SelectedDb" position="0"/>
+			<param name="SelectedTable" position="1"/>
 		</params>
 	</payload>
 	
@@ -33,7 +33,7 @@
 		map-to="map/databases/db/tables/columns/column" >
 		<value>SELECT column_name FROM information_schema.columns WHERE table_name = '{0}'</value><!-- limit {0},1 -->
 		<params>
-			<param name="SelectedTable" position="0">
+			<param name="SelectedTable" position="0"/>
 		</params>
 	</payload>
 	

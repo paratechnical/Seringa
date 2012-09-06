@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Seringa.Engine.Implementations.Exploit;
+using Seringa.Engine.DataObjects;
 
 namespace Seringa.Engine.Interfaces
 {
@@ -31,5 +31,6 @@ namespace Seringa.Engine.Interfaces
         string GetSingleCustomQueryResultRow(int startingFrom);
 
         ExploitDetails Exploit { get; set; }
+        PayloadDetails Payload { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Seringa.Engine.Implementations.QueryRunners;
 using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
 using Seringa.Engine.Utils.Extensions;
+using Seringa.Engine.DataObjects;
 
 namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 {
@@ -140,7 +141,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         public string Url { get; set; }
 
-        public string DisplayName { get { return "Mysql \"group by\" integrity constraint violation method"; } }
+        public string DisplayName { get { return "Mysql error based method"; } }
 
         public string SelectedDb { get; set; }
         public string SelectedTable { get; set; }
@@ -293,6 +294,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
             return result;
         }
+
+        public ExploitDetails Exploit { get; set; }
+        public PayloadDetails Payload { get; set; }
 
         #endregion Public
     }

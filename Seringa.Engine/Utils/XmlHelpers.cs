@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Seringa.Engine.Utils
 {
@@ -20,13 +21,28 @@ namespace Seringa.Engine.Utils
             return createdObj;
         }
 
+        public static IList<string> GetValuesFromDocByXpath(string docName,string xPath,string attributeName)
+        {
+            IList<string> results = new List<string>();
+
+            var doc = XDocument.Load(docName);
+
+            var attributes = doc.Root.XPathSelectElements(xPath).Attributes(attributeName);
+
+            if(attributes.Count() > 0)
+                results = attributes.Select(a => a.Value).ToList();
+
+            return results;
+        
+        }
+
         public static IList<string> GetAllAttributeValuesFromDoc(string docName,string elementName,string attributeName)
         {
             IList<string> results = new List<string>();
 
             var doc = XDocument.Load(docName);
 
-            results = doc.Descendants(elementName).Attributes(attributeName).ToList().Cast<string>().ToList();
+            results = doc.Descendants(elementName).Attributes(attributeName).Select(a => a.Value).Distinct().ToList();
 
             return results;
         }

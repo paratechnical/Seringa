@@ -48,13 +48,6 @@ namespace Seringa.GUI
         private ExploitDetails _currentExploit = null;
         #endregion Fields
         #region Methods
-        private void PopulateExploits()
-        {
-        }
-
-        private void PopulatePayloads()
-        {
-        }
 
         private void PopulateInjectionStrategies()
         {
@@ -99,12 +92,7 @@ namespace Seringa.GUI
         private void ClearAll()
         {
             txtCustomQueryResult.Text = string.Empty;
-            txtVersion.Text = string.Empty;
-            txtVulnerable.Text = string.Empty;
-            txtUser.Text = string.Empty;
-            DatabaseNames.Clear();
-            TableNames.Clear();
-            ColumnNames.Clear();
+            
         }
 
         private void EnableAllFromOtherThread()
@@ -129,47 +117,50 @@ namespace Seringa.GUI
 
         private void EnableAll()
         {
-            btnCheckIfVulnerable.IsEnabled = true;
-            btnColumns.IsEnabled = true;
-            btnDatabases.IsEnabled = true;
-            btnDebugLast.IsEnabled = true;
             btnExecuteCustomQuery.IsEnabled = true;
-            btnGetUser.IsEnabled = true;
-            btnGetVersion.IsEnabled = true;
-            btnTables.IsEnabled = true;
-            bntCurDb.IsEnabled = true;
-            txtSelectedTable.IsEnabled = true;
-            txtSelectedDb.IsEnabled = true;
+            //cbDbms.IsEnabled = true;
+            //cbPayloads.IsEnabled = true;
+            //cbExploits.IsEnabled = true;
         }
 
         private void DisableAll()
         {
-            btnCheckIfVulnerable.IsEnabled = false;
-            btnColumns.IsEnabled = false;
-            btnDatabases.IsEnabled = false;
-            btnDebugLast.IsEnabled = false;
             btnExecuteCustomQuery.IsEnabled = false;
-            btnGetUser.IsEnabled = false;
-            btnGetVersion.IsEnabled = false;
-            btnTables.IsEnabled = false;
-            bntCurDb.IsEnabled = false;
-            txtSelectedTable.IsEnabled = false;
-            txtSelectedDb.IsEnabled = false;
+            //cbDbms.IsEnabled = false;
+            //cbPayloads.IsEnabled = false;
+            //cbExploits.IsEnabled = false;
         }
 
-        private void LoadPayloads(string dbms, IInjectionStrategy injectionStrategy)
+        private void PopulatePayloads(string dbms)
         {
-            cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
-                                                                                        "payload", "user-friendly-name");
+            string xpath = "";
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/payloads/payload[@dbms = \"");
+            sb.Append(dbms);
+            sb.Append("\"]");
+            xpath = sb.ToString();
+
+            cbPayloads.DataContext = XmlHelpers.GetValuesFromDocByXpath(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
+                                                                    xpath, 
+                                                                    "user-friendly-name");
         }
 
-        private void LoadExploits(string dbms, IInjectionStrategy injectionStrategy)
+        private void PopulateExploits(string dbms, IInjectionStrategy injectionStrategy)
         {
-            cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\exploits.xml",
-                                                                            "exploit", "user-friendly-name");
+            string xpath = "";
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/exploits/exploit[@dbms = \"");
+            sb.Append(dbms);
+            sb.Append("\" and @injection-strategy = \"");
+            sb.Append(injectionStrategy!=null?injectionStrategy.GetType().Name:string.Empty);
+            sb.Append("\"]");
+            xpath = sb.ToString();
+             
+            cbExploits.DataContext = XmlHelpers.GetValuesFromDocByXpath(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\exploits.xml",
+                                                                            xpath, "user-friendly-name");
         }
 
-        private void LoadDbms()
+        private void PopulateDbms()
         {
             cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml", 
                                                                             "payload", "dbms");
@@ -181,12 +172,9 @@ namespace Seringa.GUI
             {
                 _currentInjectionStrategy.Url = txtUrl.Text;
                 _currentPayload = null;
-                
-                //LoadPayloads(string dbms, IInjectionStrategy injectionStrategy)
-        
-                //private void LoadExploits(string dbms, IInjectionStrategy injectionStrategy)
-        
-                //private void LoadDbms()
+
+                PopulateExploits(cbDbms.SelectedValue!=null?cbDbms.SelectedValue.ToString():string.Empty, 
+                                _currentInjectionStrategy);
 
                 ProxifyInjectionStrategy();
                 EnableAll();
@@ -281,6 +269,7 @@ namespace Seringa.GUI
             InitializeComponent();
             Initializations();
             PopulateInjectionStrategies();
+            PopulateDbms();
             DisableAll();
         }
 
@@ -299,57 +288,17 @@ namespace Seringa.GUI
             UrlOrStrategyChange();
         }
 
-        private void btCheckIfVulnerable_Click(object sender, RoutedEventArgs e)
+
+        private void txtSelectedDb_LostFocus(object sender, RoutedEventArgs e)
         {
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string injectionResult = "No";
-
-                if (_currentInjectionStrategy.TestIfVulnerable())
-                    injectionResult = "Yes";
-
-                AddOutputToTextBox(txtVulnerable, injectionResult, false, false);
-                EnableAllFromOtherThread();
-            });
-            th.Start();
+            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text;
         }
 
-        private void btnGetVersion_Click(object sender, RoutedEventArgs e)
+        private void txtSelectedTable_LostFocus(object sender, RoutedEventArgs e)
         {
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string injectionResult = _currentInjectionStrategy.GetDbVersion();
-                AddOutputToTextBox(txtVersion, injectionResult, false, false);
-                EnableAllFromOtherThread();
-            });
-            th.Start();
+            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text;
         }
 
-        private void bntCurDb_Click(object sender, RoutedEventArgs e)
-        {
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string injectionResult = _currentInjectionStrategy.GetCurrentDbName();
-                AddOutputToTextBox(txtCurDb, injectionResult, false, false);
-                EnableAllFromOtherThread();
-            });
-            th.Start();
-        }
-
-        private void btnGetUser_Click(object sender, RoutedEventArgs e)
-        {
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string injectionResult = _currentInjectionStrategy.GetDbUserName();
-                AddOutputToTextBox(txtUser, injectionResult, false, false);
-                EnableAllFromOtherThread();
-            });
-            th.Start();
-        }
 
         private void txtUrl_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -361,126 +310,11 @@ namespace Seringa.GUI
             UrlOrStrategyChange();
         }
 
-        private void btnDatabases_Click(object sender, RoutedEventArgs e)
-        {
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string result = string.Empty;
-                int total = _currentInjectionStrategy.GetTotalNoOfDbs();
-                for (int i = 0; i < total; i++)
-                {
-                    if (_stopCurrentAction)
-                        break;
-                    result = _currentInjectionStrategy.GetSingleDatabaseName(i);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        lbDatabases.Dispatcher.Invoke(
-                              System.Windows.Threading.DispatcherPriority.Normal,
-                              new Action(
-                                delegate()
-                                {
-                                    DatabaseNames.Add(result);
-                                }
-                            ));
-                    }
-                }
-                _stopCurrentAction = false;
-                EnableAllFromOtherThread();
-            });
-            th.Start();
-        }
-
         private void btnStopCurAction_Click(object sender, RoutedEventArgs e)
         {
             _stopCurrentAction = true;
         }
 
-
-        private void btnTables_Click(object sender, RoutedEventArgs e)
-        {
-            TableNames.Clear();
-
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string result = string.Empty;
-                int total = _currentInjectionStrategy.GetTotalNoOfTables();
-                for (int i = 0; i < total; i++)
-                {
-                    if (_stopCurrentAction)
-                        break;
-                    result = _currentInjectionStrategy.GetSingleTableName(i);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        lbTables.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(
-                                delegate()
-                                {
-                                    TableNames.AddOnUI(result);
-                                }
-                            ));
-                    }
-                }
-                _stopCurrentAction = false;
-                EnableAllFromOtherThread();
-            });
-            th.Start();
-        }
-
-        private void btnColumns_Click(object sender, RoutedEventArgs e)
-        {
-            ColumnNames.Clear();
-
-            DisableAll();
-            var th = new Thread(() =>
-            {
-                string result = string.Empty;
-                int total = _currentInjectionStrategy.GetTotalNoOfColumns();
-                for (int i = 0; i < total; i++)
-                {
-                    if (_stopCurrentAction)
-                        break;
-                    result = _currentInjectionStrategy.GetSingleTableColumnName(i);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        lbTables.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(
-                                delegate()
-                                {
-                                    ColumnNames.AddOnUI(result);
-                                    txtCustomQueryResult.Text += string.Format("{0},",result);
-                                }
-                            ));
-                    }
-                }
-                _stopCurrentAction = false;
-                EnableAllFromOtherThread();
-            });
-            th.Start();
-        }
-
-        private void lbTables_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text = lbTables.SelectedValue.ToString();
-        }
-
-        private void lbDatabases_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text = lbDatabases.SelectedValue.ToString();
-        }
-
-        private void txtSelectedDb_LostFocus(object sender, RoutedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text;
-        }
-
-        private void txtSelectedTable_LostFocus(object sender, RoutedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text;
-        }
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -606,7 +440,29 @@ namespace Seringa.GUI
 
         private void cbExploits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            XmlHelpers.GetObjectFromXml<ExploitDetails>(
+            ExploitDetails ed = null;
+            ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\exploits.xml", 
+                                                            "exploit",
+                                                            cbExploits.SelectedValue!=null?cbExploits.SelectedValue.ToString():string.Empty);
+            if (_currentInjectionStrategy != null && ed != null)
+                _currentInjectionStrategy.Exploit = ed;
+        }
+
+        private void cbPayloads_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PayloadDetails pd = null;
+            pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
+                                                            "payload",
+                                                            cbPayloads.SelectedItem.ToString());
+            if (_currentInjectionStrategy != null)
+                _currentInjectionStrategy.Payload= pd;
+        }
+
+        private void cbDbms_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string dbms = string.Empty;
+            dbms = cbDbms.SelectedValue != null?cbDbms.SelectedValue.ToString():string.Empty;
+            PopulatePayloads(dbms);
         }
 
     }

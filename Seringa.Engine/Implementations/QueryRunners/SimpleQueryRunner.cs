@@ -7,6 +7,7 @@ using System.Net;
 using System.IO;
 using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
+using Seringa.Engine.Enums;
 
 namespace Seringa.Engine.Implementations.QueryRunners
 {

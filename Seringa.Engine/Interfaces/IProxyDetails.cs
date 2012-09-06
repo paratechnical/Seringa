@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Seringa.Engine.Utils;
+using Seringa.Engine.Enums;
 
 namespace Seringa.Engine.Interfaces
 {
