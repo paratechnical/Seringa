@@ -8,10 +8,6 @@ namespace Seringa.Engine.Interfaces
 {
     public interface IInjectionStrategy : IWebOperation
     {
-        
-        string DbVulnerableVersionFrom { get;}
-        string DbVulnerableVersionTo { get;}
-
         string Url {get; set;}
         string DisplayName { get;}
 
@@ -20,17 +16,12 @@ namespace Seringa.Engine.Interfaces
 
         bool TestIfVulnerable();
 
-        string GetDbVersion();
-        string GetDbUserName();
-        string GetCurrentDbName();
-
         bool DetailedExceptions { get; set; }
-        string CustomQuery { get; set; }
 
         int GetTotalNoOfCustomQueryResultRows();
         string GetSingleCustomQueryResultRow(int startingFrom);
 
-        ExploitDetails Exploit { get; set; }
-        PayloadDetails Payload { get; set; }
+        ExploitDetails ExploitDetails { get; set; }
+        PayloadDetails PayloadDetails { get; set; }
     }
 }

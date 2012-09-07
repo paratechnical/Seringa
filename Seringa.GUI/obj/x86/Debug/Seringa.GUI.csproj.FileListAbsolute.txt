@@ -1,0 +1,16 @@
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe.config
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.pdb
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.dll
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.pdb
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.baml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.g.cs
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\App.g.cs
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI_MarkupCompile.cache
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.g.resources
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.Properties.Resources.resources
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.pdb
