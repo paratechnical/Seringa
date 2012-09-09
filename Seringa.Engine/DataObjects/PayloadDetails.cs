@@ -16,10 +16,18 @@ namespace Seringa.Engine.DataObjects
         public string Payload { get; set; }
         public List<PayloadParam> Params { get; set; }
         public string Dbms { get; set; }
-
+        public string ParentNodeToMapTo { get; set; }
+        public string NodeToMapTo { get; set; }
+        public string MapToParams { get; set; }
+        public string AttributeToMapTo { get; set; }
 
         public PayloadDetails(XElement payload)
         {
+            ParentNodeToMapTo = XmlHelpers.GetAttributeValue<string>(payload, "map-to-parent", string.Empty);
+            NodeToMapTo = XmlHelpers.GetAttributeValue<string>(payload, "map-to-node", string.Empty);
+            MapToParams = XmlHelpers.GetAttributeValue<string>(payload, "map-to-params", string.Empty);
+            AttributeToMapTo = XmlHelpers.GetAttributeValue<string>(payload, "map-to-attribute", string.Empty);
+
             Dbms = XmlHelpers.GetAttributeValue<string>(payload, "dbms", string.Empty);
             Name = XmlHelpers.GetAttributeValue(payload, "name");
             UserFriendlyName = XmlHelpers.GetAttributeValue(payload, "user-friendly-name");

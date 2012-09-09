@@ -69,6 +69,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         #region Public
 
+        public string MappingFile { get; set; }
+
         public bool DetailedExceptions { get; set; }
 
         public IQueryRunner QueryRunner { get; set; }
@@ -139,6 +141,11 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = GetAnswerFromHtml(pageHtml,query);
+
+            if (!string.IsNullOrEmpty(MappingFile)&&!string.IsNullOrEmpty(result))
+            {
+                XmlHelpers.SaveToMappingFile(MappingFile,PayloadDetails,result,this);
+            }
 
             return result;
         }

@@ -470,5 +470,30 @@ namespace Seringa.GUI
                 PopulateExploits(dbms, _currentInjectionStrategy);
         }
 
+        private void chkMapResultsToFile_Checked(object sender, RoutedEventArgs e)
+            {
+            string mappingFile = txtMappingFile.Text.Trim();
+            if (string.IsNullOrEmpty(mappingFile) || _currentInjectionStrategy == null)
+            {
+                chkMapResultsToFile.IsChecked = false;
+                return;
+            }
+
+            if (chkMapResultsToFile.IsChecked.Value)
+            {
+                string error = string.Empty;
+                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,ref error))
+                {
+                    _currentInjectionStrategy.MappingFile = mappingFile;
+                }
+                else
+                {
+                    MessageBox.Show(error);
+                }
+            }
+            else
+                _currentInjectionStrategy.MappingFile = null;
+        }
+
     }
 }

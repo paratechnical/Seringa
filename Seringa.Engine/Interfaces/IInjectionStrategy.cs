@@ -18,6 +18,8 @@ namespace Seringa.Engine.Interfaces
 
         bool DetailedExceptions { get; set; }
 
+        string MappingFile { get; set; }
+
         int GetTotalNoOfCustomQueryResultRows();
         string GetSingleCustomQueryResultRow(int startingFrom);
 
