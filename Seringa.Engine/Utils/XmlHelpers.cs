@@ -12,7 +12,7 @@ namespace Seringa.Engine.Utils
 {
     public static class XmlHelpers
     {
-        public static bool CreateOrLoadMappingFile(string mappingFile,ref string error)
+        public static bool CreateOrLoadMappingFile(string mappingFile,IInjectionStrategy injectionStrategy, ref string error)
         {
             bool outcome = true;
             XDocument document = null;
@@ -41,7 +41,7 @@ namespace Seringa.Engine.Utils
                     document = new XDocument(
                         new XElement("map",
 
-                            new XElement("vulnerable-url", ""),
+                            new XElement("vulnerable-url", injectionStrategy.Url),
                             new XElement("dbms",
                                 new XElement("users", "")
                                 ),

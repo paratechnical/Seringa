@@ -482,7 +482,7 @@ namespace Seringa.GUI
             if (chkMapResultsToFile.IsChecked.Value)
             {
                 string error = string.Empty;
-                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,ref error))
+                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,_currentInjectionStrategy, ref error))
                 {
                     _currentInjectionStrategy.MappingFile = mappingFile;
                 }
@@ -493,6 +493,26 @@ namespace Seringa.GUI
             }
             else
                 _currentInjectionStrategy.MappingFile = null;
+        }
+
+        private void btnChooseMappingFile_Click(object sender, RoutedEventArgs e)
+        {
+            // Create OpenFileDialog
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            // Set filter for file extension and default file extension
+            dlg.DefaultExt = ".xml";
+            dlg.Filter = "Xml file (.xml)|*.xml|All Files|*.*";
+            dlg.InitialDirectory = FileHelpers.GetCurrentDirectory() + "\\xml\\maps";
+            // Display OpenFileDialog by calling ShowDialog method
+            Nullable<bool> result = dlg.ShowDialog();
+            // Get the selected file name and display in a TextBox
+            if (result == true)
+            {
+                // Open document
+                string filename = dlg.FileName;
+                txtMappingFile.Text = filename;
+
+            }
         }
 
     }
