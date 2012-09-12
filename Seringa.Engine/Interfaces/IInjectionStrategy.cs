@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Seringa.Engine.DataObjects;
 
 namespace Seringa.Engine.Interfaces
 {
     public interface IInjectionStrategy : IWebOperation
     {
-        
-        string DbVulnerableVersionFrom { get;}
-        string DbVulnerableVersionTo { get;}
-
         string Url {get; set;}
         string DisplayName { get;}
 
@@ -19,22 +16,14 @@ namespace Seringa.Engine.Interfaces
 
         bool TestIfVulnerable();
 
-        string GetDbVersion();
-        string GetDbUserName();
-        string GetCurrentDbName();
-
-        int GetTotalNoOfDbs();
-        int GetTotalNoOfTables();
-        int GetTotalNoOfColumns();
-
-        string GetSingleDatabaseName(int startingFrom);
-        string GetSingleTableName(int startingFrom);
-        string GetSingleTableColumnName(int startingFrom);
-
         bool DetailedExceptions { get; set; }
-        string CustomQuery { get; set; }
+
+        string MappingFile { get; set; }
 
         int GetTotalNoOfCustomQueryResultRows();
         string GetSingleCustomQueryResultRow(int startingFrom);
+
+        ExploitDetails ExploitDetails { get; set; }
+        PayloadDetails PayloadDetails { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Seringa.Engine.Interfaces;
 using Seringa.Engine.Utils;
+using Seringa.Engine.Enums;
 
 namespace Seringa.Engine.Implementations.Proxy
 {

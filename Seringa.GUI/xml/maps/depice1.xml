@@ -1,0 +1,18 @@
+<map>
+	<vulnerable-url></vulnerable-url>
+	<dbms>
+		<type></type>
+		<version></version>
+		<users>
+			<user name="name" isdefault="true"  />
+		</users>
+		<host></host>
+	</dbms>
+	<databases>
+		<db name="">
+			<table name="">
+				<column name=""></column>
+			</table>
+		</db>
+	<databases>
+</map>

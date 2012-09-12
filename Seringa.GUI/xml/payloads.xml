@@ -1,0 +1,44 @@
+<payloads>
+	<payload dbms="mysql" name="curuser" user-friendly-name="Get current database user" expected-result-type="single" 
+		map-to-parent="/map/dbms/users" map-to-node="user" >
+		<value>SELECT CURRENT_USER()</value>
+	</payload>
+	<payload dbms="mysql" name="dbversion" user-friendly-name="Get database version" expected-result-type="single" 
+		map-to-parent="/map/dbms" map-to-node="version" >
+		<value>SELECT @@version</value>
+	</payload>
+	<payload dbms="mysql" name="dbname" user-friendly-name="Get database names" expected-result-type="multiple" 
+		map-to-parent="/map/databases" map-to-node="db" map-to-attribute="name" >
+		<value>SELECT distinct table_schema FROM information_schema.TABLES</value><!-- limit {0},1 -->
+	</payload>
+	<payload dbms="mysql" name="tablename" user-friendly-name="Get table names from current db" expected-result-type="multiple" >
+		<value>SELECT table_name FROM information_schema.TABLES</value><!-- limit {0},1 -->
+	</payload>
+	<payload dbms="mysql" name="tablenamefromdb" user-friendly-name="Get table names from selected db" expected-result-type="multiple"
+		map-to-parent="map/databases/db[@name='{0}']" map-to-node="table" map-to-attribute="name" map-to-params="SelectedDb" >
+		<value>SELECT table_name FROM information_schema.TABLES WHERE table_schema = '{0}'</value><!-- limit {0},1 -->
+		<params>
+			<param name="SelectedDb" position="0"/>
+		</params>
+	</payload>
+	
+	<payload dbms="mysql" name="columnnamefromdbandtable" user-friendly-name="Get column names from selected db and selected table" expected-result-type="multiple"
+		map-to-parent="map/databases/db[@name='{0}']/table[@name='{1}']" map-to-node="column" 
+		map-to-attribute="name" map-to-params="SelectedDb,SelectedTable" >
+		<value>SELECT column_name FROM information_schema.columns WHERE table_schema = '{0}' AND table_name = '{1}'</value><!-- limit {0},1 -->
+		<params>
+			<param name="SelectedDb" position="0"/>
+			<param name="SelectedTable" position="1"/>
+		</params>
+	</payload>
+	
+	<payload dbms="mysql" name="columnnamefromtable" user-friendly-name="Get column names from current db and current table" expected-result-type="multiple" >
+		<value>SELECT column_name FROM information_schema.columns WHERE table_name = '{0}'</value><!-- limit {0},1 -->
+		<params>
+			<param name="SelectedTable" position="0"/>
+		</params>
+	</payload>
+	
+	
+	
+</payloads>

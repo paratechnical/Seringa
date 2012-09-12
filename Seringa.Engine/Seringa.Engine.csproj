@@ -41,13 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataObjects\PayloadDetails.cs" />
+    <Compile Include="DataObjects\PayloadParam.cs" />
+    <Compile Include="Enums\ExpectedResultType.cs" />
     <Compile Include="Exceptions\HtmlObtainingException.cs" />
     <Compile Include="Exceptions\SqlInjException.cs" />
-    <Compile Include="Implementations\InjectionStrategies\MySql\ErrorBased\ConvertError.cs" />
-    <Compile Include="Implementations\InjectionStrategies\MySql\ErrorBased\GroupByIntegrityConstraintViolation.cs" />
+    <Compile Include="DataObjects\ExploitDetails.cs" />
+    <Compile Include="Implementations\InjectionStrategies\ErrorBased.cs" />
     <Compile Include="Implementations\IPObtainers\CMyIPObtainerStrategy.cs" />
-    <Compile Include="Implementations\Proxy\ProxyDetails.cs" />
-    <Compile Include="Implementations\QueryRunner\SimpleQueryRunner.cs" />
+    <Compile Include="DataObjects\ProxyDetails.cs" />
+    <Compile Include="Implementations\QueryRunners\SimpleQueryRunner.cs" />
     <Compile Include="Interfaces\IInjectionStrategy.cs" />
     <Compile Include="Interfaces\IIPObtainerStrategy.cs" />
     <Compile Include="Interfaces\IProxyDetails.cs" />
@@ -56,6 +59,12 @@
     <Compile Include="Interfaces\ITesterStrategy.cs" />
     <Compile Include="Interfaces\IWebOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\FileHelpers.cs" />
+    <Compile Include="Utils\PayloadHelpers.cs" />
+    <Compile Include="Utils\XmlHelpers.cs" />
+    <Compile Include="XmlDataBinders\ExploitDataBinder.cs" />
+    <Compile Include="XmlDataBinders\PayloadDataBinder.cs" />
+    <Compile Include="Static\GeneralPayloads.cs" />
     <Compile Include="Utils\EncodingHelper.cs" />
     <Compile Include="Utils\Extensions\Extensions.cs" />
     <Compile Include="Utils\ProxySocket\AuthMethod.cs" />
@@ -67,13 +76,14 @@
     <Compile Include="Utils\ProxySocket\Socks4Handler.cs" />
     <Compile Include="Utils\ProxySocket\Socks5Handler.cs" />
     <Compile Include="Utils\ProxySocket\SocksHandler.cs" />
-    <Compile Include="Utils\ProxyType.cs" />
+    <Compile Include="Enums\ProxyType.cs" />
     <Compile Include="Utils\QueryHelper.cs" />
     <Compile Include="Utils\SocksHttpWebRequest.cs" />
     <Compile Include="Utils\SocksHttpWebResponse.cs" />
-    <Compile Include="Utils\UrlHelper.cs" />
+    <Compile Include="Utils\UrlHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Implementations\Exploit\" />
     <Folder Include="Implementations\ScannerStrategies\" />
     <Folder Include="Implementations\TesterStrategies\" />
   </ItemGroup>

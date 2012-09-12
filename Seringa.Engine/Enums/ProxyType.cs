@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Seringa.Engine.Utils
+namespace Seringa.Engine.Enums
 {
     public enum ProxyType
     {

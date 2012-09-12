@@ -1,0 +1,5 @@
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\bin\Debug\Seringa.Engine.dll
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\bin\Debug\Seringa.Engine.pdb
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Debug\ResolveAssemblyReference.cache
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Debug\Seringa.Engine.dll
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Debug\Seringa.Engine.pdb

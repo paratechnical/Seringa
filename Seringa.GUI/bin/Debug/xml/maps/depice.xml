@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <vulnerable-url></vulnerable-url>
+  <dbms>
+    <users>
+      <user>d00f42ee@%</user>
+    </users>
+    <version>5.1.63-nmm1-log</version>
+  </dbms>
+  <databases>
+    <db name="information_schema" />
+    <db name="d00f42ee">
+      <table name="cb_events">
+        <column name="eventID" />
+        <column name="action" />
+        <column name="externalBDRID" />
+      </table>
+      <table name="cb_orders" />
+      <table name="eos_reserved_orders" />
+      <table name="eos_risk_results" />
+      <table name="paypal_orders" />
+      <table name="s_addon_premiums" />
+    </db>
+  </databases>
+</map>

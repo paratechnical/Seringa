@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Seringa.Engine.Interfaces;
-using Seringa.Engine.Implementations.QueryRunner;
+using Seringa.Engine.Implementations.QueryRunners;
 
 namespace Seringa.Engine.Implementations.IPObtainers
 {
