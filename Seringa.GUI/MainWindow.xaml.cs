@@ -140,7 +140,7 @@ namespace Seringa.GUI
             sb.Append("\"]");
             xpath = sb.ToString();
 
-            cbPayloads.DataContext = XmlHelpers.GetValuesFromDocByXpath(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
+            cbPayloads.DataContext = XmlHelpers.GetValuesFromDocByXpath(FileHelpers.GetCurrentDirectory() + "\\xml\\payloads.xml",
                                                                     xpath, 
                                                                     "user-friendly-name");
         }
@@ -156,13 +156,13 @@ namespace Seringa.GUI
             sb.Append("\"]");
             xpath = sb.ToString();
              
-            cbExploits.DataContext = XmlHelpers.GetValuesFromDocByXpath(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\exploits.xml",
+            cbExploits.DataContext = XmlHelpers.GetValuesFromDocByXpath(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
                                                                             xpath, "user-friendly-name");
         }
 
         private void PopulateDbms()
         {
-            cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml", 
+            cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(FileHelpers.GetCurrentDirectory() + "\\xml\\payloads.xml", 
                                                                             "payload", "dbms");
         }
 
@@ -441,7 +441,7 @@ namespace Seringa.GUI
         private void cbExploits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ExploitDetails ed = null;
-            ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\exploits.xml", 
+            ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory()+"\\xml\\exploits.xml", 
                                                             "exploit",
                                                             cbExploits.SelectedValue!=null?cbExploits.SelectedValue.ToString():string.Empty);
             if (_currentInjectionStrategy != null && ed != null)
@@ -451,7 +451,7 @@ namespace Seringa.GUI
         private void cbPayloads_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PayloadDetails pd = null;
-            pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(@"D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\xml\payloads.xml",
+            pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(FileHelpers.GetCurrentDirectory()+"\\xml\\payloads.xml",
                                                             "payload",
                                                             cbPayloads.SelectedItem.ToString());
             if (_currentInjectionStrategy != null && pd != null)

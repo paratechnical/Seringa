@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <vulnerable-url>holdenby.com/news-detail.php?id=5</vulnerable-url>
+  <dbms>
+    <users>
+      <user>holdenby_db@%</user>
+    </users>
+    <version>5.1.61</version>
+  </dbms>
+  <databases>
+    <db name="information_schema" />
+    <db name="holdenby">
+      <table name="AdminUsers">
+        <column name="AdminUserID" />
+        <column name="Username" />
+        <column name="Password" />
+        <column name="Enabled" />
+        <column name="LastActive" />
+      </table>
+      <table name="Banners" />
+      <table name="Contact">
+        <column name="ID" />
+        <column name="Firstname" />
+        <column name="Surname" />
+        <column name="Address" />
+        <column name="Tel" />
+        <column name="Email" />
+        <column name="Interest" />
+        <column name="Message" />
+      </table>
+      <table name="Events" />
+      <table name="Gallery" />
+      <table name="GalleryCat" />
+      <table name="ImageCache" />
+      <table name="Images" />
+      <table name="News" />
+      <table name="Requests" />
+      <table name="Weddings" />
+    </db>
+  </databases>
+</map>
