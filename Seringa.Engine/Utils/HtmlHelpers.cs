@@ -61,11 +61,18 @@ namespace Seringa.Engine.Utils
                 int resultEndIndex = 0;
                 while (resultStartIndex != -1)
                 {
-                    resultStartIndex = html.IndexOf(ExploitDetails.ResultStart, startIndex) + ExploitDetails.ResultStart.Length;
-                    if(resultStartIndex == -1)
+                    try
+                    {
+                        resultStartIndex = html.IndexOf(ExploitDetails.ResultStart, startIndex) + ExploitDetails.ResultStart.Length;
+                        if (resultStartIndex == -1)
+                            break;
+                        resultEndIndex = html.IndexOf(ExploitDetails.ResultEnd, startIndex) - html.IndexOf(ExploitDetails.ResultStart, startIndex) -
+                                                     ExploitDetails.ResultStart.Length;
+                    }
+                    catch
+                    {
                         break;
-                    resultEndIndex = html.IndexOf(ExploitDetails.ResultEnd) - html.IndexOf(ExploitDetails.ResultStart) -
-                                                 ExploitDetails.ResultStart.Length;
+                    }
 
                     if (resultStartIndex < resultEndIndex)
                     {
