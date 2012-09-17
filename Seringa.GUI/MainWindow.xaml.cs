@@ -331,7 +331,7 @@ namespace Seringa.GUI
                 string result = string.Empty;
 
                 int total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
-                for (int i = 0; i < total; i++)
+                for (int i = 0; i < total; i = i + _currentInjectionStrategy.NumberOfResultsPerRequest)
                 {
                     if (_stopCurrentAction)
                         break;

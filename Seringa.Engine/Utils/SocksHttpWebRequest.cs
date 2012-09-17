@@ -220,8 +220,17 @@ namespace Seringa.Engine.Utils
                 {
                     string chunk = _correctEncoding.GetString(buffer, 0, bytesReceived);
                     string encString = EncodingHelper.GetEncodingFromChunk(chunk);
-                    if(!string.IsNullOrEmpty(encString))
-                        _correctEncoding = Encoding.GetEncoding(encString);
+                    if (!string.IsNullOrEmpty(encString))
+                    {
+                        try
+                        {
+                            _correctEncoding = Encoding.GetEncoding(encString);
+                        }
+                        catch
+                        {
+                            //TODO: do something here
+                        }
+                    }
                     response.Append(chunk);
                     bytesReceived = _socksConnection.Receive(buffer);
                 }

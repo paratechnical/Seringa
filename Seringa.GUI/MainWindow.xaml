@@ -33,22 +33,24 @@
                     <Label Content="Query result" Height="28" HorizontalAlignment="Left" Margin="-3,268,0,0" Name="label1" VerticalAlignment="Top" />
                     <Label Content="Injection Strategy" Height="28" HorizontalAlignment="Left" Margin="5,28,0,0" Name="label4" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="114,30,0,0" Name="cbCurrentInjectionStrategy" VerticalAlignment="Top" Width="346" ItemsSource="{Binding}" SelectionChanged="cbCurrentInjectionStrategy_SelectionChanged" />
-                    <Label Content="Selected Db:" Height="28" HorizontalAlignment="Left" Margin="483,60,0,0" Name="lblSelectedDb" VerticalAlignment="Top" Width="77" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="583,62,0,0" Name="txtSelectedDb" VerticalAlignment="Top" Width="186" LostFocus="txtSelectedDb_LostFocus" />
+                    <Label Content="Selected Db:" Height="28" HorizontalAlignment="Left" Margin="483,85,0,0" Name="lblSelectedDb" VerticalAlignment="Top" Width="77" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="583,87,0,0" Name="txtSelectedDb" VerticalAlignment="Top" Width="186" LostFocus="txtSelectedDb_LostFocus" />
                     
-                    <Label Content="Selected Table:" Height="28" HorizontalAlignment="Left" Margin="483,86,0,0" Name="lblSelectedTable" VerticalAlignment="Top" Width="94" />
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,91,100,0" Name="txtSelectedTable" VerticalAlignment="Top" Width="185" LostFocus="txtSelectedTable_LostFocus" />
+                    <Label Content="Selected Table:" Height="28" HorizontalAlignment="Left" Margin="483,111,0,0" Name="lblSelectedTable" VerticalAlignment="Top" Width="94" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,116,100,0" Name="txtSelectedTable" VerticalAlignment="Top" Width="185" LostFocus="txtSelectedTable_LostFocus" />
                     
                     <Button Content="Stop current action" Height="23" HorizontalAlignment="Left" Margin="647,187,0,0" Name="btnStopCurAction" VerticalAlignment="Top" Width="114" Click="btnStopCurAction_Click" />
-                    <Label Content="Payload" Height="28" HorizontalAlignment="Left" Margin="5,86,0,0" Name="label5" VerticalAlignment="Top" />
-                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,91,0,0" Name="cbPayloads" VerticalAlignment="Top" Width="346" SelectionChanged="cbPayloads_SelectionChanged" />
-                    <Label Content="Exploit" Height="28" HorizontalAlignment="Left" Margin="5,57,0,0" Name="label6" VerticalAlignment="Top" />
-                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,59,0,0" Name="cbExploits" VerticalAlignment="Top" Width="346" SelectionChanged="cbExploits_SelectionChanged" />
-                    <Label Content="Dbms" Height="28" HorizontalAlignment="Left" Margin="483,32,0,0" Name="label7" VerticalAlignment="Top" />
-                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="549,32,0,0" Name="cbDbms" VerticalAlignment="Top" Width="311" SelectionChanged="cbDbms_SelectionChanged" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="124,120,0,0" Name="txtMappingFile" VerticalAlignment="Top" Width="265" />
-                    <Button Content="Browse" Height="23" HorizontalAlignment="Left" Margin="395,119,0,0" Name="btnChooseMappingFile" VerticalAlignment="Top" Width="65" Click="btnChooseMappingFile_Click" />
-                    <CheckBox Content="Map results to file:" Height="16" HorizontalAlignment="Left" Margin="5,123,0,0" Name="chkMapResultsToFile" VerticalAlignment="Top" Width="125" Checked="chkMapResultsToFile_Checked" />
+                    <Label Content="Payload" Height="28" HorizontalAlignment="Left" Margin="5,117,0,0" Name="label5" VerticalAlignment="Top" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,122,0,0" Name="cbPayloads" VerticalAlignment="Top" Width="346" SelectionChanged="cbPayloads_SelectionChanged" />
+                    <Label Content="Exploit" Height="28" HorizontalAlignment="Left" Margin="5,88,0,0" Name="label6" VerticalAlignment="Top" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,90,0,0" Name="cbExploits" VerticalAlignment="Top" Width="346" SelectionChanged="cbExploits_SelectionChanged" />
+                    <Label Content="Dbms" Height="28" HorizontalAlignment="Left" Margin="5,62,0,0" Name="label7" VerticalAlignment="Top" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,62,0,0" Name="cbDbms" VerticalAlignment="Top" Width="275" SelectionChanged="cbDbms_SelectionChanged" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="122,159,0,0" Name="txtMappingFile" VerticalAlignment="Top" Width="265" />
+                    <Button Content="Browse" Height="23" HorizontalAlignment="Left" Margin="393,158,0,0" Name="btnChooseMappingFile" VerticalAlignment="Top" Width="65" Click="btnChooseMappingFile_Click" />
+                    <CheckBox Content="Map results to file:" Height="16" HorizontalAlignment="Left" Margin="3,162,0,0" Name="chkMapResultsToFile" VerticalAlignment="Top" Width="125" Checked="chkMapResultsToFile_Checked" />
+                    <Button Content="Autodetect vulnerability" Height="23" HorizontalAlignment="Left" Margin="483,30,0,0" Name="button1" VerticalAlignment="Top" Width="140" />
+                    <Button Content="Autodetect vulnerability" Height="23" HorizontalAlignment="Left" Margin="628,30,0,0" Name="button2" VerticalAlignment="Top" Width="140" />
                 </Grid>    
             </TabItem>
             <TabItem Header="Proxy" Name="tabProxyOptions">

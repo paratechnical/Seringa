@@ -10,7 +10,7 @@ using Seringa.Engine.Utils.Extensions;
 using Seringa.Engine.DataObjects;
 using Seringa.Engine.Static;
 
-namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
+namespace Seringa.Engine.Implementations.InjectionStrategies
 {
     public class ErrorBased : IInjectionStrategy
     {
@@ -24,50 +24,20 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
         #endregion Constructor
 
-        #region Private
-
-        #region Methods
-        private string GetAnswerFromHtml(string html,string query)
-        {
-            string result = string.Empty;
-
-            if (!string.IsNullOrEmpty(html))
-            {
-                try
-                {
-                    result = html.Substring(html.IndexOf(ExploitDetails.ResultStart) +
-                                                ExploitDetails.ResultStart.Length,
-                                                html.IndexOf(ExploitDetails.ResultEnd) - html.IndexOf(ExploitDetails.ResultStart) -
-                                                ExploitDetails.ResultStart.Length);
-                }
-                catch
-                {
-                    string userFriendlyException = "Could not parse sql injection result.";
-
-                    if (html.IndexOf(ExploitDetails.ErrorStart) > -1 && html.IndexOf(ExploitDetails.ErrorEnd) > -1)
-                        userFriendlyException = string.Format("Sql exception occured: {0}",
-                                                    html.Substring(html.IndexOf(ExploitDetails.ErrorStart) +
-                                                    ExploitDetails.ErrorStart.Length,
-                                                    html.IndexOf(ExploitDetails.ErrorEnd) - html.IndexOf(ExploitDetails.ErrorStart) -
-                                                    ExploitDetails.ErrorStart.Length));
-
-                    if (DetailedExceptions)
-                        userFriendlyException = string.Format("{0}({1})", userFriendlyException,query);
-
-                    throw new SqlInjException(userFriendlyException);
-                }
-            }
-            
-            if(ExploitDetails.TrimLast)
-                result = result.Remove(result.Length - 1, 1);
-
-            return result;
-        }
-        #endregion Methods
-
-        #endregion Private
 
         #region Public
+
+        public int NumberOfResultsPerRequest
+        {
+            get
+            {
+                return 1;
+            }
+            set
+            {
+                
+            }
+        }
 
         public string MappingFile { get; set; }
 
@@ -90,7 +60,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, GeneralPayloads.ErrorBasedVictimIdentifier);
             
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            var result = GetAnswerFromHtml(pageHtml,query);
+            var result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
 
             return !string.IsNullOrEmpty(result) && result == GeneralPayloads.ErrorBasedVictimConfirmationResult;
         }
@@ -120,7 +90,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedpayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            string countString = GetAnswerFromHtml(pageHtml,query);
+            string countString = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
             int.TryParse(countString, out count);
             return count;
         }
@@ -140,7 +110,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies.MySql.ErrorBased
 
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-            result = GetAnswerFromHtml(pageHtml,query);
+            result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
 
             if (!string.IsNullOrEmpty(MappingFile)&&!string.IsNullOrEmpty(result))
             {
