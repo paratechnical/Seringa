@@ -72,6 +72,9 @@ namespace Seringa.Engine.Utils
 
         private void SetHeadersAndResponseContent(string responseMessage)
         {
+            if (string.IsNullOrEmpty(responseMessage))
+                return;
+
             // the HTTP headers can be found before the first blank line
             var indexOfFirstBlankLine = responseMessage.IndexOf("\r\n\r\n");
 

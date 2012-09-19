@@ -35,7 +35,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         {
             get
             {
-                return _nrCols;
+                return _nrVisibleCols;
             }
             set
             {
@@ -80,9 +80,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         /// <summary>
         /// not all columns might appear in the page html, indexes of those that do get stored here
         /// </summary>
-        IList<int> _columnIndexes = new List<int>();
+        IList<int> _visibleColumnIndexes = new List<int>();
         int _maxCols = 20;
         int _nrCols = 0;
+        int _nrVisibleCols = 0;
         #endregion Fields
         #endregion Private
 
@@ -112,7 +113,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                 {
                     _nrCols = i;
                     var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
-                    _columnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Cast<int>().ToList();
+                    _visibleColumnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Distinct().Select(r => int.Parse(r)).ToList();
+                    _nrVisibleCols = _visibleColumnIndexes.Count();
                     result = true;
                     break;
                 }
@@ -179,8 +181,6 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                 foreach (var param in PayloadDetails.Params)
                     generatedPayload = generatedPayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
-            if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
-                generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom);
 
             StringBuilder sbCurExploit = new StringBuilder();
             
@@ -188,9 +188,12 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             for (int j = 0; j < _nrCols; j++)
             {
-                if (j == _columnIndexes[columnIndexCounter])
+                if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
+                    generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom+j);
+
+                if (_visibleColumnIndexes.Contains(j))
                 {
-                    sbCurExploit.AppendFormat(generatedPayload);
+                    sbCurExploit.AppendFormat("{0}|{1}",_visibleColumnIndexes[columnIndexCounter],generatedPayload);
                     columnIndexCounter++;
                 }
                 else
@@ -204,11 +207,33 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             IList<string> resultsBatch = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
 
+            string actualValue = string.Empty;
+            int separatorIndex = 0;
+            int columnIndex = 0;
+            string columnIndexString = "";
+            IList<int> columnsProcessed = new List<int>();
             foreach (string singleResult in resultsBatch)
             {
-                if (!string.IsNullOrEmpty(MappingFile))
-                    XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, singleResult, this);
-                sbResult.Append(singleResult);
+                
+                separatorIndex = singleResult.IndexOf("|");
+                if (separatorIndex != -1)
+                {
+                    columnIndexString = singleResult.Substring(0,separatorIndex);
+                    if(!int.TryParse(columnIndexString,out columnIndex))
+                        continue;
+
+                    if (columnsProcessed.Contains(columnIndex))
+                        continue;
+
+                    actualValue = singleResult.Substring(separatorIndex+1);
+
+                    if (!string.IsNullOrEmpty(MappingFile))
+                        XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, actualValue, this);
+                    sbResult.Append(actualValue);
+                }
+
+                if (columnsProcessed.Count == _visibleColumnIndexes.Count)
+                    break;
             }
             return sbResult.ToString(); 
         }

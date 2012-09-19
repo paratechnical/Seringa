@@ -56,58 +56,54 @@ namespace Seringa.Engine.Utils
 
             if (!string.IsNullOrEmpty(html))
             {
-                int startIndex = 0;
                 int resultStartIndex = 0; 
+                int resultLength = 0;
                 int resultEndIndex = 0;
                 while (resultStartIndex != -1)
                 {
                     try
                     {
-                        resultStartIndex = html.IndexOf(ExploitDetails.ResultStart, startIndex) + ExploitDetails.ResultStart.Length;
+                        resultStartIndex = html.IndexOf(ExploitDetails.ResultStart, resultEndIndex);
                         if (resultStartIndex == -1)
                             break;
-                        resultEndIndex = html.IndexOf(ExploitDetails.ResultEnd, startIndex) - html.IndexOf(ExploitDetails.ResultStart, startIndex) -
-                                                     ExploitDetails.ResultStart.Length;
+
+                        resultStartIndex += ExploitDetails.ResultStart.Length;
+                        resultEndIndex = html.IndexOf(ExploitDetails.ResultEnd, resultStartIndex);
+                        resultLength = resultEndIndex - resultStartIndex;
                     }
                     catch
                     {
                         break;
                     }
 
-                    if (resultStartIndex < resultEndIndex)
+                    try
                     {
-                        try
-                        {
-                            result = html.Substring(resultStartIndex, resultEndIndex);
+                        result = html.Substring(resultStartIndex, resultLength);
 
-                            if (ExploitDetails.TrimLast)
-                                result = result.Remove(result.Length - 1, 1);
+                        if (ExploitDetails.TrimLast)
+                            result = result.Remove(result.Length - 1, 1);
 
-                            results.Add(result);
-                        }
-                        catch
-                        {
-                            string userFriendlyException = "Could not parse sql injection result.";
-
-                            if (!string.IsNullOrEmpty(ExploitDetails.ErrorStart) && !string.IsNullOrEmpty(ExploitDetails.ErrorEnd))
-                                if (html.IndexOf(ExploitDetails.ErrorStart) > -1 && html.IndexOf(ExploitDetails.ErrorEnd) > -1)
-                                    userFriendlyException = string.Format("Sql exception occured: {0}",
-                                                                html.Substring(html.IndexOf(ExploitDetails.ErrorStart) +
-                                                                ExploitDetails.ErrorStart.Length,
-                                                                html.IndexOf(ExploitDetails.ErrorEnd) - html.IndexOf(ExploitDetails.ErrorStart) -
-                                                                ExploitDetails.ErrorStart.Length));
-
-                            if (detailedExceptions)
-                                userFriendlyException = string.Format("{0}({1})", userFriendlyException, query);
-
-                            throw new SqlInjException(userFriendlyException);
-                        }
+                        results.Add(result);
                     }
+                    catch
+                    {
+                        string userFriendlyException = "Could not parse sql injection result.";
 
-                    startIndex = resultEndIndex;
+                        if (!string.IsNullOrEmpty(ExploitDetails.ErrorStart) && !string.IsNullOrEmpty(ExploitDetails.ErrorEnd))
+                            if (html.IndexOf(ExploitDetails.ErrorStart) > -1 && html.IndexOf(ExploitDetails.ErrorEnd) > -1)
+                                userFriendlyException = string.Format("Sql exception occured: {0}",
+                                                            html.Substring(html.IndexOf(ExploitDetails.ErrorStart) +
+                                                            ExploitDetails.ErrorStart.Length,
+                                                            html.IndexOf(ExploitDetails.ErrorEnd) - html.IndexOf(ExploitDetails.ErrorStart) -
+                                                            ExploitDetails.ErrorStart.Length));
+
+                        if (detailedExceptions)
+                            userFriendlyException = string.Format("{0}({1})", userFriendlyException, query);
+
+                        throw new SqlInjException(userFriendlyException);
+                    }
                 }
             }
-
             
             return results;
         }
