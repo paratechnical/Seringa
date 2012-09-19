@@ -111,11 +111,16 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                     continue;
                 else
                 {
-                    _nrCols = i;
-                    var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
-                    _visibleColumnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Distinct().Select(r => int.Parse(r)).ToList();
-                    _nrVisibleCols = _visibleColumnIndexes.Count();
-                    result = true;
+                    if (i > 0)
+                    {
+                        _nrCols = i;
+                        var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
+                        _visibleColumnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Distinct().Select(r => int.Parse(r)).ToList();
+                        _nrVisibleCols = _visibleColumnIndexes.Count();
+                        result = true;
+                    }
+                    else result = false;
+
                     break;
                 }
             }
@@ -151,13 +156,13 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             StringBuilder sbCurExploit = new StringBuilder();
 
-            sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue, generatedpayload);
+            sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectResultWrapper, generatedpayload);
             if(_nrCols > 1)
-                sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue, ",");
+                sbCurExploit.Append(",");
 
             for (int j = 1; j < _nrCols; j++)
             {
-                sbCurExploit.AppendFormat(j.ToString());
+                sbCurExploit.Append(j.ToString());
                 if (j < _nrCols - 1)
                     sbCurExploit.Append(",");
             }
