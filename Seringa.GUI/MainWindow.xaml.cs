@@ -330,7 +330,24 @@ namespace Seringa.GUI
             {
                 string result = string.Empty;
 
-                int total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
+                int total = 0;
+
+                try
+                {
+                    total = _currentInjectionStrategy.GetTotalNoOfCustomQueryResultRows();
+                }
+                catch(Exception ex)
+                {
+                    txtCustomQueryResult.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    txtCustomQueryResult.Text = ex.Message;
+                                }
+                            ));
+                }
+
                 for (int i = 0; i < total; i = i + _currentInjectionStrategy.NumberOfResultsPerRequest)
                 {
                     if (_stopCurrentAction)
@@ -471,7 +488,7 @@ namespace Seringa.GUI
         }
 
         private void chkMapResultsToFile_Checked(object sender, RoutedEventArgs e)
-            {
+        {
             string mappingFile = txtMappingFile.Text.Trim();
             if (string.IsNullOrEmpty(mappingFile) || _currentInjectionStrategy == null)
             {
@@ -513,6 +530,12 @@ namespace Seringa.GUI
                 txtMappingFile.Text = filename;
 
             }
+        }
+
+        private void btnOverrideCurrentSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(txtMappingFile.Text))
+
         }
 
     }

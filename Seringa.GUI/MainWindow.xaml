@@ -22,15 +22,17 @@
             <TabItem Header="Filter urls" Name="tabFilterUrls"></TabItem>
             <TabItem Header="Single url operations" Name="tabSingleUrl">
                 <Grid Name="gridSingleUrl" Height="583">
-                    
-                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="391*" />
+                        <RowDefinition Height="192*" />
+                    </Grid.RowDefinitions>
                     <Label Content="Url" Height="28" HorizontalAlignment="Left" Margin="5,2,0,0" Name="lblurl" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="36,4,0,0" Name="txtUrl" VerticalAlignment="Top" Width="825" GotFocus="txtUrl_GotFocus" LostFocus="txtUrl_LostFocus" />
                     <Button Content="Execute" Height="23" HorizontalAlignment="Left" Margin="780,187,0,0" Name="btnExecuteCustomQuery" VerticalAlignment="Top" Width="75" Click="btnExecuteCustomQuery_Click" />
-                    <TextBox Height="55" HorizontalAlignment="Left" Margin="-3,215,0,0" Name="txtCustomQuery" VerticalAlignment="Top" Width="862" LostFocus="txtCustomQuery_LostFocus" />
-                    <Label Content="Query" Height="28" HorizontalAlignment="Left" Margin="-3,186,0,0" Name="lblCustomQuery" VerticalAlignment="Top" />
-                    <TextBox Height="138" HorizontalAlignment="Left" Margin="-2,294,0,0" Name="txtCustomQueryResult" VerticalAlignment="Top" Width="862" />
-                    <Label Content="Query result" Height="28" HorizontalAlignment="Left" Margin="-3,268,0,0" Name="label1" VerticalAlignment="Top" />
+                    <TextBox Height="42" HorizontalAlignment="Left" Margin="4,231,0,0" Name="txtCustomQuery" VerticalAlignment="Top" Width="855" LostFocus="txtCustomQuery_LostFocus" />
+                    <Label Content="Query" Height="28" HorizontalAlignment="Left" Margin="4,205,0,0" Name="lblCustomQuery" VerticalAlignment="Top" />
+                    <TextBox Height="138" HorizontalAlignment="Left" Margin="6,294,0,0" Name="txtCustomQueryResult" VerticalAlignment="Top" Width="854" Grid.RowSpan="2" />
+                    <Label Content="Query result" Height="28" HorizontalAlignment="Left" Margin="3,268,0,0" Name="label1" VerticalAlignment="Top" />
                     <Label Content="Injection Strategy" Height="28" HorizontalAlignment="Left" Margin="5,28,0,0" Name="label4" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="114,30,0,0" Name="cbCurrentInjectionStrategy" VerticalAlignment="Top" Width="346" ItemsSource="{Binding}" SelectionChanged="cbCurrentInjectionStrategy_SelectionChanged" />
                     <Label Content="Selected Db:" Height="28" HorizontalAlignment="Left" Margin="483,85,0,0" Name="lblSelectedDb" VerticalAlignment="Top" Width="77" />
@@ -46,11 +48,12 @@
                     <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,90,0,0" Name="cbExploits" VerticalAlignment="Top" Width="346" SelectionChanged="cbExploits_SelectionChanged" />
                     <Label Content="Dbms" Height="28" HorizontalAlignment="Left" Margin="5,62,0,0" Name="label7" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,62,0,0" Name="cbDbms" VerticalAlignment="Top" Width="275" SelectionChanged="cbDbms_SelectionChanged" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="122,159,0,0" Name="txtMappingFile" VerticalAlignment="Top" Width="265" />
-                    <Button Content="Browse" Height="23" HorizontalAlignment="Left" Margin="393,158,0,0" Name="btnChooseMappingFile" VerticalAlignment="Top" Width="65" Click="btnChooseMappingFile_Click" />
-                    <CheckBox Content="Map results to file:" Height="16" HorizontalAlignment="Left" Margin="3,162,0,0" Name="chkMapResultsToFile" VerticalAlignment="Top" Width="125" Checked="chkMapResultsToFile_Checked" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="128,151,0,0" Name="txtMappingFile" VerticalAlignment="Top" Width="277" />
+                    <Button Content="Browse" Height="23" HorizontalAlignment="Left" Margin="411,150,0,0" Name="btnChooseMappingFile" VerticalAlignment="Top" Width="49" Click="btnChooseMappingFile_Click" />
+                    <CheckBox Content="Map results to file" Height="16" HorizontalAlignment="Left" Margin="5,154,0,0" Name="chkMapResultsToFile" VerticalAlignment="Top" Width="117" Checked="chkMapResultsToFile_Checked" />
                     <Button Content="Test current vulnerability" Height="23" HorizontalAlignment="Left" Margin="483,30,0,0" Name="btnTest" VerticalAlignment="Top" Width="140" />
                     <Button Content="Autodetect vulnerability" Height="23" HorizontalAlignment="Left" Margin="628,30,0,0" Name="btnAutodetect" VerticalAlignment="Top" Width="140" />
+                    <Button Content="Override current settings" Height="23" HorizontalAlignment="Left" Margin="5,176,0,0" Name="btnOverrideCurrentSettings" VerticalAlignment="Top" Width="144" Click="btnOverrideCurrentSettings_Click" />
                 </Grid>    
             </TabItem>
             <TabItem Header="Proxy" Name="tabProxyOptions">

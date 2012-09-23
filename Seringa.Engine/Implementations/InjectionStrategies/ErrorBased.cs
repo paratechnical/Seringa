@@ -27,16 +27,14 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         #region Public
 
+        public int NrColumnsInOriginalQuery
+        {
+            get { return -1; }
+        }
+
         public int NumberOfResultsPerRequest
         {
-            get
-            {
-                return 1;
-            }
-            set
-            {
-                
-            }
+            get { return 1;}
         }
 
         public string MappingFile { get; set; }

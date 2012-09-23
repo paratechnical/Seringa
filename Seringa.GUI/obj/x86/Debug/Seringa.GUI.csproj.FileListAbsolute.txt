@@ -1,23 +1,3 @@
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe.config
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.pdb
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.dll
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.pdb
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.baml
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.g.cs
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\App.g.cs
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI_MarkupCompile.cache
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.g.resources
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.Properties.Resources.resources
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.read.1.tlog
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.write.1.tlog
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.exe
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.pdb
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\maps\depice.xml
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\maps\depice1.xml
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\exploits.xml
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\payloads.xml
 C:\labareala\seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe.config
 C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.exe
 C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.pdb
@@ -38,3 +18,23 @@ C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.g.resources
 C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.Properties.Resources.resources
 C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.read.1.tlog
 C:\labareala\seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\exploits.xml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\maps\depice.xml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\maps\depice1.xml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\xml\payloads.xml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe.config
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.GUI.pdb
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.dll
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\bin\Debug\Seringa.Engine.pdb
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.baml
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\MainWindow.g.cs
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\App.g.cs
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI_MarkupCompile.cache
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.g.resources
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.Properties.Resources.resources
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.exe
+D:\proiecte\Visual Studio Projects\Seringa\Seringa.GUI\obj\x86\Debug\Seringa.GUI.pdb

