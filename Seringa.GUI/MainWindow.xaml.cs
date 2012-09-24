@@ -12,6 +12,7 @@ using Seringa.Engine.Implementations.Proxy;
 using Seringa.GUI.Extensions;
 using Seringa.Engine.DataObjects;
 using Seringa.Engine.Enums;
+using System.IO;
 
 namespace Seringa.GUI
 {
@@ -534,7 +535,16 @@ namespace Seringa.GUI
 
         private void btnOverrideCurrentSettings_Click(object sender, RoutedEventArgs e)
         {
-            if(!string.IsNullOrEmpty(txtMappingFile.Text))
+            string mappingFile = txtMappingFile.Text.Trim();
+
+            if (!string.IsNullOrEmpty(mappingFile))
+            {
+                if(!File.Exists(mappingFile))
+                {
+                    MessageBox.Show("Could not load file");
+                }
+                var injectionStrategyElem = XmlHelpers.GetXmlElementViaXpath(mappingFile,"map\injection-strategy");
+            }
 
         }
 
