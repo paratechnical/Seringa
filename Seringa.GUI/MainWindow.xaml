@@ -28,20 +28,24 @@
                     </Grid.RowDefinitions>
                     <Label Content="Url" Height="28" HorizontalAlignment="Left" Margin="5,2,0,0" Name="lblurl" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="36,4,0,0" Name="txtUrl" VerticalAlignment="Top" Width="825" GotFocus="txtUrl_GotFocus" LostFocus="txtUrl_LostFocus" />
-                    <Button Content="Execute" Height="23" HorizontalAlignment="Left" Margin="780,187,0,0" Name="btnExecuteCustomQuery" VerticalAlignment="Top" Width="75" Click="btnExecuteCustomQuery_Click" />
+                    <Button Content="Execute" Height="23" HorizontalAlignment="Left" Margin="784,205,0,0" Name="btnExecuteCustomQuery" VerticalAlignment="Top" Width="75" Click="btnExecuteCustomQuery_Click" />
                     <TextBox Height="42" HorizontalAlignment="Left" Margin="4,231,0,0" Name="txtCustomQuery" VerticalAlignment="Top" Width="855" LostFocus="txtCustomQuery_LostFocus" />
                     <Label Content="Query" Height="28" HorizontalAlignment="Left" Margin="4,205,0,0" Name="lblCustomQuery" VerticalAlignment="Top" />
                     <TextBox Height="138" HorizontalAlignment="Left" Margin="6,294,0,0" Name="txtCustomQueryResult" VerticalAlignment="Top" Width="854" Grid.RowSpan="2" />
                     <Label Content="Query result" Height="28" HorizontalAlignment="Left" Margin="3,268,0,0" Name="label1" VerticalAlignment="Top" />
                     <Label Content="Injection Strategy" Height="28" HorizontalAlignment="Left" Margin="5,28,0,0" Name="label4" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="114,30,0,0" Name="cbCurrentInjectionStrategy" VerticalAlignment="Top" Width="346" ItemsSource="{Binding}" SelectionChanged="cbCurrentInjectionStrategy_SelectionChanged" />
-                    <Label Content="Selected Db:" Height="28" HorizontalAlignment="Left" Margin="483,85,0,0" Name="lblSelectedDb" VerticalAlignment="Top" Width="77" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="583,87,0,0" Name="txtSelectedDb" VerticalAlignment="Top" Width="186" LostFocus="txtSelectedDb_LostFocus" />
+                    <TreeView Name="treeViewDb"  HorizontalAlignment="Left" VerticalAlignment="Top" 
+                              Width="211" Height="163" Margin="466,65,0,0">
+                        
+                    </TreeView>
+                    <Label Content="Selected Db:" Height="28" HorizontalAlignment="Left" Margin="683,62,0,0" Name="lblSelectedDb" VerticalAlignment="Top" Width="77" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="683,93,0,0" Name="txtSelectedDb" VerticalAlignment="Top" Width="176" LostFocus="txtSelectedDb_LostFocus" />
                     
-                    <Label Content="Selected Table:" Height="28" HorizontalAlignment="Left" Margin="483,111,0,0" Name="lblSelectedTable" VerticalAlignment="Top" Width="94" />
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,116,100,0" Name="txtSelectedTable" VerticalAlignment="Top" Width="185" LostFocus="txtSelectedTable_LostFocus" />
+                    <Label Content="Selected Table:" Height="28" HorizontalAlignment="Left" Margin="683,122,0,0" Name="lblSelectedTable" VerticalAlignment="Top" Width="94" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,150,7,0" Name="txtSelectedTable" VerticalAlignment="Top" Width="178" LostFocus="txtSelectedTable_LostFocus" />
                     
-                    <Button Content="Stop current action" Height="23" HorizontalAlignment="Left" Margin="647,187,0,0" Name="btnStopCurAction" VerticalAlignment="Top" Width="114" Click="btnStopCurAction_Click" />
+                    <Button Content="Stop current action" Height="23" HorizontalAlignment="Left" Margin="745,176,0,0" Name="btnStopCurAction" VerticalAlignment="Top" Width="114" Click="btnStopCurAction_Click" />
                     <Label Content="Payload" Height="28" HorizontalAlignment="Left" Margin="5,117,0,0" Name="label5" VerticalAlignment="Top" />
                     <ComboBox Height="23" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="114,122,0,0" Name="cbPayloads" VerticalAlignment="Top" Width="346" SelectionChanged="cbPayloads_SelectionChanged" />
                     <Label Content="Exploit" Height="28" HorizontalAlignment="Left" Margin="5,88,0,0" Name="label6" VerticalAlignment="Top" />

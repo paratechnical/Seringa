@@ -566,6 +566,8 @@ namespace Seringa.GUI
 
                 var databaseNames = XmlHelpers.GetValuesFromDocByXpath(mappingFile, "map/db", "user-friendly-name");
 
+                foreach (var databaseName in databaseNames)
+                    treeViewDb.Items.Add(databaseName);
             }
 
         }

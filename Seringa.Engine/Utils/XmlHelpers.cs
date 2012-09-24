@@ -153,7 +153,7 @@ namespace Seringa.Engine.Utils
         public static XElement GetXmlElementViaXpath(XDocument doc, string xpath)
         {
             XElement result = null;
-            //TODO:implement
+            result = doc.Root.XPathSelectElements(xpath).FirstOrDefault();
             return result;
         }
 
