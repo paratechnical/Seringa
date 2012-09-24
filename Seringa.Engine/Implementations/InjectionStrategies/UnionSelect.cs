@@ -37,6 +37,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             {
                 return _nrCols;
             }
+            set
+            {
+                _nrCols = value;
+            }
         }
 
         public int NumberOfResultsPerRequest

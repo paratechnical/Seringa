@@ -213,6 +213,30 @@ namespace Seringa.Engine.Utils
             return result;
         }
 
+        public static T GetAttributeValueFromDoc<T>(string docName, string elemXpath, string attributeName, T defaultValue)
+        {
+            T result = defaultValue;
+            XElement injectionStrategyElem = null;
+            XAttribute injectionTypeNameAttr = null;
+
+            if ((injectionStrategyElem = GetXmlElementViaXpath(docName, elemXpath)) != null)
+                if ((injectionTypeNameAttr = injectionStrategyElem.Attribute(attributeName)) != null)
+                    result = (T)Convert.ChangeType(injectionTypeNameAttr.Value, typeof(T));
+
+            return result;
+        }
+
+        public static T GetElementValueFromDoc<T>(string docName, string elemXpath, T defaultValue)
+        {
+            T result = defaultValue;
+            XElement injectionStrategyElem = null;
+
+            if ((injectionStrategyElem = GetXmlElementViaXpath(docName, elemXpath)) != null)
+                result = (T)Convert.ChangeType(injectionStrategyElem.Value, typeof(T));
+
+            return result;
+        }
+
         public static string GetAttributeValue(XElement element, string name)
         {
             if ((element == null) || (element.Attribute(name).Value == null))

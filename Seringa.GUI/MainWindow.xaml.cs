@@ -13,6 +13,7 @@ using Seringa.GUI.Extensions;
 using Seringa.Engine.DataObjects;
 using Seringa.Engine.Enums;
 using System.IO;
+using System.Xml.Linq;
 
 namespace Seringa.GUI
 {
@@ -542,8 +543,29 @@ namespace Seringa.GUI
                 if(!File.Exists(mappingFile))
                 {
                     MessageBox.Show("Could not load file");
+                    return;
                 }
-                var injectionStrategyElem = XmlHelpers.GetXmlElementViaXpath(mappingFile,"map\injection-strategy");
+
+                string injectionStrategyTypeName = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "map/injection-strategy", "name",
+                                                                                                string.Empty);   
+                
+                int injectionStrategyNrOriginalQueryCols = XmlHelpers.GetAttributeValueFromDoc<int>(mappingFile, "map/injection-strategy", 
+                                                                                                            "nr-columns-original-query",0);
+
+                string vulnerableUrl = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, "map/vulnerable-url", string.Empty);
+
+                IInjectionStrategy strategy =  _injectionStrategies.Where(i => i.GetType().Name == injectionStrategyTypeName).FirstOrDefault();
+                if (strategy != null)
+                    _currentInjectionStrategy = strategy;
+                if (_currentInjectionStrategy != null)
+                {
+                    if (!string.IsNullOrEmpty(vulnerableUrl))
+                        _currentInjectionStrategy.Url = vulnerableUrl;
+                    _currentInjectionStrategy.NrColumnsInOriginalQuery = injectionStrategyNrOriginalQueryCols;
+                }
+
+                var databaseNames = XmlHelpers.GetValuesFromDocByXpath(mappingFile, "map/db", "user-friendly-name");
+
             }
 
         }

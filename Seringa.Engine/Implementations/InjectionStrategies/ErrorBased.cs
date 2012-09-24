@@ -30,6 +30,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         public int NrColumnsInOriginalQuery
         {
             get { return -1; }
+            set { }
         }
 
         public int NumberOfResultsPerRequest
