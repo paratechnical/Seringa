@@ -7,6 +7,8 @@ using System.Xml.XPath;
 using Seringa.Engine.DataObjects;
 using Seringa.Engine.Interfaces;
 using System.IO;
+using System.Xml;
+
 
 namespace Seringa.Engine.Utils
 {

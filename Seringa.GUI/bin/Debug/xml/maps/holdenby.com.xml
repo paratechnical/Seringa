@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map>
-  <vulnerable-url>holdenby.com/news-detail.php?id=5</vulnerable-url>
+  <vulnerable-url>http://holdenby.com/news-detail.php?id=5</vulnerable-url>
   <injection-strategy name="ErrorBased" />
   <dbms>
     <users>
