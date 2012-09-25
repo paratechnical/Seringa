@@ -14,6 +14,9 @@ using Seringa.Engine.DataObjects;
 using Seringa.Engine.Enums;
 using System.IO;
 using System.Xml.Linq;
+using System.Windows.Data;
+using System.Xml;
+using Seringa.GUI.Helpers;
 
 namespace Seringa.GUI
 {
@@ -320,7 +323,8 @@ namespace Seringa.GUI
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
         {
-            CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
+            if(CurrentInjectionStrategy.PayloadDetails != null)
+                CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
         }
 
         private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
@@ -501,7 +505,10 @@ namespace Seringa.GUI
             if (chkMapResultsToFile.IsChecked.Value)
             {
                 string error = string.Empty;
-                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,_currentInjectionStrategy, ref error))
+                
+                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,_currentInjectionStrategy,
+                                                        cbDbms.SelectedValue != null ? cbDbms.SelectedValue.ToString() : string.Empty, 
+                                                        ref error))
                 {
                     _currentInjectionStrategy.MappingFile = mappingFile;
                 }
@@ -546,30 +553,73 @@ namespace Seringa.GUI
                     return;
                 }
 
-                string injectionStrategyTypeName = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "map/injection-strategy", "name",
-                                                                                                string.Empty);   
-                
-                int injectionStrategyNrOriginalQueryCols = XmlHelpers.GetAttributeValueFromDoc<int>(mappingFile, "map/injection-strategy", 
+                string injectionStrategyTypeName = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "/map/injection-strategy", "name",
+                                                                                                string.Empty);
+
+                int injectionStrategyNrOriginalQueryCols = XmlHelpers.GetAttributeValueFromDoc<int>(mappingFile, "/map/injection-strategy", 
                                                                                                             "nr-columns-original-query",0);
 
-                string vulnerableUrl = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, "map/vulnerable-url", string.Empty);
+                string vulnerableUrl = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, "/map/vulnerable-url", string.Empty);
+
+                string dbms = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "/map/dbms", "name",
+                                                                                                string.Empty);
 
                 IInjectionStrategy strategy =  _injectionStrategies.Where(i => i.GetType().Name == injectionStrategyTypeName).FirstOrDefault();
                 if (strategy != null)
-                    _currentInjectionStrategy = strategy;
+                {
+                    cbCurrentInjectionStrategy.SelectedValue = strategy.DisplayName;
+                    UrlOrStrategyChange();
+                }
                 if (_currentInjectionStrategy != null)
                 {
                     if (!string.IsNullOrEmpty(vulnerableUrl))
-                        _currentInjectionStrategy.Url = vulnerableUrl;
+                    {
+                        txtUrl.Text = vulnerableUrl;
+                        UrlOrStrategyChange();
+                    }
                     _currentInjectionStrategy.NrColumnsInOriginalQuery = injectionStrategyNrOriginalQueryCols;
                 }
 
-                var databaseNames = XmlHelpers.GetValuesFromDocByXpath(mappingFile, "map/db", "user-friendly-name");
+                if (!string.IsNullOrEmpty(dbms))
+                    cbDbms.SelectedValue = dbms;
 
-                foreach (var databaseName in databaseNames)
-                    treeViewDb.Items.Add(databaseName);
+                //var databaseNames = XmlHelpers.GetValuesFromDocByXpath(mappingFile, "/db", "user-friendly-name");
+                var databasesElem = XmlHelpers.GetXmlElementViaXpath(mappingFile, "/map/databases");
+                if(databasesElem != null)
+                {
+                    tvDs.Items.Clear();
+                    XmlTreeViewItem treeNode = new XmlTreeViewItem 
+                    {  
+                        //Should be Root
+                        Header = "Databases",
+                        IsExpanded = true
+                    };
+                    tvDs.Items.Add(treeNode);
+
+                    UIHelpers.BuildNodes(treeNode, databasesElem);
+
+                    #region different approach
+                    //    XmlDataProvider dataProvider = this.FindResource("xmlDataProvider") as XmlDataProvider;
+                    //    var bindDoc = new XmlDocument();
+                    //    var reader = databasesElem.CreateReader();
+                    //    reader.MoveToContent();
+                    //    bindDoc.LoadXml(reader.ReadOuterXml());
+                    //    dataProvider.Document = bindDoc;
+                    #endregion different approach
+                }
             }
 
+        }
+
+        private void tvDs_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var item = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
+
+            if(item.TagName == "table")
+            {
+                txtSelectedTable.Text = item.Header.ToString();
+                txtSelectedDb.Text = item.DirectAncestor.Header.ToString();
+            }
         }
 
     }
