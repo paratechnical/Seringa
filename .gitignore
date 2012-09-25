@@ -4,3 +4,16 @@
 /*.manifest
 /*.pdb
 obj/
+/Seringa.GUI/bin/Debug/Seringa.GUI.pdb
+/Seringa.GUI/bin/Debug/Seringa.GUI.vshost.exe
+/Seringa.GUI/bin/Debug/Seringa.GUI.vshost.exe.config
+/Seringa.GUI/bin/Debug/Seringa.GUI.vshost.exe.manifest
+/Seringa.GUI/bin/Debug/Seringa.Engine.dll
+/Seringa.GUI/bin/Debug/Seringa.Engine.pdb
+/Seringa.GUI/bin/Debug/Seringa.GUI.exe
+/Seringa.GUI/bin/Debug/Seringa.GUI.exe.config
+/Seringa.GUI/bin/Debug/Seringa.GUI.exe
+/Seringa.GUI/bin/Debug/Seringa.GUI.vshost.exe
+/Seringa.GUI/bin/Debug/Seringa.Engine.dll
+/Seringa.Engine/bin
+/Seringa.Engine/obj
