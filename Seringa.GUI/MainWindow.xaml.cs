@@ -323,7 +323,8 @@ namespace Seringa.GUI
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
         {
-            CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
+            if(CurrentInjectionStrategy.PayloadDetails != null)
+                CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
         }
 
         private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
@@ -504,7 +505,10 @@ namespace Seringa.GUI
             if (chkMapResultsToFile.IsChecked.Value)
             {
                 string error = string.Empty;
-                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,_currentInjectionStrategy, ref error))
+                
+                if (XmlHelpers.CreateOrLoadMappingFile(mappingFile,_currentInjectionStrategy,
+                                                        cbDbms.SelectedValue != null ? cbDbms.SelectedValue.ToString() : string.Empty, 
+                                                        ref error))
                 {
                     _currentInjectionStrategy.MappingFile = mappingFile;
                 }
@@ -557,15 +561,26 @@ namespace Seringa.GUI
 
                 string vulnerableUrl = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, "/map/vulnerable-url", string.Empty);
 
+                string dbms = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "/map/dbms", "name",
+                                                                                                string.Empty);
+
                 IInjectionStrategy strategy =  _injectionStrategies.Where(i => i.GetType().Name == injectionStrategyTypeName).FirstOrDefault();
                 if (strategy != null)
-                    _currentInjectionStrategy = strategy;
+                {
+                    cbCurrentInjectionStrategy.SelectedValue = strategy.DisplayName;
+                }
                 if (_currentInjectionStrategy != null)
                 {
                     if (!string.IsNullOrEmpty(vulnerableUrl))
-                        _currentInjectionStrategy.Url = vulnerableUrl;
+                    {
+                        txtUrl.Text = vulnerableUrl;
+                        UrlOrStrategyChange();
+                    }
                     _currentInjectionStrategy.NrColumnsInOriginalQuery = injectionStrategyNrOriginalQueryCols;
                 }
+
+                if (!string.IsNullOrEmpty(dbms))
+                    cbDbms.SelectedValue = dbms;
 
                 //var databaseNames = XmlHelpers.GetValuesFromDocByXpath(mappingFile, "/db", "user-friendly-name");
                 var databasesElem = XmlHelpers.GetXmlElementViaXpath(mappingFile, "/map/databases");
@@ -598,13 +613,34 @@ namespace Seringa.GUI
         private void tvDs_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
+            ContextMenu contextMenu = new ContextMenu();
 
             if(item.TagName == "table")
             {
                 txtSelectedTable.Text = item.Header.ToString();
                 txtSelectedDb.Text = item.DirectAncestor.Header.ToString();
             }
+
+            MenuItem menuItem = new MenuItem { Header = "Insert" };
+            menuItem.Click += OptionClick;
+            contextMenu.Items.Add(new MenuItem().Header = "Copy");
+            item.ContextMenu = contextMenu;
         }
+
+
+
+        void OptionClick(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem newChild = new TreeViewItem();
+            TreeViewItem selected = new TreeViewItem();
+            // Unboxing
+            MenuItem menuItem = sender as MenuItem;
+            newChild.Header = menuItem.Header;
+
+            selected = (TreeViewItem)tvDs.SelectedItem;
+            selected.Items.Add(newChild);
+        }
+
 
     }
 }

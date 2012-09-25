@@ -2,7 +2,7 @@
 <map>
   <vulnerable-url>http://holdenby.com/news-detail.php?id=5</vulnerable-url>
   <injection-strategy name="ErrorBased" />
-  <dbms>
+  <dbms name="mysql">
     <users>
       <user>holdenby_db@%</user>
     </users>

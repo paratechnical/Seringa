@@ -1,5 +1,0 @@
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\bin\Release\Seringa.Engine.dll
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\bin\Release\Seringa.Engine.pdb
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Release\ResolveAssemblyReference.cache
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Release\Seringa.Engine.dll
-D:\proiecte\Visual Studio Projects\Seringa\Seringa.Engine\obj\Release\Seringa.Engine.pdb

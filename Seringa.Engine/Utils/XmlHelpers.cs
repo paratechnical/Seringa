@@ -14,7 +14,8 @@ namespace Seringa.Engine.Utils
 {
     public static class XmlHelpers
     {
-        public static bool CreateOrLoadMappingFile(string mappingFile,IInjectionStrategy injectionStrategy, ref string error)
+        public static bool CreateOrLoadMappingFile(string mappingFile,IInjectionStrategy injectionStrategy,
+                                                    string dbmsName, ref string error)
         {
             bool outcome = true;
             XDocument document = null;
@@ -30,8 +31,9 @@ namespace Seringa.Engine.Utils
                 {
                     document = XDocument.Load(mappingFile);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    //TODO: do something
                 }
             }
 
@@ -49,7 +51,7 @@ namespace Seringa.Engine.Utils
                                     new XAttribute("name",injectionStrategy.GetType().Name),
                                     new XAttribute("nr-columns-original-query",injectionStrategy.NrColumnsInOriginalQuery)
                                 }),
-                            new XElement("dbms",
+                            new XElement("dbms",new XAttribute("name",dbmsName),
                                 new XElement("users", "")
                                 ),
                              new XElement("databases", "")
