@@ -17,7 +17,9 @@ namespace Seringa.GUI.Helpers
             {
                 XElement childElement = child as XElement;
                 XmlTreeViewItem childTreeNode = null;
-                
+
+
+
                 childTreeNode = new XmlTreeViewItem
                 {
                     //Get First attribute where it is equal to value
@@ -25,7 +27,9 @@ namespace Seringa.GUI.Helpers
                     TagName = childElement.Name.LocalName,
                     DirectAncestor = treeNode,
                     //Automatically expand elements
-                    IsExpanded = true
+                    IsExpanded = true,
+
+                    
                 };
                 treeNode.Items.Add(childTreeNode);
                 BuildNodes(childTreeNode, childElement);

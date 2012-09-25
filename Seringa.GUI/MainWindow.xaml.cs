@@ -613,13 +613,34 @@ namespace Seringa.GUI
         private void tvDs_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var item = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
+            ContextMenu contextMenu = new ContextMenu();
 
             if(item.TagName == "table")
             {
                 txtSelectedTable.Text = item.Header.ToString();
                 txtSelectedDb.Text = item.DirectAncestor.Header.ToString();
             }
+
+            MenuItem menuItem = new MenuItem { Header = "Insert" };
+            menuItem.Click += OptionClick;
+            contextMenu.Items.Add(new MenuItem().Header = "Copy");
+            item.ContextMenu = contextMenu;
         }
+
+
+
+        void OptionClick(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem newChild = new TreeViewItem();
+            TreeViewItem selected = new TreeViewItem();
+            // Unboxing
+            MenuItem menuItem = sender as MenuItem;
+            newChild.Header = menuItem.Header;
+
+            selected = (TreeViewItem)tvDs.SelectedItem;
+            selected.Items.Add(newChild);
+        }
+
 
     }
 }
