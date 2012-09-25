@@ -568,7 +568,6 @@ namespace Seringa.GUI
                 if (strategy != null)
                 {
                     cbCurrentInjectionStrategy.SelectedValue = strategy.DisplayName;
-                    UrlOrStrategyChange();
                 }
                 if (_currentInjectionStrategy != null)
                 {
