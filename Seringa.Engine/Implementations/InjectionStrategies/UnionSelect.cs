@@ -31,6 +31,18 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         #region IInjectionStrategy
 
+        public IList<int> ColumnIndexes
+        {
+            get
+            {
+                return _visibleColumnIndexes;
+            }
+            set
+            {
+                _visibleColumnIndexes = value;
+            }
+        }
+
         public int NrColumnsInOriginalQuery
         {
             get
@@ -48,6 +60,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             get
             {
                 return _nrVisibleCols;
+            }
+            set
+            {
+                _nrVisibleCols = value;
             }
         }
 
@@ -123,12 +139,18 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                     {
                         _nrCols = i+1;
 
-                        if (!string.IsNullOrEmpty(MappingFile))
-                            XmlHelpers.ChangeMappingFileAttributeValue(MappingFile,"map/injection-strategy","nr-columns-original-query", _nrCols.ToString());
-
                         var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, query, ExploitDetails, DetailedExceptions);
                         _visibleColumnIndexes = stringResults.Where(r => !string.IsNullOrEmpty(r)).Distinct().Select(r => int.Parse(r)).ToList();
                         _nrVisibleCols = _visibleColumnIndexes.Count();
+
+
+                        if (!string.IsNullOrEmpty(MappingFile))
+                        {
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/originalquery", _nrCols.ToString());
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/resultinghtml", _nrVisibleCols.ToString());
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/indexes", ListHelpers.ListToCommaSeparatedValues(_visibleColumnIndexes));
+                        }
+
                         result = true;
                     }
                     else result = false;
@@ -142,7 +164,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         public int GetTotalNoOfCustomQueryResultRows()
         {
-            if (_nrCols == 0)
+            if (_nrCols == 0 || _nrVisibleCols == 0 || _visibleColumnIndexes.Count() == 0)
                 if (!TestIfVulnerable())
                     throw new SqlInjException("Given script is not injectable using current injection strategy");
 
@@ -202,17 +224,16 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             StringBuilder sbCurExploit = new StringBuilder();
             
             int columnIndexCounter = 0;
-            string _previousGeneratedPayload = string.Empty;
+            string generatedPayloadWithLimit = string.Empty;
 
             for (int j = 0; j < _nrCols; j++)
             {
                 if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
-                    generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom + j);
+                    generatedPayloadWithLimit = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom + j);
 
-                if (_visibleColumnIndexes.Contains(j) && _previousGeneratedPayload != generatedPayload)
+                if (_visibleColumnIndexes.Contains(j))
                 {
-                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter], generatedPayload);
-                    _previousGeneratedPayload = generatedPayload;
+                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter], generatedPayloadWithLimit);
                     columnIndexCounter++;
                 }
                 else

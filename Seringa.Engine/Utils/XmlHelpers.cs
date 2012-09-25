@@ -47,10 +47,17 @@ namespace Seringa.Engine.Utils
 
                             new XElement("vulnerable-url", injectionStrategy.Url),
                             new XElement("injection-strategy",
-                                new List<XAttribute>() {
+                                
                                     new XAttribute("name",injectionStrategy.GetType().Name),
-                                    new XAttribute("nr-columns-original-query",injectionStrategy.NrColumnsInOriginalQuery)
-                                }),
+                                    new XElement("columns",
+                                        new List<XElement>() 
+                                        {
+                                            new XElement("originalquery",injectionStrategy.NrColumnsInOriginalQuery),
+                                            new XElement("resultinghtml",injectionStrategy.NumberOfResultsPerRequest),
+                                            new XElement("indexes",
+                                                ListHelpers.ListToCommaSeparatedValues(injectionStrategy.ColumnIndexes)),
+                                        })),
+                                
                             new XElement("dbms",new XAttribute("name",dbmsName),
                                 new XElement("users", "")
                                 ),
@@ -94,6 +101,30 @@ namespace Seringa.Engine.Utils
             if(!string.IsNullOrEmpty(payloadDetails.AttributeToMapTo))
                 result += "[@"+payloadDetails.AttributeToMapTo+"='" + discoveredValue + "']";
             return result;
+        }
+
+        public static void ChangeMappingFileElementValue(string mappingFile, string elementXpath, string discoveredValue)
+        {
+            XDocument document = XDocument.Load(mappingFile);
+            bool save = true;
+
+            var element = document.XPathSelectElement(elementXpath);
+
+            if (element != null)
+                element.Value = discoveredValue;
+            else
+            {
+                element = document.XPathSelectElement(elementXpath.Substring(0, elementXpath.LastIndexOf("/")));
+                if (element != null)
+                {
+                    int last = elementXpath.LastIndexOf("/");
+                    element.Add(new XElement(elementXpath.Substring(last, elementXpath.Length - last),discoveredValue));
+                }
+                else
+                    save = false;
+            }
+            if (save)
+                document.Save(mappingFile);
         }
 
         public static void ChangeMappingFileAttributeValue(string mappingFile, string elementXpath,string attributeName, string discoveredValue)

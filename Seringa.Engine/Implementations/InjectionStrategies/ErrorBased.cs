@@ -36,6 +36,12 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         public int NumberOfResultsPerRequest
         {
             get { return 1;}
+            set { }
+        }
+        public IList<int> ColumnIndexes
+        {
+            get { return null; }
+            set {}
         }
 
         public string MappingFile { get; set; }

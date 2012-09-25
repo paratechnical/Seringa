@@ -1,11 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map>
   <vulnerable-url>http://www.ohioaprs.net/ar902/detail.php?id=169</vulnerable-url>
-  <injection-strategy name="UnionSelect" nr-columns-original-query="15" />
-  <dbms>
-    <users>
-      <user>ar902@173.236.128.0/255.255.128.0</user>
-    </users>
+  <injection-strategy name="UnionSelect">
+    <columns>
+      <originalquery>15</originalquery>
+      <resultinghtml>15</resultinghtml>
+      <indexes>0,1,2,3,14,13,4,5,11,12,10,6,7,8,9</indexes>
+    </columns>
+  </injection-strategy>
+  <dbms name="mysql">
+    <users></users>
   </dbms>
   <databases></databases>
 </map>

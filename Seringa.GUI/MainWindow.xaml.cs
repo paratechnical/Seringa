@@ -330,8 +330,8 @@ namespace Seringa.GUI
         private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
         {
             txtCustomQueryResult.Clear();
-
             DisableAll();
+
             var th = new Thread(() =>
             {
                 string result = string.Empty;
@@ -556,8 +556,15 @@ namespace Seringa.GUI
                 string injectionStrategyTypeName = XmlHelpers.GetAttributeValueFromDoc<string>(mappingFile, "/map/injection-strategy", "name",
                                                                                                 string.Empty);
 
-                int injectionStrategyNrOriginalQueryCols = XmlHelpers.GetAttributeValueFromDoc<int>(mappingFile, "/map/injection-strategy", 
-                                                                                                            "nr-columns-original-query",0);
+                int injectionStrategyNrOriginalQueryCols = XmlHelpers.GetElementValueFromDoc<int>(mappingFile, 
+                                                                "/map/injection-strategy/columns/originalquery",0);
+
+                int injectionStrategyNrHtmlCols = XmlHelpers.GetElementValueFromDoc<int>(mappingFile, 
+                                                                "/map/injection-strategy/columns/resultinghtml",0);
+
+                string injectionStrategyColumnIndexes = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, 
+                                                                "/map/injection-strategy/columns/indexes",string.Empty);
+
 
                 string vulnerableUrl = XmlHelpers.GetElementValueFromDoc<string>(mappingFile, "/map/vulnerable-url", string.Empty);
 
@@ -577,6 +584,8 @@ namespace Seringa.GUI
                         UrlOrStrategyChange();
                     }
                     _currentInjectionStrategy.NrColumnsInOriginalQuery = injectionStrategyNrOriginalQueryCols;
+                    _currentInjectionStrategy.NumberOfResultsPerRequest = injectionStrategyNrHtmlCols;
+                    _currentInjectionStrategy.ColumnIndexes = ListHelpers.CommaSeparatedValuesToList<int>(injectionStrategyColumnIndexes);
                 }
 
                 if (!string.IsNullOrEmpty(dbms))
