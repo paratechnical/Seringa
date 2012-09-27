@@ -11,9 +11,10 @@ namespace Seringa.Engine.Utils
         {
             IList<T> results = new List<T>();
 
-            IEnumerable<string> values = (IEnumerable<string>)csv.Split(',').ToList();
+            List<string> values = csv.Split(',').ToList();
             if(values != null)
-                results = values.Cast<T>().ToList();
+                results = values.ConvertAll<T>(new Converter<string, T>(StringToType<T>));
+
 
             return results;
         }
@@ -24,6 +25,13 @@ namespace Seringa.Engine.Utils
             result = string.Join(",", list.ToArray());
             
             return result;
+        }
+
+        public static T StringToType<T>(string input)
+        {
+            T output = default(T);
+            output = (T)Convert.ChangeType(input, typeof(T));
+            return output;
         }
     }
 }

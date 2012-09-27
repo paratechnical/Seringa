@@ -11,5 +11,8 @@
   <dbms name="mysql">
     <users></users>
   </dbms>
-  <databases></databases>
+  <databases>
+    <db name="information_schema" />
+    <db name="ar902" />
+  </databases>
 </map>

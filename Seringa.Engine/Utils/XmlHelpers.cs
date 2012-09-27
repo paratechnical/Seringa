@@ -157,8 +157,11 @@ namespace Seringa.Engine.Utils
                 document.Save(mappingFile);
         }
 
-        public static void SaveToMappingFile(string mappingFile,PayloadDetails payloadDetails,string discoveredValue, IInjectionStrategy strategy)
+        public static bool SaveToMappingFile(string mappingFile,PayloadDetails payloadDetails,string discoveredValue, IInjectionStrategy strategy)
         {
+            if (string.IsNullOrEmpty(payloadDetails.NodeToMapTo))
+                return false;
+
             XDocument document = XDocument.Load(mappingFile);
 
             var element = document.XPathSelectElement(CreateProperMapToNodeFinderXpath(payloadDetails, strategy));
@@ -174,7 +177,9 @@ namespace Seringa.Engine.Utils
 
                 //For simplicity, I just use the Save() method to overwrite the current .xml file
                 document.Save(mappingFile);
+                return true;
             }
+            return false;
         }
 
         public static XElement GetXmlElementViaXpath(string docName, string xpath)

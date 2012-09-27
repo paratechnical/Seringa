@@ -272,7 +272,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
                     if (!string.IsNullOrEmpty(MappingFile))
                         XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, actualValue, this);
+
                     sbResult.Append(actualValue);
+                    sbResult.Append(Environment.NewLine);
                 }
 
                 if (columnsProcessed.Count == _visibleColumnIndexes.Count)

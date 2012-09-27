@@ -71,19 +71,29 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         }
 
 
-        public int GetTotalNoOfCustomQueryResultRows()
+        public int GetTotalNoOfCustomQueryResultRows(out bool reloadMappingFile)
         {
+
             int count = 0;
             string generatedpayload = string.Empty;
 
-            if(PayloadDetails == null)
+            if (PayloadDetails == null)
+            {
+                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 0;
+            }
 
-            if(string.IsNullOrEmpty(PayloadDetails.Payload))
+            if (string.IsNullOrEmpty(PayloadDetails.Payload))
+            {
+                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 0;
+            }
 
-            if(PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Single)
+            if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Single)
+            {
+                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 1;
+            }
 
             generatedpayload = PayloadDetails.Payload;
 
@@ -97,6 +107,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
             int.TryParse(countString, out count);
+
+            reloadMappingFile = !string.IsNullOrEmpty(MappingFile) && count > 0;
+
             return count;
         }
 
@@ -117,10 +130,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
 
-            if (!string.IsNullOrEmpty(MappingFile)&&!string.IsNullOrEmpty(result))
-            {
-                XmlHelpers.SaveToMappingFile(MappingFile,PayloadDetails,result,this);
-            }
+            if (!string.IsNullOrEmpty(MappingFile) && !string.IsNullOrEmpty(result))
+                XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, result, this);
 
             return result;
         }
