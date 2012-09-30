@@ -294,5 +294,21 @@ namespace Seringa.Engine.Utils
             }
             return result;
         }
+
+        public static string GetLastTagFromXpath(string xpath)
+        {
+            string result = string.Empty;
+
+            int lastSlash = xpath.LastIndexOf("/");
+            int lastParanthesis = xpath.LastIndexOf("[");
+
+            if (lastSlash > -1)
+            {
+                int length = ((lastParanthesis > -1)?lastParanthesis:xpath.Length) - lastSlash;
+
+                result = xpath.Substring(lastSlash, length);
+            }
+            return result;
+        }
     }
 }

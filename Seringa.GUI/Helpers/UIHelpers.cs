@@ -11,16 +11,78 @@ namespace Seringa.GUI.Helpers
     public static class UIHelpers
     {
 
+        public static XmlTreeViewItem ClearTreeView(TreeView tv)
+        {
+            tv.Items.Clear();
+            XmlTreeViewItem treeNode = new XmlTreeViewItem
+            {
+                //Should be Root
+                Header = "Databases",
+                IsExpanded = true
+            };
+            tv.Items.Add(treeNode);
+
+            return treeNode;
+        }
+
+        public static XmlTreeViewItem GetTreeViewRoot(TreeView tv)
+        {
+            XmlTreeViewItem node = (XmlTreeViewItem)tv.SelectedItem;
+
+            while (node.Parent != null)
+            {
+                node = (XmlTreeViewItem)node.Parent;
+            }
+
+            return node;
+        }
+
+        public static XmlTreeViewItem GetXmlTreeViewItem(TreeView tv,string tagName, string name)
+        {
+            XmlTreeViewItem root = GetTreeViewRoot(tv);
+            return GetXmlTreeViewItemRec(root, tagName, name);
+        }
+
+        public static XmlTreeViewItem GetXmlTreeViewItemRec(TreeViewItem node, string tagName, string name)
+        {
+            foreach (var item in node.Items)
+            {
+                if (((XmlTreeViewItem)item).TagName == tagName && ((XmlTreeViewItem)item).Name == name)
+                    return ((XmlTreeViewItem)item);
+                GetXmlTreeViewItemRec(((XmlTreeViewItem)item), tagName, name);
+            }
+
+            return null;
+        }
+
+        
+
+        public static void XmlTreeViewAdd(TreeViewItem afterItem, string tagName, string value)
+        {
+            XmlTreeViewItem treeNode = new XmlTreeViewItem
+            {
+                //Get First attribute where it is equal to value
+                Header = value,
+                TagName = tagName,
+                DirectAncestor = afterItem,
+                //Automatically expand elements
+                IsExpanded = true,
+            };
+
+            XmlTreeViewAdd(afterItem, treeNode);
+        }
+
+        public static void XmlTreeViewAdd(TreeViewItem afterItem, TreeViewItem item)
+        {
+            afterItem.Items.Add(item);
+        }
+
         public static void BuildNodes(XmlTreeViewItem treeNode, XElement element)
         {
             foreach (XNode child in element.Nodes())
             {
                 XElement childElement = child as XElement;
-                XmlTreeViewItem childTreeNode = null;
-
-
-
-                childTreeNode = new XmlTreeViewItem
+                XmlTreeViewItem childTreeNode = new XmlTreeViewItem
                 {
                     //Get First attribute where it is equal to value
                     Header = childElement.Attributes().First(s => s.Name == "name").Value,
@@ -28,8 +90,6 @@ namespace Seringa.GUI.Helpers
                     DirectAncestor = treeNode,
                     //Automatically expand elements
                     IsExpanded = true,
-
-                    
                 };
                 treeNode.Items.Add(childTreeNode);
                 BuildNodes(childTreeNode, childElement);

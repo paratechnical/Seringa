@@ -71,29 +71,20 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
         }
 
 
-        public int GetTotalNoOfCustomQueryResultRows(out bool reloadMappingFile)
+        public int GetTotalNoOfCustomQueryResultRows()
         {
 
             int count = 0;
             string generatedpayload = string.Empty;
 
             if (PayloadDetails == null)
-            {
-                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 0;
-            }
 
             if (string.IsNullOrEmpty(PayloadDetails.Payload))
-            {
-                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 0;
-            }
 
             if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Single)
-            {
-                reloadMappingFile = !string.IsNullOrEmpty(MappingFile);
                 return 1;
-            }
 
             generatedpayload = PayloadDetails.Payload;
 
@@ -107,8 +98,6 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             string countString = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
             int.TryParse(countString, out count);
-
-            reloadMappingFile = !string.IsNullOrEmpty(MappingFile) && count > 0;
 
             return count;
         }

@@ -69,7 +69,7 @@
     <Compile Include="XmlDataBinders\PayloadDataBinder.cs" />
     <Compile Include="Static\GeneralPayloads.cs" />
     <Compile Include="Utils\EncodingHelper.cs" />
-    <Compile Include="Utils\Extensions\Extensions.cs" />
+    <Compile Include="Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Utils\ProxySocket\AuthMethod.cs" />
     <Compile Include="Utils\ProxySocket\AuthNone.cs" />
     <Compile Include="Utils\ProxySocket\AuthUserPass.cs" />

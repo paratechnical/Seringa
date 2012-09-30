@@ -97,7 +97,7 @@ namespace Seringa.GUI
         private void ClearAll()
         {
             txtCustomQueryResult.Text = string.Empty;
-            
+            tvDs.Items.Clear();
         }
 
         private void EnableAllFromOtherThread()
@@ -122,6 +122,7 @@ namespace Seringa.GUI
 
         private void EnableAll()
         {
+            //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = true;
             //cbDbms.IsEnabled = true;
             //cbPayloads.IsEnabled = true;
@@ -130,6 +131,7 @@ namespace Seringa.GUI
 
         private void DisableAll()
         {
+            //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = false;
             //cbDbms.IsEnabled = false;
             //cbPayloads.IsEnabled = false;
@@ -368,6 +370,37 @@ namespace Seringa.GUI
                     }
                     if (!string.IsNullOrEmpty(result))
                     {
+                        #region map to ui
+
+                        List<string> valuesToInsert = new List<string>();
+                        if (result.Contains(Environment.NewLine))
+                            valuesToInsert.AddRange(result.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                        else
+                            valuesToInsert.Add(result);
+
+                        if (_currentInjectionStrategy.PayloadDetails != null && 
+                            !string.IsNullOrEmpty(_currentInjectionStrategy.PayloadDetails.NodeToMapTo))
+                        {
+                            var xpath = XmlHelpers.CreateProperMapToNodeFinderXpath(_currentInjectionStrategy.PayloadDetails, _currentInjectionStrategy);
+                            var tagName = XmlHelpers.GetLastTagFromXpath(xpath);
+
+                            XmlTreeViewItem newChildItem = null;
+                            XmlTreeViewItem oldParentItem = null;
+
+                            if (tagName == "db")//@TODO: no more hardconding
+                                oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
+                            else if (tagName == "table")//@TODO: no more hardconding
+                                oldParentItem = (XmlTreeViewItem)tvDs.SelectedItem;
+
+                            foreach(var value in valuesToInsert)
+                            {
+                                newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, tagName, value);
+                                if (newChildItem != null)
+                                    UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
+                            }
+                        }
+                        #endregion map to ui
+
                         txtCustomQueryResult.Dispatcher.Invoke(
                                 System.Windows.Threading.DispatcherPriority.Normal,
                                 new Action(
@@ -595,16 +628,9 @@ namespace Seringa.GUI
                 var databasesElem = XmlHelpers.GetXmlElementViaXpath(mappingFile, "/map/databases");
                 if(databasesElem != null)
                 {
-                    tvDs.Items.Clear();
-                    XmlTreeViewItem treeNode = new XmlTreeViewItem 
-                    {  
-                        //Should be Root
-                        Header = "Databases",
-                        IsExpanded = true
-                    };
-                    tvDs.Items.Add(treeNode);
+                    var newRootElement = UIHelpers.ClearTreeView(tvDs);
 
-                    UIHelpers.BuildNodes(treeNode, databasesElem);
+                    UIHelpers.BuildNodes(newRootElement, databasesElem);
 
                     #region different approach
                     //    XmlDataProvider dataProvider = this.FindResource("xmlDataProvider") as XmlDataProvider;

@@ -8,7 +8,7 @@ namespace Seringa.GUI.Extensions
 {
     public static  class Extensions
     {
-        #region Extensions
+        #region StringExtensions
         public static void AddOnUI<T>(this ICollection<T> collection, T item)
         {
             Action<T> addMethod = collection.Add;
@@ -21,6 +21,6 @@ namespace Seringa.GUI.Extensions
             return Enum.GetValues(type).Cast<object>().ToDictionary(e => (int)e, e => Enum.GetName(type, e));
         }
 
-        #endregion Extensions
+        #endregion StringExtensions
     }
 }

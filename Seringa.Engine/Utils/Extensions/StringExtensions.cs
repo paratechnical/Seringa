@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Seringa.Engine.Utils.Extensions
 {
-    public static class Extensions
+    public static class StringExtensions
     {
         public static bool Contains(this string source, string toCheck, StringComparison comp)
         {
