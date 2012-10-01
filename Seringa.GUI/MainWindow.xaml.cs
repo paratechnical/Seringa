@@ -90,14 +90,14 @@ namespace Seringa.GUI
             //lbTables.ItemsSource = TableNames;
             //lbColumns.ItemsSource = ColumnNames;
             _currentIpObtainerStrategy = new Seringa.Engine.Implementations.IPObtainers.CMyIPObtainerStrategy();
-
+            UIHelpers.ClearTreeView(tvDs);
             cmbProxyType.SelectedValue = ProxyType.None;
         }
 
         private void ClearAll()
         {
             txtCustomQueryResult.Text = string.Empty;
-            tvDs.Items.Clear();
+            UIHelpers.ClearTreeView(tvDs);
         }
 
         private void EnableAllFromOtherThread()
@@ -387,16 +387,36 @@ namespace Seringa.GUI
                             XmlTreeViewItem newChildItem = null;
                             XmlTreeViewItem oldParentItem = null;
 
-                            if (tagName == "db")//@TODO: no more hardconding
+                            if (tagName == "databases")//@TODO: no more hardconding
                                 oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
-                            else if (tagName == "table")//@TODO: no more hardconding
+                            else if (tagName == "db")//@TODO: no more hardconding
                                 oldParentItem = (XmlTreeViewItem)tvDs.SelectedItem;
 
                             foreach(var value in valuesToInsert)
                             {
-                                newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, tagName, value);
-                                if (newChildItem != null)
-                                    UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
+                                if (!string.IsNullOrEmpty(value))
+                                {
+                                    newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, tagName, value);
+                                    if (newChildItem == null)
+                                    {
+                                        //XmlTreeViewItem treeNode = new XmlTreeViewItem
+                                        //{
+                                        //    Header = value,
+                                        //    TagName = tagName,
+                                        //    IsExpanded = true,
+                                        //};
+                                        //UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
+                                        //oldParentItem.Items.Add(treeNode);
+                                        tvDs.Dispatcher.Invoke(
+                                            System.Windows.Threading.DispatcherPriority.Normal,
+                                            new Action(
+                                            delegate()
+                                            {
+                                                UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
+                                            }
+                                        ));
+                                    }
+                                }
                             }
                         }
                         #endregion map to ui
@@ -653,8 +673,14 @@ namespace Seringa.GUI
             if(item.TagName == "table")
             {
                 txtSelectedTable.Text = item.Header.ToString();
-                txtSelectedDb.Text = item.DirectAncestor.Header.ToString();
+                txtSelectedDb.Text = ((XmlTreeViewItem)item.Parent).Header.ToString();
             }
+            else if (item.TagName == "db")
+            {
+                txtSelectedTable.Text = string.Empty;
+                txtSelectedDb.Text = item.Header.ToString();
+            }
+
 
             MenuItem menuItem = new MenuItem { Header = "Insert" };
             menuItem.Click += OptionClick;

@@ -11,10 +11,16 @@ namespace Seringa.Engine.Utils
         {
             IList<T> results = new List<T>();
 
-            List<string> values = csv.Split(',').ToList();
-            if(values != null)
-                results = values.ConvertAll<T>(new Converter<string, T>(StringToType<T>));
-
+            if (!string.IsNullOrEmpty(csv))
+            {
+                List<string> values = new List<string>();
+                if (csv.Contains(","))
+                    values = csv.Split(',').ToList();
+                else
+                    values.Add(csv);
+                if (values.Count > 0)
+                    results = values.ConvertAll<T>(new Converter<string, T>(StringToType<T>));
+            }
 
             return results;
         }

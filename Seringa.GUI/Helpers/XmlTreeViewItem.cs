@@ -8,7 +8,6 @@ namespace Seringa.GUI.Helpers
 {
     public class XmlTreeViewItem : TreeViewItem
     {
-        public TreeViewItem DirectAncestor { get; set; }
         public string TagName { get; set; }
     }
 }

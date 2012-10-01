@@ -299,7 +299,7 @@ namespace Seringa.Engine.Utils
         {
             string result = string.Empty;
 
-            int lastSlash = xpath.LastIndexOf("/");
+            int lastSlash = xpath.LastIndexOf("/")+1;
             int lastParanthesis = xpath.LastIndexOf("[");
 
             if (lastSlash > -1)

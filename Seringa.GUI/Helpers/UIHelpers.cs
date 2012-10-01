@@ -27,12 +27,12 @@ namespace Seringa.GUI.Helpers
 
         public static XmlTreeViewItem GetTreeViewRoot(TreeView tv)
         {
-            XmlTreeViewItem node = (XmlTreeViewItem)tv.SelectedItem;
-
-            while (node.Parent != null)
-            {
-                node = (XmlTreeViewItem)node.Parent;
-            }
+            XmlTreeViewItem node = (XmlTreeViewItem)tv.Items[0];
+            if(node != null)
+                while (node.Parent != null && node.Parent.GetType() != typeof(TreeView))
+                {
+                    node = (XmlTreeViewItem)node.Parent;
+                }
 
             return node;
         }
@@ -61,11 +61,8 @@ namespace Seringa.GUI.Helpers
         {
             XmlTreeViewItem treeNode = new XmlTreeViewItem
             {
-                //Get First attribute where it is equal to value
                 Header = value,
                 TagName = tagName,
-                DirectAncestor = afterItem,
-                //Automatically expand elements
                 IsExpanded = true,
             };
 
@@ -87,7 +84,6 @@ namespace Seringa.GUI.Helpers
                     //Get First attribute where it is equal to value
                     Header = childElement.Attributes().First(s => s.Name == "name").Value,
                     TagName = childElement.Name.LocalName,
-                    DirectAncestor = treeNode,
                     //Automatically expand elements
                     IsExpanded = true,
                 };
