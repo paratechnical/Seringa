@@ -44,6 +44,7 @@ namespace Seringa.GUI
     {
         #region Private
         #region Fields
+        private XmlTreeViewItem _selectedTreeViewItem = null;
         private bool _stopCurrentAction = false;
         private IList<IInjectionStrategy> _injectionStrategies = null;
         private IList<Type> _concreteInjectionStrategyTypes = null;
@@ -296,15 +297,15 @@ namespace Seringa.GUI
         }
 
 
-        private void txtSelectedDb_LostFocus(object sender, RoutedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text;
-        }
+        //private void txtSelectedDb_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    CurrentInjectionStrategy.SelectedDb = txtSelectedDb.Text;
+        //}
 
-        private void txtSelectedTable_LostFocus(object sender, RoutedEventArgs e)
-        {
-            CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text;
-        }
+        //private void txtSelectedTable_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    CurrentInjectionStrategy.SelectedTable = txtSelectedTable.Text;
+        //}
 
 
         private void txtUrl_GotFocus(object sender, RoutedEventArgs e)
@@ -382,6 +383,8 @@ namespace Seringa.GUI
                             !string.IsNullOrEmpty(_currentInjectionStrategy.PayloadDetails.NodeToMapTo))
                         {
                             var xpath = XmlHelpers.CreateProperMapToNodeFinderXpath(_currentInjectionStrategy.PayloadDetails, _currentInjectionStrategy);
+                            //var xpath = XmlHelpers.CreateProperMapToNodeCreatorXpath(_currentInjectionStrategy.PayloadDetails,
+                            //    result);
                             var tagName = XmlHelpers.GetLastTagFromXpath(xpath);
 
                             XmlTreeViewItem newChildItem = null;
@@ -390,29 +393,30 @@ namespace Seringa.GUI
                             if (tagName == "databases")//@TODO: no more hardconding
                                 oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
                             else if (tagName == "db")//@TODO: no more hardconding
-                                oldParentItem = (XmlTreeViewItem)tvDs.SelectedItem;
+                                oldParentItem = _selectedTreeViewItem;
 
                             foreach(var value in valuesToInsert)
                             {
                                 if (!string.IsNullOrEmpty(value))
                                 {
-                                    newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, tagName, value);
+                                    tvDs.Dispatcher.Invoke(
+                                            System.Windows.Threading.DispatcherPriority.Normal,
+                                            new Action(
+                                            delegate()
+                                            {
+                                                newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, 
+                                                                                                _currentInjectionStrategy.PayloadDetails.NodeToMapTo, 
+                                                                                                value);
+                                            }
+                                        ));
                                     if (newChildItem == null)
                                     {
-                                        //XmlTreeViewItem treeNode = new XmlTreeViewItem
-                                        //{
-                                        //    Header = value,
-                                        //    TagName = tagName,
-                                        //    IsExpanded = true,
-                                        //};
-                                        //UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
-                                        //oldParentItem.Items.Add(treeNode);
                                         tvDs.Dispatcher.Invoke(
                                             System.Windows.Threading.DispatcherPriority.Normal,
                                             new Action(
                                             delegate()
                                             {
-                                                UIHelpers.XmlTreeViewAdd(oldParentItem, tagName, value);
+                                                UIHelpers.XmlTreeViewAdd(oldParentItem, _currentInjectionStrategy.PayloadDetails.NodeToMapTo, value);
                                             }
                                         ));
                                     }
@@ -667,25 +671,26 @@ namespace Seringa.GUI
 
         private void tvDs_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var item = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
+            _selectedTreeViewItem = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
             ContextMenu contextMenu = new ContextMenu();
 
-            if(item.TagName == "table")
+            if (_selectedTreeViewItem.TagName == "table")
             {
-                txtSelectedTable.Text = item.Header.ToString();
-                txtSelectedDb.Text = ((XmlTreeViewItem)item.Parent).Header.ToString();
+                _currentInjectionStrategy.SelectedTable = _selectedTreeViewItem.Header.ToString();
+                _currentInjectionStrategy.SelectedDb = ((XmlTreeViewItem)_selectedTreeViewItem.Parent).Header.ToString();
+                
             }
-            else if (item.TagName == "db")
+            else if (_selectedTreeViewItem.TagName == "db")
             {
-                txtSelectedTable.Text = string.Empty;
-                txtSelectedDb.Text = item.Header.ToString();
+                _currentInjectionStrategy.SelectedTable = string.Empty;
+                _currentInjectionStrategy.SelectedDb = _selectedTreeViewItem.Header.ToString();
             }
 
 
             MenuItem menuItem = new MenuItem { Header = "Insert" };
             menuItem.Click += OptionClick;
             contextMenu.Items.Add(new MenuItem().Header = "Copy");
-            item.ContextMenu = contextMenu;
+            _selectedTreeViewItem.ContextMenu = contextMenu;
         }
 
 

@@ -13,6 +13,8 @@
   </dbms>
   <databases>
     <db name="information_schema" />
-    <db name="ar902" />
+    <db name="ar902">
+      <table name="repeaters" />
+    </db>
   </databases>
 </map>
