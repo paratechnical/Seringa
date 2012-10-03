@@ -14,7 +14,24 @@
   <databases>
     <db name="information_schema" />
     <db name="ar902">
-      <table name="repeaters" />
+      <table name="repeaters">
+        <column name="id" />
+        <column name="callsign" />
+        <column name="input_freq" />
+        <column name="output_freq" />
+        <column name="trustee_name" />
+        <column name="email" />
+        <column name="tone" />
+        <column name="city" />
+        <column name="output_power" />
+        <column name="altitude_asl" />
+        <column name="coord_long" />
+        <column name="state" />
+        <column name="notes" />
+        <column name="club" />
+        <column name="coord_lat" />
+        <column name="trustee_call" />
+      </table>
     </db>
   </databases>
 </map>

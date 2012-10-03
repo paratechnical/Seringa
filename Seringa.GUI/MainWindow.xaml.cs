@@ -326,8 +326,16 @@ namespace Seringa.GUI
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(CurrentInjectionStrategy.PayloadDetails != null)
+            if (CurrentInjectionStrategy != null && !string.IsNullOrEmpty(txtCustomQuery.Text))
+            {
+                CurrentInjectionStrategy.PayloadDetails = new PayloadDetails();
                 CurrentInjectionStrategy.PayloadDetails.Payload = txtCustomQuery.Text.Trim();
+                CurrentInjectionStrategy.PayloadDetails.Dbms = cbDbms.SelectedValue.ToString();
+                //can't tell if a new user provided query is expected to yield one or more results so we assume it yields multiple
+                //results
+                CurrentInjectionStrategy.PayloadDetails.ExpectedResultType = ExpectedResultType.Multiple;
+                cbPayloads.SelectedItem = null;
+            }
         }
 
         private void btnExecuteCustomQuery_Click(object sender, RoutedEventArgs e)
@@ -392,7 +400,7 @@ namespace Seringa.GUI
 
                             if (tagName == "databases")//@TODO: no more hardconding
                                 oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
-                            else if (tagName == "db")//@TODO: no more hardconding
+                            else if (tagName == "db" || tagName == "table")//@TODO: no more hardconding
                                 oldParentItem = _selectedTreeViewItem;
 
                             foreach(var value in valuesToInsert)
@@ -531,13 +539,17 @@ namespace Seringa.GUI
         private void cbPayloads_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PayloadDetails pd = null;
-            pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(FileHelpers.GetCurrentDirectory()+"\\xml\\payloads.xml",
-                                                            "payload",
-                                                            cbPayloads.SelectedItem.ToString());
-            if (_currentInjectionStrategy != null && pd != null)
+
+            if (cbPayloads.SelectedItem != null)
             {
-                _currentInjectionStrategy.PayloadDetails = pd;
-                txtCustomQuery.Text = pd.Payload;
+                pd = XmlHelpers.GetObjectFromXml<PayloadDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\payloads.xml",
+                                                                "payload",
+                                                                cbPayloads.SelectedItem.ToString());
+                if (_currentInjectionStrategy != null && pd != null)
+                {
+                    _currentInjectionStrategy.PayloadDetails = pd;
+                    txtCustomQuery.Text = pd.Payload;
+                }
             }
         }
 

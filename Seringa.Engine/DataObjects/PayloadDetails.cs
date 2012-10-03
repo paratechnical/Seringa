@@ -21,6 +21,10 @@ namespace Seringa.Engine.DataObjects
         public string MapToParams { get; set; }
         public string AttributeToMapTo { get; set; }
 
+        public PayloadDetails()
+        {
+        }
+
         public PayloadDetails(XElement payload)
         {
             ParentNodeToMapTo = XmlHelpers.GetAttributeValue<string>(payload, "map-to-parent", string.Empty);

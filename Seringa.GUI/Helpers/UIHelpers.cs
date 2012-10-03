@@ -47,7 +47,7 @@ namespace Seringa.GUI.Helpers
         {
             foreach (var item in node.Items)
             {
-                if (((XmlTreeViewItem)item).TagName == tagName && ((XmlTreeViewItem)item).Name == name)
+                if (((XmlTreeViewItem)item).TagName == tagName && ((XmlTreeViewItem)item).Header.ToString() == name)
                     return ((XmlTreeViewItem)item);
                 GetXmlTreeViewItemRec(((XmlTreeViewItem)item), tagName, name);
             }
