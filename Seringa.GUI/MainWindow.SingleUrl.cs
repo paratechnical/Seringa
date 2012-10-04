@@ -17,15 +17,63 @@ using System.Xml.Linq;
 using System.Windows.Data;
 using System.Xml;
 using Seringa.GUI.Helpers;
+using Seringa.GUI.Static;
 
 namespace Seringa.GUI
 {
     public partial class MainWindow
     {
+        private void btnTest_Click(object sender, RoutedEventArgs e)
+        {
+            ClearAll();
+            DisableAll();
+
+
+            var th = new Thread(() =>
+            {
+                bool urlVuln = false;
+                string msg = string.Format(GeneralMessages.NotVulnerable, _currentInjectionStrategy.DisplayName);
+
+                try
+                {
+                    urlVuln = _currentInjectionStrategy.TestIfVulnerable();
+                }
+                catch (Exception ex)
+                {
+                    txtCustomQueryResult.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    msg += " (Exception: "+ex.Message+")";
+                                }
+                            ));
+                }
+                    
+                    
+                if (urlVuln)
+                    msg = string.Format(GeneralMessages.Vulnerable, _currentInjectionStrategy.DisplayName);
+                
+                txtCustomQueryResult.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                delegate()
+                                {
+                                    txtCustomQueryResult.Text = msg;
+                                }
+                            ));
+
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            th.Start();
+        }
+
         private void cbCurrentInjectionStrategy_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             _currentInjectionStrategy = (IInjectionStrategy)_injectionStrategies[cbCurrentInjectionStrategy.SelectedIndex];
             UrlOrStrategyChange();
+            //ParameterChange();
         }
 
         private void txtUrl_GotFocus(object sender, RoutedEventArgs e)
@@ -36,6 +84,7 @@ namespace Seringa.GUI
         private void txtUrl_LostFocus(object sender, RoutedEventArgs e)
         {
             UrlOrStrategyChange();
+            //ParameterChange();
         }
 
         private void btnStopCurAction_Click(object sender, RoutedEventArgs e)
@@ -183,7 +232,10 @@ namespace Seringa.GUI
                                                             "exploit",
                                                             cbExploits.SelectedValue != null ? cbExploits.SelectedValue.ToString() : string.Empty);
             if (_currentInjectionStrategy != null && ed != null)
+            {
                 _currentInjectionStrategy.ExploitDetails = ed;
+                ParameterChange();
+            }
         }
 
         private void cbPayloads_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -224,10 +276,10 @@ namespace Seringa.GUI
             if (chkMapResultsToFile.IsChecked.Value)
             {
                 string error = string.Empty;
-
+                XDocument doc = null;
                 if (XmlHelpers.CreateOrLoadMappingFile(mappingFile, _currentInjectionStrategy,
                                                         cbDbms.SelectedValue != null ? cbDbms.SelectedValue.ToString() : string.Empty,
-                                                        ref error))
+                                                        ref error,out doc))
                 {
                     _currentInjectionStrategy.MappingFile = mappingFile;
                 }
@@ -300,6 +352,7 @@ namespace Seringa.GUI
                     {
                         txtUrl.Text = vulnerableUrl;
                         UrlOrStrategyChange();
+                        //ParameterChange();
                     }
                     _currentInjectionStrategy.NrColumnsInOriginalQuery = injectionStrategyNrOriginalQueryCols;
                     _currentInjectionStrategy.NumberOfResultsPerRequest = injectionStrategyNrHtmlCols;
@@ -333,6 +386,9 @@ namespace Seringa.GUI
         {
             _selectedTreeViewItem = ((XmlTreeViewItem)((TreeView)sender).SelectedItem);
             ContextMenu contextMenu = new ContextMenu();
+
+            if (_selectedTreeViewItem == null)
+                return;
 
             if (_selectedTreeViewItem.TagName == "table")
             {

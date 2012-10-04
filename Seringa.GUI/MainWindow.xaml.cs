@@ -50,8 +50,6 @@ namespace Seringa.GUI
         private IList<Type> _concreteInjectionStrategyTypes = null;
         private IInjectionStrategy _currentInjectionStrategy = null;
         private IIPObtainerStrategy _currentIpObtainerStrategy = null;
-        private PayloadDetails _currentPayload = null;
-        private ExploitDetails _currentExploit = null;
         #endregion Fields
         #region Methods
 
@@ -93,6 +91,7 @@ namespace Seringa.GUI
             _currentIpObtainerStrategy = new Seringa.Engine.Implementations.IPObtainers.CMyIPObtainerStrategy();
             UIHelpers.ClearTreeView(tvDs);
             cmbProxyType.SelectedValue = ProxyType.None;
+            btnAutodetect.IsEnabled = false;
         }
 
         private void ClearAll()
@@ -125,6 +124,8 @@ namespace Seringa.GUI
         {
             //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = true;
+            btnTest.IsEnabled = true;
+            //btnAutodetect.IsEnabled = true;
             //cbDbms.IsEnabled = true;
             //cbPayloads.IsEnabled = true;
             //cbExploits.IsEnabled = true;
@@ -134,6 +135,8 @@ namespace Seringa.GUI
         {
             //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = false;
+            btnTest.IsEnabled = false;
+            //btnAutodetect.IsEnabled = false;
             //cbDbms.IsEnabled = false;
             //cbPayloads.IsEnabled = false;
             //cbExploits.IsEnabled = false;
@@ -176,15 +179,29 @@ namespace Seringa.GUI
 
         private void UrlOrStrategyChange()
         {
-            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null)
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text))
             {
-                _currentInjectionStrategy.Url = txtUrl.Text;
-                _currentPayload = null;
+                if (_currentInjectionStrategy != null)
+                {
+                    _currentInjectionStrategy.Url = txtUrl.Text;
 
-                PopulateExploits(cbDbms.SelectedValue!=null?cbDbms.SelectedValue.ToString():string.Empty, 
-                                _currentInjectionStrategy);
+                    PopulateExploits(cbDbms.SelectedValue != null ? cbDbms.SelectedValue.ToString() : string.Empty,
+                                    _currentInjectionStrategy);
 
-                ProxifyInjectionStrategy();
+                    ProxifyInjectionStrategy();
+                }
+
+                btnAutodetect.IsEnabled = true;
+            }
+            else
+                btnAutodetect.IsEnabled = false;
+        }
+
+        private void ParameterChange()
+        {
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null &&
+                cbDbms.SelectedValue!=null && _currentInjectionStrategy.ExploitDetails != null)
+            {
                 EnableAll();
                 ClearAll();
             }
@@ -291,8 +308,6 @@ namespace Seringa.GUI
         }
 
         #endregion Events
-
-
 
     }
 }

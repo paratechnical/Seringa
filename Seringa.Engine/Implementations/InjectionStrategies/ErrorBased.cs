@@ -120,7 +120,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
             //@TODO: strip scripts
             if (!string.IsNullOrEmpty(MappingFile) && !string.IsNullOrEmpty(result))
-                XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, result, this);
+                XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, result, this,
+                                                (this.ExploitDetails != null) ? this.ExploitDetails.Dbms : string.Empty);
 
             return result;
         }

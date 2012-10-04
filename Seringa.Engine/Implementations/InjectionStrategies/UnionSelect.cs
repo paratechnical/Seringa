@@ -146,9 +146,13 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
                         if (!string.IsNullOrEmpty(MappingFile))
                         {
-                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/originalquery", _nrCols.ToString());
-                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/resultinghtml", _nrVisibleCols.ToString());
-                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/indexes", ListHelpers.ListToCommaSeparatedValues(_visibleColumnIndexes));
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/originalquery", _nrCols.ToString(),
+                                this,(this.ExploitDetails != null)?this.ExploitDetails.Dbms:string.Empty);
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/resultinghtml",
+                                _nrVisibleCols.ToString(), this, (this.ExploitDetails != null) ? this.ExploitDetails.Dbms : string.Empty);
+                            XmlHelpers.ChangeMappingFileElementValue(MappingFile, "/map/injection-strategy/columns/indexes", 
+                                                                        ListHelpers.ListToCommaSeparatedValues(_visibleColumnIndexes),
+                                                                        this, (this.ExploitDetails != null) ? this.ExploitDetails.Dbms : string.Empty);
                         }
 
                         result = true;
@@ -233,7 +237,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
                 if (_visibleColumnIndexes.Contains(j))
                 {
-                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter], generatedPayloadWithLimit);
+                    sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter],
+                        (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple) ? generatedPayloadWithLimit : generatedPayload);
                     columnIndexCounter++;
                 }
                 else
@@ -271,7 +276,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                     actualValue = singleResult.Substring(separatorIndex + GeneralPayloads.UnionBasedResultSeparator.Length);
 
                     if (!string.IsNullOrEmpty(MappingFile))
-                        XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, actualValue, this);
+                        XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, actualValue, this,
+                                                        (this.ExploitDetails != null) ? this.ExploitDetails.Dbms : string.Empty);
 
                     sbResult.Append(actualValue);
                     sbResult.Append(Environment.NewLine);

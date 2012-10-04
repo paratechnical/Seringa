@@ -9,6 +9,7 @@ namespace Seringa.Engine.Utils
 {
     public static class PayloadHelpers
     {
+
         public static string GetData(string placeholder,IInjectionStrategy injectionStrategy)
         {
             switch (placeholder)

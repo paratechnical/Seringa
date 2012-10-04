@@ -1,8 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map>
-  <vulnerable-url>http://www.ohioaprs.net/ar902/detail.php?id=169</vulnerable-url>
-  <dbms>
-    <users></users>
+  <vulnerable-url>http://pro-kharkov.info/pages.php?id=117&amp;source=0</vulnerable-url>
+  <injection-strategy name="UnionSelect">
+    <columns>
+      <originalquery>8</originalquery>
+      <resultinghtml>1</resultinghtml>
+      <indexes>4</indexes>
+    </columns>
+  </injection-strategy>
+  <dbms name="mysql">
+    <users>
+      <user>tapok_khmain@localhost</user>
+    </users>
+    <version>5.5.18-cll</version>
   </dbms>
   <databases></databases>
 </map>

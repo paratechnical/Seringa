@@ -15,7 +15,7 @@ namespace Seringa.Engine.Utils
     public static class XmlHelpers
     {
         public static bool CreateOrLoadMappingFile(string mappingFile,IInjectionStrategy injectionStrategy,
-                                                    string dbmsName, ref string error)
+                                                    string dbmsName, ref string error,out XDocument doc)
         {
             bool outcome = true;
             XDocument document = null;
@@ -75,6 +75,7 @@ namespace Seringa.Engine.Utils
                 outcome = false;
             }
 
+            doc = document;
             return outcome;
         }
 
@@ -103,9 +104,14 @@ namespace Seringa.Engine.Utils
             return result;
         }
 
-        public static void ChangeMappingFileElementValue(string mappingFile, string elementXpath, string discoveredValue)
+        public static void ChangeMappingFileElementValue(string mappingFile, string elementXpath, string discoveredValue,
+                                                            IInjectionStrategy injectionStrategy, string dbmsName)
         {
-            XDocument document = XDocument.Load(mappingFile);
+            string error = string.Empty;
+            //XDocument document = XDocument.Load(mappingFile);
+            XDocument document = null;
+            if(!CreateOrLoadMappingFile(mappingFile, injectionStrategy, dbmsName, ref error,out document))
+                return;//TODO: write message to UI
             bool save = true;
 
             var element = document.XPathSelectElement(elementXpath);
@@ -127,9 +133,13 @@ namespace Seringa.Engine.Utils
                 document.Save(mappingFile);
         }
 
-        public static void ChangeMappingFileAttributeValue(string mappingFile, string elementXpath,string attributeName, string discoveredValue)
+        public static void ChangeMappingFileAttributeValue(string mappingFile, string elementXpath,string attributeName, string discoveredValue,
+                                                            IInjectionStrategy injectionStrategy, string dbmsName)
         {
-            XDocument document = XDocument.Load(mappingFile);
+            XDocument document = null;
+            string error = string.Empty;
+            if (!CreateOrLoadMappingFile(mappingFile, injectionStrategy, dbmsName, ref error, out document))
+                return;//TODO: write message to UI
             bool save = true;
 
             var element = document.XPathSelectElement(elementXpath);
@@ -157,12 +167,16 @@ namespace Seringa.Engine.Utils
                 document.Save(mappingFile);
         }
 
-        public static bool SaveToMappingFile(string mappingFile,PayloadDetails payloadDetails,string discoveredValue, IInjectionStrategy strategy)
+        public static bool SaveToMappingFile(string mappingFile,PayloadDetails payloadDetails,string discoveredValue, IInjectionStrategy strategy,
+                                                string dbmsName)
         {
             if (string.IsNullOrEmpty(payloadDetails.NodeToMapTo))
                 return false;
 
-            XDocument document = XDocument.Load(mappingFile);
+            XDocument document = null;
+            string error = string.Empty;
+            if (!CreateOrLoadMappingFile(mappingFile, strategy, dbmsName, ref error, out document))
+                return false;//TODO: write message to UI
 
             var element = document.XPathSelectElement(CreateProperMapToNodeFinderXpath(payloadDetails, strategy));
 
