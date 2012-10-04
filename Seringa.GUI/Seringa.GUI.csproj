@@ -67,6 +67,10 @@
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Helpers\XmlTreeViewItem.cs" />
     <Compile Include="Helpers\UIHelpers.cs" />
+    <Compile Include="MainWindow.FilterUrls.cs" />
+    <Compile Include="MainWindow.ObtainUrls.cs" />
+    <Compile Include="MainWindow.Proxy.cs" />
+    <Compile Include="MainWindow.SingleUrl.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
