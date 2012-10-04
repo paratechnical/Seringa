@@ -403,33 +403,34 @@ namespace Seringa.GUI
                             else if (tagName == "db" || tagName == "table")//@TODO: no more hardconding
                                 oldParentItem = _selectedTreeViewItem;
 
-                            foreach(var value in valuesToInsert)
-                            {
-                                if (!string.IsNullOrEmpty(value))
+                            if(oldParentItem != null)
+                                foreach(var value in valuesToInsert)
                                 {
-                                    tvDs.Dispatcher.Invoke(
-                                            System.Windows.Threading.DispatcherPriority.Normal,
-                                            new Action(
-                                            delegate()
-                                            {
-                                                newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, 
-                                                                                                _currentInjectionStrategy.PayloadDetails.NodeToMapTo, 
-                                                                                                value);
-                                            }
-                                        ));
-                                    if (newChildItem == null)
+                                    if (!string.IsNullOrEmpty(value))
                                     {
                                         tvDs.Dispatcher.Invoke(
-                                            System.Windows.Threading.DispatcherPriority.Normal,
-                                            new Action(
-                                            delegate()
-                                            {
-                                                UIHelpers.XmlTreeViewAdd(oldParentItem, _currentInjectionStrategy.PayloadDetails.NodeToMapTo, value);
-                                            }
-                                        ));
+                                                System.Windows.Threading.DispatcherPriority.Normal,
+                                                new Action(
+                                                delegate()
+                                                {
+                                                    newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem, 
+                                                                                                    _currentInjectionStrategy.PayloadDetails.NodeToMapTo, 
+                                                                                                    value);
+                                                }
+                                            ));
+                                        if (newChildItem == null)
+                                        {
+                                            tvDs.Dispatcher.Invoke(
+                                                System.Windows.Threading.DispatcherPriority.Normal,
+                                                new Action(
+                                                delegate()
+                                                {
+                                                    UIHelpers.XmlTreeViewAdd(oldParentItem, _currentInjectionStrategy.PayloadDetails.NodeToMapTo, value);
+                                                }
+                                            ));
+                                        }
                                     }
                                 }
-                            }
                         }
                         #endregion map to ui
 

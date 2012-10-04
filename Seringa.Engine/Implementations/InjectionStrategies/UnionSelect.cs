@@ -182,7 +182,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             generatedpayload = PayloadDetails.Payload;
 
-            if (PayloadDetails.Params.Count() > 0)
+            if (PayloadDetails.Params != null && PayloadDetails.Params.Count() > 0)
                 foreach(var param in PayloadDetails.Params)
                     generatedpayload = generatedpayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
@@ -216,7 +216,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             string generatedPayload = PayloadDetails.Payload;
 
-            if (PayloadDetails.Params.Count() > 0)
+            if (PayloadDetails.Params != null && PayloadDetails.Params.Count() > 0)
                 foreach (var param in PayloadDetails.Params)
                     generatedPayload = generatedPayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
@@ -255,7 +255,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             IList<int> columnsProcessed = new List<int>();
             foreach (string singleResult in resultsBatch)
             {
-                
+                //@TODO: strip scripts
                 separatorIndex = singleResult.IndexOf(GeneralPayloads.UnionBasedResultSeparator);
                 if (separatorIndex != -1)
                 {

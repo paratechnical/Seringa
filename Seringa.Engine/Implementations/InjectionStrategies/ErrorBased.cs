@@ -88,7 +88,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             generatedpayload = PayloadDetails.Payload;
 
-            if (PayloadDetails.Params.Count() > 0)
+            if (PayloadDetails.Params != null && PayloadDetails.Params.Count() > 0)
                 foreach(var param in PayloadDetails.Params)
                     generatedpayload = generatedpayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
@@ -108,7 +108,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             string generatedPayload = PayloadDetails.Payload;
 
-            if (PayloadDetails.Params.Count() > 0)
+            if (PayloadDetails.Params != null && PayloadDetails.Params.Count() > 0)
                 foreach (var param in PayloadDetails.Params)
                     generatedPayload = generatedPayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
@@ -118,7 +118,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
-
+            //@TODO: strip scripts
             if (!string.IsNullOrEmpty(MappingFile) && !string.IsNullOrEmpty(result))
                 XmlHelpers.SaveToMappingFile(MappingFile, PayloadDetails, result, this);
 
