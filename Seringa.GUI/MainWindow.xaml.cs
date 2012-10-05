@@ -49,7 +49,6 @@ namespace Seringa.GUI
         private IList<IInjectionStrategy> _injectionStrategies = null;
         private IList<Type> _concreteInjectionStrategyTypes = null;
         private IInjectionStrategy _currentInjectionStrategy = null;
-        private IIPObtainerStrategy _currentIpObtainerStrategy = null;
         #endregion Fields
         #region Methods
 
@@ -243,49 +242,7 @@ namespace Seringa.GUI
         #endregion Methods
         #endregion Private
 
-        #region Public
 
-        #region Dependency Properties
-        public static readonly DependencyProperty DatabaseNamesProperty = DependencyProperty.Register("DatabaseNames", 
-                                                                                                        typeof(ObservableCollection<String>), 
-                                                                                                        typeof(MainWindow));
-
-        public ObservableCollection<String> DatabaseNames
-        {
-            get {  return (ObservableCollection<String>)GetValue(DatabaseNamesProperty); }
-            set { SetValue(DatabaseNamesProperty, value); }
-        }
-
-        public static readonly DependencyProperty TableNamesProperty = DependencyProperty.Register("TableNames",
-                                                                                                        typeof(ObservableCollection<String>),
-                                                                                                        typeof(MainWindow));
-
-        public ObservableCollection<String> TableNames
-        {
-            get { return (ObservableCollection<String>)GetValue(TableNamesProperty); }
-            set { SetValue(TableNamesProperty, value); }
-        }
-
-        public static readonly DependencyProperty ColumnNamesProperty = DependencyProperty.Register("ColumnNames",
-                                                                                                        typeof(ObservableCollection<String>),
-                                                                                                        typeof(MainWindow));
-
-        public ObservableCollection<String> ColumnNames
-        {
-            get { return (ObservableCollection<String>)GetValue(ColumnNamesProperty); }
-            set { SetValue(ColumnNamesProperty, value); }
-        }
-
-        #endregion
-
-        public IInjectionStrategy CurrentInjectionStrategy
-        {
-            get
-            {
-                return _currentInjectionStrategy;
-            }
-        }
-        #endregion Public
 
         #region Constructors
 
@@ -309,5 +266,6 @@ namespace Seringa.GUI
 
         #endregion Events
 
+        
     }
 }

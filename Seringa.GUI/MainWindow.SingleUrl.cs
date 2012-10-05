@@ -23,6 +23,22 @@ namespace Seringa.GUI
 {
     public partial class MainWindow
     {
+        #region Public
+        public IInjectionStrategy CurrentInjectionStrategy
+        {
+            get
+            {
+                return _currentInjectionStrategy;
+            }
+        }
+        #endregion Public
+
+        private void btnAutodetect_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
             ClearAll();

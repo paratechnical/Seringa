@@ -67,7 +67,7 @@
                     <Button Content="Browse" Height="23" HorizontalAlignment="Left" Margin="411,150,0,0" Name="btnChooseMappingFile" VerticalAlignment="Top" Width="49" Click="btnChooseMappingFile_Click" />
                     <CheckBox Content="Map results to file" Height="16" HorizontalAlignment="Left" Margin="5,154,0,0" Name="chkMapResultsToFile" VerticalAlignment="Top" Width="117" Checked="chkMapResultsToFile_Checked" />
                     <Button Content="Test current vulnerability" Height="23" HorizontalAlignment="Left" Margin="466,30,0,0" Name="btnTest" VerticalAlignment="Top" Width="140" Click="btnTest_Click" />
-                    <Button Content="Autodetect vulnerability" Height="23" HorizontalAlignment="Left" Margin="722,33,0,0" Name="btnAutodetect" VerticalAlignment="Top" Width="139" />
+                    <Button Content="Autodetect vulnerability" Height="23" HorizontalAlignment="Left" Margin="722,33,0,0" Name="btnAutodetect" VerticalAlignment="Top" Width="139" Click="btnAutodetect_Click" />
                     <Button Content="Override current settings" Height="23" HorizontalAlignment="Left" Margin="5,176,0,0" Name="btnOverrideCurrentSettings" VerticalAlignment="Top" Width="144" Click="btnOverrideCurrentSettings_Click" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="762,67,0,0" Name="txtSelectedDb" VerticalAlignment="Top" Width="67" 
                              Visibility="Hidden" />

