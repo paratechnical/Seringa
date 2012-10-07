@@ -223,6 +223,35 @@ namespace Seringa.Engine.Utils
             return createdObj;
         }
 
+        public static IList<T> GetObjectsFromXml<T>(string docName, string elementType,IList<dynamic> filters)
+        {
+            IList<T> results = new List<T>();
+            var doc = XDocument.Load(docName);
+
+            //filterOptions.Dbms
+
+            var query = doc.Descendants(elementType).AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.AttributeName != null && filter.AttributeValue != null)
+                {
+                    var dict = (IDictionary<string, object>)filter;
+                    query = query.Where(e =>
+                        e.Attribute(dict["AttributeName"].ToString()) != null &&
+                        (e.Attribute(dict["AttributeName"].ToString()).Value == dict["AttributeValue"].ToString())).AsQueryable();
+                }
+            }
+
+
+            foreach (var elem in query.ToList())
+            {
+                results.Add((T)Activator.CreateInstance(typeof(T), elem));
+            }
+
+            return results;
+        }
+
         public static IList<string> GetValuesFromDocByXpath(string docName,string xPath,string attributeName)
         {
             IList<string> results = new List<string>();

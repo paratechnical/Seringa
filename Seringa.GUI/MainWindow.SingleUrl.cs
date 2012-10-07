@@ -18,11 +18,181 @@ using System.Windows.Data;
 using System.Xml;
 using Seringa.GUI.Helpers;
 using Seringa.GUI.Static;
+using System.Dynamic;
 
 namespace Seringa.GUI
 {
     public partial class MainWindow
     {
+        #region Private
+        #region Fields
+        private XmlTreeViewItem _selectedTreeViewItem = null;
+        private bool _stopCurrentAction = false;
+        private IList<IInjectionStrategy> _injectionStrategies = null;
+        private IList<Type> _concreteInjectionStrategyTypes = null;
+        private IInjectionStrategy _currentInjectionStrategy = null;
+        #endregion Fields
+
+        #region Methods
+        private void PopulateInjectionStrategies()
+        {
+            if (_injectionStrategies != null)
+                _injectionStrategies.Clear();
+
+            var interfaceType = typeof(IInjectionStrategy);
+            var concreteTypes = AppDomain.CurrentDomain.GetAssemblies().ToList()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => p != interfaceType && interfaceType.IsAssignableFrom(p));
+
+
+            foreach (var concreteType in concreteTypes)
+            {
+                if (!_concreteInjectionStrategyTypes.Contains(concreteType))
+                {
+                    var strategy = (IInjectionStrategy)Activator.CreateInstance(concreteType);
+                    //@TODO: this value should come from application options
+                    strategy.DetailedExceptions = true;
+                    _injectionStrategies.Add(strategy);
+                    _concreteInjectionStrategyTypes.Add(concreteType);
+                }
+            }
+        }
+
+        private void Initializations()
+        {
+            _injectionStrategies = new List<IInjectionStrategy>();
+            _concreteInjectionStrategyTypes = new List<Type>();
+            //DatabaseNames = new ObservableCollection<string>();
+            //TableNames = new  ObservableCollection<string>();
+            //ColumnNames = new ObservableCollection<string>();
+            ////ItemsSource="{Binding Path=DatabaseNames}"
+            //lbDatabases.ItemsSource = DatabaseNames;
+            //lbTables.ItemsSource = TableNames;
+            //lbColumns.ItemsSource = ColumnNames;
+            _currentIpObtainerStrategy = new Seringa.Engine.Implementations.IPObtainers.CMyIPObtainerStrategy();
+            UIHelpers.ClearTreeView(tvDs);
+            cmbProxyType.SelectedValue = ProxyType.None;
+            btnAutodetect.IsEnabled = false;
+        }
+
+        private void ClearAll()
+        {
+            txtCustomQueryResult.Text = string.Empty;
+            UIHelpers.ClearTreeView(tvDs);
+        }
+
+        private void EnableAllFromOtherThread()
+        {
+            if (!gridSingleUrl.Dispatcher.CheckAccess())
+            {
+
+                gridSingleUrl.Dispatcher.Invoke(
+                  System.Windows.Threading.DispatcherPriority.Normal,
+                  new Action(
+                    delegate()
+                    {
+                        EnableAll();
+                    }
+                ));
+            }
+            else
+            {
+                EnableAll();
+            }
+        }
+
+        private void EnableAll()
+        {
+            //TODO: add treeview here
+            btnExecuteCustomQuery.IsEnabled = true;
+            btnTest.IsEnabled = true;
+            //btnAutodetect.IsEnabled = true;
+            //cbDbms.IsEnabled = true;
+            //cbPayloads.IsEnabled = true;
+            //cbExploits.IsEnabled = true;
+        }
+
+        private void DisableAll()
+        {
+            //TODO: add treeview here
+            btnExecuteCustomQuery.IsEnabled = false;
+            btnTest.IsEnabled = false;
+            //btnAutodetect.IsEnabled = false;
+            //cbDbms.IsEnabled = false;
+            //cbPayloads.IsEnabled = false;
+            //cbExploits.IsEnabled = false;
+        }
+
+        private void PopulatePayloads(string dbms)
+        {
+            string xpath = "";
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/payloads/payload[@dbms = \"");
+            sb.Append(dbms);
+            sb.Append("\"]");
+            xpath = sb.ToString();
+
+            cbPayloads.DataContext = XmlHelpers.GetValuesFromDocByXpath(FileHelpers.GetCurrentDirectory() + "\\xml\\payloads.xml",
+                                                                    xpath,
+                                                                    "user-friendly-name");
+        }
+
+        private void PopulateExploits(string dbms, IInjectionStrategy injectionStrategy)
+        {
+            string xpath = "";
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/exploits/exploit[@dbms = \"");
+            sb.Append(dbms);
+            sb.Append("\" and @injection-strategy = \"");
+            sb.Append(injectionStrategy != null ? injectionStrategy.GetType().Name : string.Empty);
+            sb.Append("\"]");
+            xpath = sb.ToString();
+
+            cbExploits.DataContext = XmlHelpers.GetValuesFromDocByXpath(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
+                                                                            xpath, "user-friendly-name");
+        }
+
+        private void PopulateDbms()
+        {
+            cbDbms.DataContext = XmlHelpers.GetAllAttributeValuesFromDoc(FileHelpers.GetCurrentDirectory() + "\\xml\\payloads.xml",
+                                                                            "payload", "dbms");
+        }
+
+        private void UrlOrStrategyChange()
+        {
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text))
+            {
+                if (_currentInjectionStrategy != null)
+                {
+                    _currentInjectionStrategy.Url = txtUrl.Text;
+
+                    PopulateExploits(cbDbms.SelectedValue != null ? cbDbms.SelectedValue.ToString() : string.Empty,
+                                    _currentInjectionStrategy);
+
+                    ProxifyInjectionStrategy();
+                }
+
+                btnAutodetect.IsEnabled = true;
+            }
+            else
+                btnAutodetect.IsEnabled = false;
+        }
+
+        private void ParameterChange()
+        {
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null &&
+                cbDbms.SelectedValue != null && _currentInjectionStrategy.ExploitDetails != null)
+            {
+                EnableAll();
+                ClearAll();
+            }
+            else
+                DisableAll();
+        }
+        #endregion Methods
+
+        #endregion Private
+
         #region Public
         public IInjectionStrategy CurrentInjectionStrategy
         {
@@ -35,7 +205,116 @@ namespace Seringa.GUI
 
         private void btnAutodetect_Click(object sender, RoutedEventArgs e)
         {
+            bool findAllPossibleAttackVectors = true;//@TODO: this should be a setting and come from somewhere, maybe the UI
+            bool vuln = false;
+            string msg = string.Empty;
+            IList<string> dbMgmtSystems = new List<string>();
+            IList<ExploitDetails> exploits = new List<ExploitDetails>();
+            List<dynamic> filters = null;
+            dynamic filter = null;
+            ProxyType proxyType = ProxyType.None;
+            string url = txtUrl.Text;
+            string fullProxyAdress = txtProxyFullAddress.Text;
+            bool useProxy = (chkUseProxy.IsChecked != null) ? chkUseProxy.IsChecked.Value : false; ;
 
+            ClearAll();
+            DisableAll();
+
+            if (cmbProxyType.SelectedValue != null)
+                Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
+
+            var th = new Thread(() =>
+            {
+
+                dbMgmtSystems = XmlHelpers.GetAllAttributeValuesFromDoc(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
+                                                                                "exploit", "dbms");
+
+                foreach (var injectionStrategy in _injectionStrategies)
+                {
+                    if (_stopCurrentAction)
+                        break;
+
+                    foreach (var dbMgmtSystem in dbMgmtSystems)
+                    {
+                        if (_stopCurrentAction)
+                            break;
+
+                        filters = new List<dynamic>();
+                        filter = new ExpandoObject();
+                        filter.AttributeName = "dbms"; filter.AttributeValue = dbMgmtSystem;
+                        filters.Add(filter);
+                        filter = new ExpandoObject();
+                        filter.AttributeName = "injection-strategy"; filter.AttributeValue = injectionStrategy.GetType().Name;
+                        filters.Add(filter);
+                        exploits = XmlHelpers.GetObjectsFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml", "exploit", 
+                                                                                filters);
+
+                        foreach (var exploit in exploits)
+                        {
+                            if (_stopCurrentAction)
+                                break;
+                            
+                            //populate
+                            injectionStrategy.ExploitDetails = exploit; injectionStrategy.Url = url;
+                            if (useProxy)
+                            {
+                                injectionStrategy.UseProxy = true;
+                                injectionStrategy.ProxyDetails = new ProxyDetails()
+                                {
+                                    FullProxyAddress = fullProxyAdress,
+                                    ProxyType = proxyType
+                                };
+                            }
+
+                            try
+                            {
+                                vuln = injectionStrategy.TestIfVulnerable();
+                            }
+                            catch (Exception ex)
+                            {
+                                //TODO: log this maybe?
+                            }
+
+                            //depopulate
+                            injectionStrategy.ExploitDetails = null; injectionStrategy.Url = null;injectionStrategy.ProxyDetails = null;
+                            injectionStrategy.UseProxy = false;
+
+                            if (vuln)
+                            {
+                                msg += string.Format("Vulnerable using  the injection strategy: {0} with the exploit: {1}. Detected DBMS: {2}", 
+                                                        injectionStrategy.DisplayName, exploit.UserFriendlyName, dbMgmtSystem)
+                                        + Environment.NewLine;
+                                if (!findAllPossibleAttackVectors)
+                                    _stopCurrentAction = true;
+                                else
+                                    vuln = false;
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(msg))
+                    msg = "Not vulnerable given any available expoit";
+
+                txtCustomQueryResult.Dispatcher.Invoke(
+                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                    new Action(
+                                    delegate()
+                                    {
+                                        txtCustomQueryResult.Text = msg;
+                                    }
+                                ));
+                _stopCurrentAction = false;
+                EnableAllFromOtherThread();
+            });
+            try
+            {
+                th.Start();
+            }
+            catch (Exception ex)
+            {
+                txtCustomQueryResult.Text = string.Format("Error: {0}",ex.Message);
+            }
         }
 
 
@@ -56,14 +335,7 @@ namespace Seringa.GUI
                 }
                 catch (Exception ex)
                 {
-                    txtCustomQueryResult.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(
-                                delegate()
-                                {
-                                    msg += " (Exception: "+ex.Message+")";
-                                }
-                            ));
+                    msg += " (Exception: "+ex.Message+")";
                 }
                     
                     
