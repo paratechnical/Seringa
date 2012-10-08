@@ -97,6 +97,15 @@ namespace Seringa.GUI
         }
 
         #endregion Events
+
+        private void btnCheckUrls_Click(object sender, RoutedEventArgs e)
+        {
+            IList<string> vulnerableResults = new List<string>();
+            IList<string> urlsToCheck = new List<string>();
+
+            if(!string.IsNullOrEmpty(txtUrls.Text))
+                urlsToCheck = txtUrls.Text.Split(new string[] { Environment.NewLine }).ToList();
+        }
         
     }
 }

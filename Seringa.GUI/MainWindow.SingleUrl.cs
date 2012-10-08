@@ -27,7 +27,7 @@ namespace Seringa.GUI
         #region Private
         #region Fields
         private XmlTreeViewItem _selectedTreeViewItem = null;
-        private bool _stopCurrentAction = false;
+        private bool _stopCurrentActionSingleUrlTab = false;
         private IList<IInjectionStrategy> _injectionStrategies = null;
         private IList<Type> _concreteInjectionStrategyTypes = null;
         private IInjectionStrategy _currentInjectionStrategy = null;
@@ -103,6 +103,8 @@ namespace Seringa.GUI
 
         private void EnableAll()
         {
+            //btnGetUrls.IsEnabled = true;
+
             //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = true;
             btnTest.IsEnabled = true;
@@ -114,6 +116,8 @@ namespace Seringa.GUI
 
         private void DisableAll()
         {
+            //btnGetUrls.IsEnabled = true;
+
             //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = false;
             btnTest.IsEnabled = false;
@@ -231,12 +235,12 @@ namespace Seringa.GUI
 
                 foreach (var injectionStrategy in _injectionStrategies)
                 {
-                    if (_stopCurrentAction)
+                    if (_stopCurrentActionSingleUrlTab)
                         break;
 
                     foreach (var dbMgmtSystem in dbMgmtSystems)
                     {
-                        if (_stopCurrentAction)
+                        if (_stopCurrentActionSingleUrlTab)
                             break;
 
                         filters = new List<dynamic>();
@@ -251,7 +255,7 @@ namespace Seringa.GUI
 
                         foreach (var exploit in exploits)
                         {
-                            if (_stopCurrentAction)
+                            if (_stopCurrentActionSingleUrlTab)
                                 break;
                             
                             //populate
@@ -285,7 +289,7 @@ namespace Seringa.GUI
                                                         injectionStrategy.DisplayName, exploit.UserFriendlyName, dbMgmtSystem)
                                         + Environment.NewLine;
                                 if (!findAllPossibleAttackVectors)
-                                    _stopCurrentAction = true;
+                                    _stopCurrentActionSingleUrlTab = true;
                                 else
                                     vuln = false;
                             }
@@ -304,7 +308,7 @@ namespace Seringa.GUI
                                         txtCustomQueryResult.Text = msg;
                                     }
                                 ));
-                _stopCurrentAction = false;
+                _stopCurrentActionSingleUrlTab = false;
                 EnableAllFromOtherThread();
             });
             try
@@ -351,7 +355,7 @@ namespace Seringa.GUI
                                 }
                             ));
 
-                _stopCurrentAction = false;
+                _stopCurrentActionSingleUrlTab = false;
                 EnableAllFromOtherThread();
             });
             th.Start();
@@ -377,7 +381,7 @@ namespace Seringa.GUI
 
         private void btnStopCurAction_Click(object sender, RoutedEventArgs e)
         {
-            _stopCurrentAction = true;
+            _stopCurrentActionSingleUrlTab = true;
         }
 
         private void txtCustomQuery_LostFocus(object sender, RoutedEventArgs e)
@@ -423,7 +427,7 @@ namespace Seringa.GUI
 
                 for (int i = 0; i < total; i = i + _currentInjectionStrategy.NumberOfResultsPerRequest)
                 {
-                    if (_stopCurrentAction)
+                    if (_stopCurrentActionSingleUrlTab)
                         break;
                     try
                     {
@@ -501,7 +505,7 @@ namespace Seringa.GUI
                     }
                 }
 
-                _stopCurrentAction = false;
+                _stopCurrentActionSingleUrlTab = false;
                 EnableAllFromOtherThread();
             });
             th.Start();

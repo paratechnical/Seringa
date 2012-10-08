@@ -26,25 +26,52 @@ namespace Seringa.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _stopCurActionObtainUrlsTab = false;
+
+        private void btnStopCurActionObtainUrls_Click(object sender, RoutedEventArgs e)
+        {
+            _stopCurActionObtainUrlsTab = true;
+        }
 
         private void btnGetUrls_Click(object sender, RoutedEventArgs e)
         {
             txtUrls.Clear();
+            btnGetUrls.IsEnabled = false;
+
             string url = txtSearchEngineUrl.Text.Trim();
 
             if (string.IsNullOrEmpty(url))
                 return;
 
-            //var queryRunner = new SimpleQueryRunner();
-            //var pageHtml = queryRunner.GetPageHtml(url, null);
-            //var 
-            //var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, string.Empty, ExploitDetails, DetailedExceptions);
-            var results = HtmlHelpers.GoogleSearch(url);
+            var th = new Thread(() =>
+            {
+                var results = HtmlHelpers.GoogleSearch(url);
 
-            foreach (var result in results)
-                txtUrls.Text += result + Environment.NewLine;
+                foreach (var result in results)
+                {
+                    if (_stopCurActionObtainUrlsTab == true)
+                        break;
+                    gridObtainUrls.Dispatcher.Invoke(
+                        System.Windows.Threading.DispatcherPriority.Normal,
+                        new Action(
+                            delegate()
+                            {
+                                txtUrls.Text += result + Environment.NewLine;
+                            }));
+                }
+
+                _stopCurActionObtainUrlsTab = false;
+
+                gridObtainUrls.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(
+                    delegate()
+                    {
+                        btnGetUrls.IsEnabled = true;
+                    }
+                ));
+            });
+            th.Start();
         }
-
-
     }
 }
