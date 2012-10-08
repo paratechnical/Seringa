@@ -97,7 +97,6 @@ namespace Seringa.GUI
         }
 
         #endregion Events
-
         
     }
 }

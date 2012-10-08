@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using System.Windows.Data;
 using System.Xml;
 using Seringa.GUI.Helpers;
+using Seringa.Engine.Implementations.QueryRunners;
 
 namespace Seringa.GUI
 {
@@ -25,5 +26,25 @@ namespace Seringa.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private void btnGetUrls_Click(object sender, RoutedEventArgs e)
+        {
+            txtUrls.Clear();
+            string url = txtSearchEngineUrl.Text.Trim();
+
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            //var queryRunner = new SimpleQueryRunner();
+            //var pageHtml = queryRunner.GetPageHtml(url, null);
+            //var 
+            //var stringResults = HtmlHelpers.GetMultipleAnswersFromHtml(pageHtml, string.Empty, ExploitDetails, DetailedExceptions);
+            var results = HtmlHelpers.GoogleSearch(url);
+
+            foreach (var result in results)
+                txtUrls.Text += result + Environment.NewLine;
+        }
+
+
     }
 }
