@@ -123,6 +123,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             string query = string.Empty;
             string pageHtml = string.Empty;
 
+            if(string.IsNullOrEmpty(Url))
+                throw new Exception("No url provided so cannot test vulnerability");
+
             for (int i = 0; i < _maxCols; i++)
             {
                 if(i > 0)
