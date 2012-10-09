@@ -228,21 +228,19 @@ namespace Seringa.Engine.Utils
             IList<T> results = new List<T>();
             var doc = XDocument.Load(docName);
 
-            //filterOptions.Dbms
-
             var query = doc.Descendants(elementType).AsQueryable();
 
-            foreach (var filter in filters)
-            {
-                if (filter != null && filter.AttributeName != null && filter.AttributeValue != null)
+            if(filters != null && filters.Count > 0)
+                foreach (var filter in filters)
                 {
-                    var dict = (IDictionary<string, object>)filter;
-                    query = query.Where(e =>
-                        e.Attribute(dict["AttributeName"].ToString()) != null &&
-                        (e.Attribute(dict["AttributeName"].ToString()).Value == dict["AttributeValue"].ToString())).AsQueryable();
+                    if (filter != null && filter.AttributeName != null && filter.AttributeValue != null)
+                    {
+                        var dict = (IDictionary<string, object>)filter;
+                        query = query.Where(e =>
+                            e.Attribute(dict["AttributeName"].ToString()) != null &&
+                            (e.Attribute(dict["AttributeName"].ToString()).Value == dict["AttributeValue"].ToString())).AsQueryable();
+                    }
                 }
-            }
-
 
             foreach (var elem in query.ToList())
             {

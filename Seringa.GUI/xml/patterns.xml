@@ -21,11 +21,15 @@
 	</pattern>
 	
 	<pattern dbms="tsql">
-	<![CDATA[microsoft ole db provider for odbc]]>
+	<![CDATA[microsoft ole db provider for]]>
 	</pattern>
 	
 	<pattern dbms="tsql">
 	<![CDATA[microsoft jet database engine]]>
+	</pattern>
+	
+	<pattern dbms="tsql">
+	<![CDATA[Unclosed quotation mark before the character string]]>
 	</pattern>
 	
 </patterns>

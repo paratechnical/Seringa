@@ -52,8 +52,9 @@
                         <RowDefinition Height="391*" />
                         <RowDefinition Height="192*" />
                     </Grid.RowDefinitions>
-<Button Content="Check urls" Height="23" HorizontalAlignment="Left" Margin="6,3,0,0" Name="btnCheckUrls" VerticalAlignment="Top" Width="75" Click="btnCheckUrls_Click" />
+                    <Button Content="Check urls" Height="23" HorizontalAlignment="Left" Margin="6,3,0,0" Name="btnCheckUrls" VerticalAlignment="Top" Width="75" Click="btnCheckUrls_Click" />
                     <TextBox Height="353" HorizontalAlignment="Left" Margin="6,32,0,0" Name="txtProbablyVulnerableUrls" VerticalAlignment="Top" Width="857" />
+                    <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="87,3,0,0" Name="btnCancelFilterUrls" VerticalAlignment="Top" Width="75" Click="btnCancelFilterUrls_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="Single url operations" Name="tabSingleUrl">

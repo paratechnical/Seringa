@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataObjects\PatternDetails.cs" />
     <Compile Include="DataObjects\PayloadDetails.cs" />
     <Compile Include="DataObjects\PayloadParam.cs" />
     <Compile Include="Enums\ExpectedResultType.cs" />
