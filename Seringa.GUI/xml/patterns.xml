@@ -1,0 +1,31 @@
+<patterns>
+
+	<pattern dbms="mysql">
+	<![CDATA[warning: mysql_fetch_row()]]>
+	</pattern>
+	
+	<pattern dbms="mysql">
+	<![CDATA[warning: mysql_result()]]>
+	</pattern>
+	
+	<pattern dbms="mysql">
+	<![CDATA[error in your sql syntax]]>
+	</pattern>
+	
+	<pattern dbms="mysql">
+	<![CDATA[warning: mysql_connect()]]>
+	</pattern>
+	
+	<pattern dbms="tsql">
+	<![CDATA[unclosed quotation mark]]>
+	</pattern>
+	
+	<pattern dbms="tsql">
+	<![CDATA[microsoft ole db provider for odbc]]>
+	</pattern>
+	
+	<pattern dbms="tsql">
+	<![CDATA[microsoft jet database engine]]>
+	</pattern>
+	
+</patterns>
