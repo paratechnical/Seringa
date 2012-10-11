@@ -26,6 +26,7 @@ namespace Seringa.GUI
             IList<string> urlsToCheck = new List<string>();
             string[] separators = new string[] { Environment.NewLine };
             IList<PatternDetails> patterns = new List<PatternDetails>();
+            string urlBatch = txtUrls.Text;
 
             btnCheckUrls.IsEnabled = false;
             txtProbablyVulnerableUrls.Clear();
@@ -36,8 +37,8 @@ namespace Seringa.GUI
             {
                 var queryRunner = new SimpleQueryRunner();
 
-                if (!string.IsNullOrEmpty(txtUrls.Text))
-                    urlsToCheck = txtUrls.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (!string.IsNullOrEmpty(urlBatch))
+                    urlsToCheck = urlBatch.Split(separators, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 foreach (var url in urlsToCheck)
                 {
