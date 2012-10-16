@@ -47,7 +47,9 @@ namespace Seringa.GUI
 
                     possiblyVulnerable = false;
 
-                    string pageHtml = queryRunner.GetPageHtml(url, null);//@TODO:proxify
+                    string possiblyVulnerableUrl = Seringa.Engine.Utils.UrlHelpers.GeneratePossibleVulnerableUrl(url);//TODO:multiple possible vulnerable urls
+
+                    string pageHtml = queryRunner.GetPageHtml(possiblyVulnerableUrl, null);//@TODO:proxify
 
                     patterns = XmlHelpers.GetObjectsFromXml<PatternDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\patterns.xml", "pattern", null);
 

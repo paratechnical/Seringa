@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using Seringa.Engine.Static;
 
 namespace Seringa.Engine.Utils
 {
-    public static class UrlHelper
+    public static class UrlHelpers
     {
         //static HeadClient Client { get; set; }
 
-        static UrlHelper()
+        static UrlHelpers()
         {
             //Client = new HeadClient();
+        }
+
+        public static string GeneratePossibleVulnerableUrl(string url)
+        {
+            return url + GeneralPayloads.UrlVulnerabilityTestingAppendix;
         }
 
         public static bool ValidUrl(string url)

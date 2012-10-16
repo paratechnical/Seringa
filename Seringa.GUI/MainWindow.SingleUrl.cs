@@ -164,7 +164,7 @@ namespace Seringa.GUI
 
         private void UrlOrStrategyChange()
         {
-            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text))
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelpers.ValidUrl(txtUrl.Text))
             {
                 if (_currentInjectionStrategy != null)
                 {
@@ -184,7 +184,7 @@ namespace Seringa.GUI
 
         private void ParameterChange()
         {
-            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelper.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null &&
+            if (!string.IsNullOrEmpty(txtUrl.Text) && UrlHelpers.ValidUrl(txtUrl.Text) && _currentInjectionStrategy != null &&
                 cbDbms.SelectedValue != null && _currentInjectionStrategy.ExploitDetails != null)
             {
                 EnableAll();

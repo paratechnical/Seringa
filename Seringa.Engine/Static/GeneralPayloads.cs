@@ -17,5 +17,6 @@ namespace Seringa.Engine.Static
         public static string QueryResultCount = "SELECT count(*) FROM ({0}) cq";
         public static string MysqlSingleResultLimiterQuery = "{0} LIMIT {1},1";
         public static string MssqlSingleResultLimiterQuery = "";
+        public static string UrlVulnerabilityTestingAppendix = "'";
     }
 }
