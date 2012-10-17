@@ -27,6 +27,8 @@ namespace Seringa.Engine.Utils
  
                 JObject o = (JObject)JsonConvert.DeserializeObject(page);
  
+                o["responseStatus"]
+
                 var results_query =
                     from result in o["responseData"]["results"].Children()
                     select result.Value<string>("unescapedUrl").ToString();
