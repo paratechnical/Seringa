@@ -204,11 +204,16 @@ namespace Seringa.Engine.Utils
             return result;
         }
 
-        public static XElement GetXmlElementViaXpath(XDocument doc, string xpath)
+        public static XElement GetXmlElementViaXpath(XElement elem, string xpath)
         {
             XElement result = null;
-            result = doc.Root.XPathSelectElements(xpath).FirstOrDefault();
+            result = elem.XPathSelectElements(xpath).FirstOrDefault();
             return result;
+        }
+
+        public static XElement GetXmlElementViaXpath(XDocument doc, string xpath)
+        {
+            return GetXmlElementViaXpath(doc.Root, xpath);
         }
 
         public static T GetObjectFromXml<T>(string docName, string elementType, string elementUserFriendlyName)
@@ -219,6 +224,17 @@ namespace Seringa.Engine.Utils
                             .SingleOrDefault(e => e.Attribute("user-friendly-name").Value == elementUserFriendlyName);
 
             T createdObj = (T)Activator.CreateInstance(typeof(T),elem);
+
+            return createdObj;
+        }
+
+        public static T GetObjectFromXml<T>(string docName, string elementType, int index)
+        {
+            var doc = XDocument.Load(docName);
+
+            var elem = doc.Descendants(elementType).ElementAt(index);
+
+            T createdObj = (T)Activator.CreateInstance(typeof(T), elem);
 
             return createdObj;
         }
@@ -236,6 +252,7 @@ namespace Seringa.Engine.Utils
                     if (filter != null && filter.AttributeName != null && filter.AttributeValue != null)
                     {
                         var dict = (IDictionary<string, object>)filter;
+
                         query = query.Where(e =>
                             e.Attribute(dict["AttributeName"].ToString()) != null &&
                             (e.Attribute(dict["AttributeName"].ToString()).Value == dict["AttributeValue"].ToString())).AsQueryable();
@@ -276,12 +293,22 @@ namespace Seringa.Engine.Utils
             return results;
         }
 
-        public static string GetElementValue(XElement element, string name)
+
+        public static T GetElementValueViaXpath<T>(XElement elem, string xpath, T defaultValue)
         {
-            if (element == null)
-                return String.Empty;
-            return element.Value;
+            T result = defaultValue;
+
+            XElement element =  GetXmlElementViaXpath(elem,xpath);
+
+            if (element != null)
+            {
+                string value = element.Value;
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            return result;
         }
+        
+
 
         public static T GetElementValue<T>(XElement element, T defaultValue)
         {

@@ -69,7 +69,7 @@ namespace Seringa.GUI
             //lbDatabases.ItemsSource = DatabaseNames;
             //lbTables.ItemsSource = TableNames;
             //lbColumns.ItemsSource = ColumnNames;
-            _currentIpObtainerStrategy = new Seringa.Engine.Implementations.IPObtainers.CMyIPObtainerStrategy();
+            _currentIpObtainerStrategy = new Seringa.Engine.Implementations.IPObtainers.SimpleIPObtainerStrategy();
             UIHelpers.ClearTreeView(tvDs);
             cmbProxyType.SelectedValue = ProxyType.None;
             btnAutodetect.IsEnabled = false;
@@ -519,8 +519,7 @@ namespace Seringa.GUI
 
         private void cbExploits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ExploitDetails ed = null;
-            ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
+            ExploitDetails ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
                                                             "exploit",
                                                             cbExploits.SelectedValue != null ? cbExploits.SelectedValue.ToString() : string.Empty);
             if (_currentInjectionStrategy != null && ed != null)

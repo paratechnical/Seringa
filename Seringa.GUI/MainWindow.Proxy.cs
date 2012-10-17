@@ -24,8 +24,12 @@ namespace Seringa.GUI
                 DisableAll();
                 var th = new Thread(() =>
                 {
-                    string ip = _currentIpObtainerStrategy.GetIp();
-                    AddOutputToTextBox(txtCurIP, ip, false, false);
+                    string error = string.Empty;
+                    string ip = _currentIpObtainerStrategy.GetIp(ref error);
+                    if (string.IsNullOrEmpty(error))
+                        AddOutputToTextBox(txtCurIP, ip, false, false);
+                    else
+                        AddOutputToMsgBox(error);
                     EnableAllFromOtherThread();
                 });
                 th.Start();

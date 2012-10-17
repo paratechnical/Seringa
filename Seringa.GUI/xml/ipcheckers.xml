@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ipcheckers>
+  <ipchecker>
+    <url><![CDATA[https://check.torproject.org]]></url>
+    <lowerbound>
+      <![CDATA[Your IP address appears to be: <b>]]>
+    </lowerbound>
+    <upperbound>
+      <![CDATA[</b><br>]]>
+    </upperbound>
+  </ipchecker>
+</ipcheckers>

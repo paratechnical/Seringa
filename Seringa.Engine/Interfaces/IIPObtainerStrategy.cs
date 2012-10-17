@@ -8,6 +8,6 @@ namespace Seringa.Engine.Interfaces
     public interface IIPObtainerStrategy : IWebOperation
     {
 
-        string GetIp();
+        string GetIp(ref string error);
     }
 }

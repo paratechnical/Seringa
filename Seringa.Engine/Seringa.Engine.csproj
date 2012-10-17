@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataObjects\IpObtainerDetails.cs" />
     <Compile Include="DataObjects\PatternDetails.cs" />
     <Compile Include="DataObjects\PayloadDetails.cs" />
     <Compile Include="DataObjects\PayloadParam.cs" />
@@ -53,7 +54,7 @@
     <Compile Include="DataObjects\ExploitDetails.cs" />
     <Compile Include="Implementations\InjectionStrategies\ErrorBased.cs" />
     <Compile Include="Implementations\InjectionStrategies\UnionSelect.cs" />
-    <Compile Include="Implementations\IPObtainers\CMyIPObtainerStrategy.cs" />
+    <Compile Include="Implementations\IPObtainers\SimpleIPObtainerStrategy.cs" />
     <Compile Include="DataObjects\ProxyDetails.cs" />
     <Compile Include="Implementations\QueryRunners\SimpleQueryRunner.cs" />
     <Compile Include="Interfaces\IInjectionStrategy.cs" />

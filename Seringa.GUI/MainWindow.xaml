@@ -31,7 +31,7 @@
         </ObjectDataProvider>
     </Window.Resources>
 
-    <Grid Height="607">
+    <Grid Height="607" Name="gridMain" >
         <TabControl Height="459" HorizontalAlignment="Left" Name="tabObtainUrls" VerticalAlignment="Top" Width="878">
             <TabItem Header="Obtain urls" Name="tabGetUrls">
                 <Grid Name="gridObtainUrls" Height="583">

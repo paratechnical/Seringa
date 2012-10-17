@@ -55,6 +55,30 @@ namespace Seringa.GUI
             return sb.ToString();
         }
 
+
+        
+
+        private void AddOutputToMsgBox( string text)
+        {
+            if (!gridMain.Dispatcher.CheckAccess())
+            {
+
+                gridMain.Dispatcher.Invoke(
+                  System.Windows.Threading.DispatcherPriority.Normal,
+                  new Action(
+                    delegate()
+                    {
+                        MessageBox.Show(text);
+                    }
+                ));
+            }
+            else
+            {
+                MessageBox.Show(text);
+            }
+            
+        }
+
         private void AddOutputToTextBox(TextBox textBox,string text,bool append,bool newLineAfterText)
         {
             if (!textBox.Dispatcher.CheckAccess())
