@@ -45,18 +45,40 @@ namespace Seringa.GUI
 
             var th = new Thread(() =>
             {
-                var results = HtmlHelpers.GoogleSearch(url);
+                string error = string.Empty;
+                string output = string.Empty;
 
-                foreach (var result in results)
+                var results = HtmlHelpers.GoogleSearch(url, ref error);
+
+                if (results.Count > 0)
                 {
-                    if (_stopCurActionObtainUrlsTab == true)
-                        break;
+                    foreach (var result in results)
+                    {
+                        if (_stopCurActionObtainUrlsTab == true)
+                            break;
+                        gridObtainUrls.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(
+                                delegate()
+                                {
+                                    txtUrls.Text += result + Environment.NewLine;
+                                }));
+                    }
+                }
+                else
+                {
+
+                    if (!string.IsNullOrEmpty(error))
+                        output = "Error: " + error;
+                    else
+                        output = "Google returned 0 results";
+                    
                     gridObtainUrls.Dispatcher.Invoke(
                         System.Windows.Threading.DispatcherPriority.Normal,
                         new Action(
                             delegate()
                             {
-                                txtUrls.Text += result + Environment.NewLine;
+                                txtUrls.Text += output + Environment.NewLine;
                             }));
                 }
 
