@@ -13,7 +13,7 @@ namespace Seringa.Engine.Utils
     public class HtmlHelpers
     {
 
-        public static List<string> GoogleSearch(string search_expression)
+        public static List<string> GoogleSearch(string search_expression,ref string googleError)
         {
             var url_template = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=large&safe=active&q={0}&start={1}";
             Uri search_url;
@@ -26,13 +26,18 @@ namespace Seringa.Engine.Utils
                 var page = new WebClient().DownloadString(search_url);
  
                 JObject o = (JObject)JsonConvert.DeserializeObject(page);
- 
-                var results_query =
-                    from result in o["responseData"]["results"].Children()
-                    select result.Value<string>("unescapedUrl").ToString();
- 
-                foreach (var result in results_query)
-                    results_list.Add(result);
+
+                if (o["responseStatus"].ToString() == "200")
+                {
+                    var results_query =
+                        from result in o["responseData"]["results"].Children()
+                        select result.Value<string>("unescapedUrl").ToString();
+
+                    foreach (var result in results_query)
+                        results_list.Add(result);
+                }
+                else
+                    googleError = o["responseDetails"].ToString();
             }
 
             return results_list;
