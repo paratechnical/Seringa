@@ -108,6 +108,7 @@ namespace Seringa.GUI
             //TODO: add treeview here
             btnExecuteCustomQuery.IsEnabled = true;
             btnTest.IsEnabled = true;
+            btnAutodetect.IsEnabled = true;
             //btnAutodetect.IsEnabled = true;
             //cbDbms.IsEnabled = true;
             //cbPayloads.IsEnabled = true;
@@ -119,6 +120,7 @@ namespace Seringa.GUI
             //btnGetUrls.IsEnabled = true;
 
             //TODO: add treeview here
+            btnAutodetect.IsEnabled = false;
             btnExecuteCustomQuery.IsEnabled = false;
             btnTest.IsEnabled = false;
             //btnAutodetect.IsEnabled = false;
@@ -269,6 +271,9 @@ namespace Seringa.GUI
                                     ProxyType = proxyType
                                 };
                             }
+
+                            //test
+                            //var superGigi = UrlHelpers.HexEncodeValue("gigi");
 
                             try
                             {

