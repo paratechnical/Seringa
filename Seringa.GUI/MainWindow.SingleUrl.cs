@@ -430,85 +430,86 @@ namespace Seringa.GUI
                             ));
                 }
 
-                for (int i = 0; i < total; i = i + _currentInjectionStrategy.NumberOfResultsPerRequest)
-                {
-                    if (_stopCurrentActionSingleUrlTab)
-                        break;
-                    try
+                if (_currentInjectionStrategy.NumberOfResultsPerRequest > 0)
+                    for (int i = 0; i < total; i = i + _currentInjectionStrategy.NumberOfResultsPerRequest)
                     {
-                        result = _currentInjectionStrategy.GetSingleCustomQueryResultRow(i);
-                    }
-                    catch (Exception ex)
-                    {
-                        result = ex.Message;
-                    }
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        #region map to ui
-
-                        List<string> valuesToInsert = new List<string>();
-                        if (result.Contains(Environment.NewLine))
-                            valuesToInsert.AddRange(result.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
-                        else
-                            valuesToInsert.Add(result);
-
-                        if (_currentInjectionStrategy.PayloadDetails != null &&
-                            !string.IsNullOrEmpty(_currentInjectionStrategy.PayloadDetails.NodeToMapTo))
+                        if (_stopCurrentActionSingleUrlTab)
+                            break;
+                        try
                         {
-                            var xpath = XmlHelpers.CreateProperMapToNodeFinderXpath(_currentInjectionStrategy.PayloadDetails, _currentInjectionStrategy);
-                            //var xpath = XmlHelpers.CreateProperMapToNodeCreatorXpath(_currentInjectionStrategy.PayloadDetails,
-                            //    result);
-                            var tagName = XmlHelpers.GetLastTagFromXpath(xpath);
+                            result = _currentInjectionStrategy.GetSingleCustomQueryResultRow(i);
+                        }
+                        catch (Exception ex)
+                        {
+                            result = ex.Message;
+                        }
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            #region map to ui
 
-                            XmlTreeViewItem newChildItem = null;
-                            XmlTreeViewItem oldParentItem = null;
+                            List<string> valuesToInsert = new List<string>();
+                            if (result.Contains(Environment.NewLine))
+                                valuesToInsert.AddRange(result.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                            else
+                                valuesToInsert.Add(result);
 
-                            if (tagName == "databases")//@TODO: no more hardconding
-                                oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
-                            else if (tagName == "db" || tagName == "table")//@TODO: no more hardconding
-                                oldParentItem = _selectedTreeViewItem;
+                            if (_currentInjectionStrategy.PayloadDetails != null &&
+                                !string.IsNullOrEmpty(_currentInjectionStrategy.PayloadDetails.NodeToMapTo))
+                            {
+                                var xpath = XmlHelpers.CreateProperMapToNodeFinderXpath(_currentInjectionStrategy.PayloadDetails, _currentInjectionStrategy);
+                                //var xpath = XmlHelpers.CreateProperMapToNodeCreatorXpath(_currentInjectionStrategy.PayloadDetails,
+                                //    result);
+                                var tagName = XmlHelpers.GetLastTagFromXpath(xpath);
 
-                            if (oldParentItem != null)
-                                foreach (var value in valuesToInsert)
-                                {
-                                    if (!string.IsNullOrEmpty(value))
+                                XmlTreeViewItem newChildItem = null;
+                                XmlTreeViewItem oldParentItem = null;
+
+                                if (tagName == "databases")//@TODO: no more hardconding
+                                    oldParentItem = UIHelpers.GetTreeViewRoot(tvDs);
+                                else if (tagName == "db" || tagName == "table")//@TODO: no more hardconding
+                                    oldParentItem = _selectedTreeViewItem;
+
+                                if (oldParentItem != null)
+                                    foreach (var value in valuesToInsert)
                                     {
-                                        tvDs.Dispatcher.Invoke(
-                                                System.Windows.Threading.DispatcherPriority.Normal,
-                                                new Action(
-                                                delegate()
-                                                {
-                                                    newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem,
-                                                                                                    _currentInjectionStrategy.PayloadDetails.NodeToMapTo,
-                                                                                                    value);
-                                                }
-                                            ));
-                                        if (newChildItem == null)
+                                        if (!string.IsNullOrEmpty(value))
                                         {
                                             tvDs.Dispatcher.Invoke(
-                                                System.Windows.Threading.DispatcherPriority.Normal,
-                                                new Action(
-                                                delegate()
-                                                {
-                                                    UIHelpers.XmlTreeViewAdd(oldParentItem, _currentInjectionStrategy.PayloadDetails.NodeToMapTo, value);
-                                                }
-                                            ));
+                                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                                    new Action(
+                                                    delegate()
+                                                    {
+                                                        newChildItem = UIHelpers.GetXmlTreeViewItemRec(oldParentItem,
+                                                                                                        _currentInjectionStrategy.PayloadDetails.NodeToMapTo,
+                                                                                                        value);
+                                                    }
+                                                ));
+                                            if (newChildItem == null)
+                                            {
+                                                tvDs.Dispatcher.Invoke(
+                                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                                    new Action(
+                                                    delegate()
+                                                    {
+                                                        UIHelpers.XmlTreeViewAdd(oldParentItem, _currentInjectionStrategy.PayloadDetails.NodeToMapTo, value);
+                                                    }
+                                                ));
+                                            }
                                         }
                                     }
-                                }
-                        }
-                        #endregion map to ui
+                            }
+                            #endregion map to ui
 
-                        txtCustomQueryResult.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(
-                                delegate()
-                                {
-                                    txtCustomQueryResult.Text += result + Environment.NewLine;
-                                }
-                            ));
+                            txtCustomQueryResult.Dispatcher.Invoke(
+                                    System.Windows.Threading.DispatcherPriority.Normal,
+                                    new Action(
+                                    delegate()
+                                    {
+                                        txtCustomQueryResult.Text += result + Environment.NewLine;
+                                    }
+                                ));
+                        }
                     }
-                }
 
                 _stopCurrentActionSingleUrlTab = false;
                 EnableAllFromOtherThread();

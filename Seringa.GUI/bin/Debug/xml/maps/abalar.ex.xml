@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <vulnerable-url>http://www.abalar.es/oferta.php?id_oferta=73</vulnerable-url>
+  <injection-strategy name="UnionSelect">
+    <columns>
+      <originalquery>18</originalquery>
+      <resultinghtml>0</resultinghtml>
+      <indexes></indexes>
+    </columns>
+  </injection-strategy>
+  <dbms name="mysql">
+    <users></users>
+  </dbms>
+  <databases></databases>
+</map>

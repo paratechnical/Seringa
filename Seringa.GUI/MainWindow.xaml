@@ -4,7 +4,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:sysioports="clr-namespace:Seringa.Engine.Enums;assembly=Seringa.Engine"
         WindowStartupLocation="CenterScreen"
-        Title="Seringa" Height="500" Width="900" Loaded="Window_Loaded" Icon="/Seringa.GUI;component/Images/App-virussafe-injection-icon.png">
+        Title="Seringa - Sql Injection Framework" Height="500" Width="900" Loaded="Window_Loaded" Icon="/Seringa.GUI;component/Images/App-virussafe-injection-icon.png">
 
     <Window.Resources>
         <!--<HierarchicalDataTemplate x:Key="NodeTemplate">
