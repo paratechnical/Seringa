@@ -15,6 +15,11 @@ namespace Seringa.Engine.Utils
 
         public static List<string> GoogleSearch(string search_expression,ref string googleError)
         {
+            //var wc = new WebClient();
+            //string html = wc.DownloadString("http://www.google.com/search?q=" + search_expression);
+            //"<h3 class=\"r\"><a href=\"/url?q="
+            //&amp;
+
             var url_template = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=large&safe=active&q={0}&start={1}";
             Uri search_url;
             var results_list = new List<string>();
