@@ -38,7 +38,18 @@ namespace Seringa.GUI
             txtUrls.Clear();
             btnGetUrls.IsEnabled = false;
 
+            int nrResults = 0;
             string url = txtSearchEngineUrl.Text.Trim();
+            bool useProxy = (chkUseProxy.IsChecked != null) ? chkUseProxy.IsChecked.Value : false;
+            ProxyType proxyType = ProxyType.None;
+            string proxyFullAdress = string.Empty;
+            if (cmbProxyType.SelectedValue != null)
+                Enum.TryParse<ProxyType>(cmbProxyType.SelectedValue.ToString(), out proxyType);
+            if(!string.IsNullOrEmpty(txtProxyFullAddress.Text))
+                proxyFullAdress = txtProxyFullAddress.Text;
+            if(!string.IsNullOrEmpty(txtNrResults.Text))
+                int.TryParse(txtNrResults.Text, out nrResults);
+
 
             if (string.IsNullOrEmpty(url))
                 return;
@@ -47,8 +58,17 @@ namespace Seringa.GUI
             {
                 string error = string.Empty;
                 string output = string.Empty;
+                ProxyDetails pd = null;
 
-                var results = HtmlHelpers.GoogleSearch(url, ref error);
+                useProxy = false;//hardcode this for now so no errors are shown
+                if (useProxy)
+                    pd = new ProxyDetails()
+                    {
+                        FullProxyAddress = proxyFullAdress,
+                        ProxyType = proxyType
+                    };
+
+                var results = HtmlHelpers.GoogleSearch(url, nrResults,pd, ref error);
 
                 if (results.Count > 0)
                 {

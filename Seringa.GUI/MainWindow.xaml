@@ -39,11 +39,13 @@
                         <RowDefinition Height="391*" />
                         <RowDefinition Height="192*" />
                     </Grid.RowDefinitions>
-                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,8,132,0" Name="txtSearchEngineUrl" VerticalAlignment="Top" Width="643" />
-                    <Label Content="Google page: " Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label2" VerticalAlignment="Top" Width="81" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,8,132,0" Name="txtSearchEngineUrl" VerticalAlignment="Top" Width="633" />
+                    <Label Content="Google query: " Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" Name="label2" VerticalAlignment="Top" Width="91" />
                     <Button Content="Get urls" Height="23" Margin="742,8,51,0" Name="btnGetUrls" VerticalAlignment="Top" Click="btnGetUrls_Click" />
-                    <TextBox Height="349" HorizontalAlignment="Left" Margin="6,36,0,0" Name="txtUrls" VerticalAlignment="Top" Width="857" />
+                    <TextBox Height="317" HorizontalAlignment="Left" Margin="6,68,0,0" Name="txtUrls" VerticalAlignment="Top" Width="857" />
                     <Button Content="Stop" Height="23" Margin="0,8,5,0" Name="btnStopCurActionObtainUrls" VerticalAlignment="Top" HorizontalAlignment="Right" Width="39" Click="btnStopCurActionObtainUrls_Click" />
+                    <TextBox Height="23" HorizontalAlignment="Right" Margin="0,36,683,0" Name="txtNrResults" VerticalAlignment="Top" Width="82" Text="50" />
+                    <Label Content="Nr of results:" Height="28" HorizontalAlignment="Left" Margin="6,34,0,0" Name="lblNrResults" VerticalAlignment="Top" Width="91" />
                 </Grid>
             </TabItem>
             <TabItem Header="Filter urls" Name="tabFilterUrls">

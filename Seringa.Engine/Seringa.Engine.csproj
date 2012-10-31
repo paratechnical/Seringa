@@ -65,10 +65,14 @@
     <Compile Include="Interfaces\ITesterStrategy.cs" />
     <Compile Include="Interfaces\IWebOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Static\GeneralParameters.cs" />
     <Compile Include="Utils\FileHelpers.cs" />
     <Compile Include="Utils\HtmlHelpers.cs" />
     <Compile Include="Utils\ListHelpers.cs" />
     <Compile Include="Utils\PayloadHelpers.cs" />
+    <Compile Include="Utils\SocksWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utils\XmlHelpers.cs" />
     <Compile Include="XmlDataBinders\ExploitDataBinder.cs" />
     <Compile Include="XmlDataBinders\PayloadDataBinder.cs" />

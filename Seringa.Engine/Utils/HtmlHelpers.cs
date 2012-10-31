@@ -7,45 +7,74 @@ using Seringa.Engine.DataObjects;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net;
+using Seringa.Engine.Interfaces;
+using Seringa.Engine.Static;
 
 namespace Seringa.Engine.Utils
 {
     public class HtmlHelpers
     {
 
-        public static List<string> GoogleSearch(string search_expression,ref string googleError)
+        public static IList<string> GoogleSearch(string search_expression,int nrResults,IProxyDetails proxyDetails,ref string googleError)
         {
-            //var wc = new WebClient();
-            //string html = wc.DownloadString("http://www.google.com/search?q=" + search_expression);
+            var wc = new SocksWebClient();
+            //when I try to use socks here I get a html of the type this document has been moved
+            wc.ProxyDetails = proxyDetails;
+            string query = string.Empty;
+            string html = string.Empty;
+            
             //"<h3 class=\"r\"><a href=\"/url?q="
             //&amp;
 
-            var url_template = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=large&safe=active&q={0}&start={1}";
-            Uri search_url;
-            var results_list = new List<string>();
-            int[] offsets = { 0, 8, 16, 24, 32, 40, 48 };
-            foreach (var offset in offsets)
+            List<string> results = new List<string>();
+            IList<string> curResultBatch = new List<string>();
+
+            for (int curResultNr = 0; curResultNr < nrResults; curResultNr += GeneralParameters.GoogleResultsPerPage)
             {
-                search_url = new Uri(string.Format(url_template, search_expression, offset));
- 
-                var page = new WebClient().DownloadString(search_url);
- 
-                JObject o = (JObject)JsonConvert.DeserializeObject(page);
-
-                if (o["responseStatus"].ToString() == "200")
-                {
-                    var results_query =
-                        from result in o["responseData"]["results"].Children()
-                        select result.Value<string>("unescapedUrl").ToString();
-
-                    foreach (var result in results_query)
-                        results_list.Add(result);
-                }
-                else
-                    googleError = o["responseDetails"].ToString();
+                query = "http://www.google.com/search?q=" + search_expression + "&start=" + curResultNr;
+                html = wc.DownloadString(query);
+                curResultBatch = GetMultipleAnswersFromHtml(html, query,
+                                                                        new ExploitDetails()
+                                                                        {
+                                                                            ResultStart = "<h3 class=\"r\"><a href=\"/url?q=",
+                                                                            ResultEnd = "&amp;"
+                                                                        },
+                                                                        true);
+                results.AddRange(curResultBatch);
             }
 
-            return results_list;
+            
+
+            #region Using Google's API - doesn't work too well
+
+            //var url_template = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=large&safe=active&q={0}&start={1}";
+            //Uri search_url;
+            //var results_list = new List<string>();
+            //int[] offsets = { 0, 8, 16, 24, 32, 40, 48 };
+            //foreach (var offset in offsets)
+            //{
+            //    search_url = new Uri(string.Format(url_template, search_expression, offset));
+ 
+            //    var page = new WebClient().DownloadString(search_url);
+ 
+            //    JObject o = (JObject)JsonConvert.DeserializeObject(page);
+
+            //    if (o["responseStatus"].ToString() == "200")
+            //    {
+            //        var results_query =
+            //            from result in o["responseData"]["results"].Children()
+            //            select result.Value<string>("unescapedUrl").ToString();
+
+            //        foreach (var result in results_query)
+            //            results_list.Add(result);
+            //    }
+            //    else
+            //        googleError = o["responseDetails"].ToString();
+            //}
+
+            #endregion Using Google's API - doesn't work too well
+
+            return results;
         }
 
         public static string GetAnswerFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions)
