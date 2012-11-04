@@ -22,9 +22,6 @@ namespace Seringa.Engine.Utils
             wc.ProxyDetails = proxyDetails;
             string query = string.Empty;
             string html = string.Empty;
-            
-            //"<h3 class=\"r\"><a href=\"/url?q="
-            //&amp;
 
             List<string> results = new List<string>();
             IList<string> curResultBatch = new List<string>();

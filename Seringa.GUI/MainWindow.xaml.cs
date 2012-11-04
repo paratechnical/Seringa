@@ -21,22 +21,6 @@ using Seringa.GUI.Helpers;
 namespace Seringa.GUI
 {
 
-    //xmlHelpers - clasa care sa citeasca xml-ul cu payloads si pe ala cu exploits si sa poroduca query-uri in functie
-    //de strategia de injectare
-    //2 strategii de injectare: error based, union based 
-    //2 dropdownuri injection strategy si exploit
-    //inca un dropdown payloads
-    //cand apesi execute generatedPayload sa apara rezultatele in customqueryresult redenumit query result
-    //cred ca scot alea 3 prostii cu coloane si table de tot
-    //mai bine pun un textarea cu un xml sa se vada xml-ul generat de query-uri care va fi harta bazei de date(structura)
-    //vezi parametru add to map de pe xml payloads
-    //trebuie sa fie ceva care sa se actualizeze in timp real pe gui pe masura ce e scris in xml
-    //pt generarea xml-urilor ar fi marfa sa am asa ceva http://www.liquid-technologies.com/xmldatabinding/xml-schema-to-cs.aspx
-    //ar fi o idee buna si de alt proiect open source
-    //daca nu le fac to msxml tot cum scrie acolo
-
-    //daca bagi adresa de proxy aiurea si il pornesti crapa
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
