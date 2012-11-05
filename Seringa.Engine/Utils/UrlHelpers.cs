@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using Seringa.Engine.Static;
+using System.Web;
+using System.Collections.Specialized;
 
 namespace Seringa.Engine.Utils
 {
@@ -25,9 +27,27 @@ namespace Seringa.Engine.Utils
             return "0x" + hexEncoded;
         }
 
-        public static string GeneratePossibleVulnerableUrl(string url)
+        private static string ToQueryString(NameValueCollection nvc)
         {
-            return url + GeneralPayloads.UrlVulnerabilityTestingAppendix;
+            return "?" + string.Join("&", Array.ConvertAll(nvc.AllKeys, key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
+        }
+
+        public static IList<string> GeneratePossibleVulnerableUrls(string url)
+        {
+            IList<string> results = new List<string>();
+
+            Uri uri = new Uri(url);
+            var parameters = HttpUtility.ParseQueryString(uri.Query);
+            for(int i = 0; i< parameters.Count;i++)
+            {
+                parameters[parameters.Keys[i]] = parameters[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix;
+                var builder = new UriBuilder(uri.Scheme + "://" + uri.LocalPath);
+                builder.Query = parameters.ToString();
+                results.Add(builder.ToString());
+            }
+
+            //return url + GeneralPayloads.UrlVulnerabilityTestingAppendix;
+            return results;
         }
 
         public static bool ValidUrl(string url)

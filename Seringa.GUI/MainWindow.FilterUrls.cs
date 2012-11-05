@@ -47,40 +47,43 @@ namespace Seringa.GUI
 
                     possiblyVulnerable = false;
 
-                    string possiblyVulnerableUrl = Seringa.Engine.Utils.UrlHelpers.GeneratePossibleVulnerableUrl(url);//TODO:multiple possible vulnerable urls
+                    IList<string> possiblyVulnerableUrls = Seringa.Engine.Utils.UrlHelpers.GeneratePossibleVulnerableUrls(url);//TODO:multiple possible vulnerable urls
 
-                    string pageHtml = string.Empty;
-
-                    try
+                    foreach(var possiblyVulnerableUrl in possiblyVulnerableUrls)
                     {
-                        pageHtml = queryRunner.GetPageHtml(possiblyVulnerableUrl, null);//@TODO:proxify
-                    }
-                    catch (Exception ex)
-                    {
-                        //@TODO: Log Exception
-                    }
+                        string pageHtml = string.Empty;
 
-                    patterns = XmlHelpers.GetObjectsFromXml<PatternDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\patterns.xml", "pattern", null);
-
-                    foreach (var pattern in patterns)
-                    {
-                        if(pattern != null && !string.IsNullOrEmpty(pattern.Value))
-                        if(pageHtml.IndexOf(pattern.Value) > -1)
+                        try
                         {
-                            possiblyVulnerable = true; 
-                            break;
+                            pageHtml = queryRunner.GetPageHtml(possiblyVulnerableUrl, null);//@TODO:proxify
                         }
-                    }
+                        catch (Exception ex)
+                        {
+                            //@TODO: Log Exception
+                        }
 
-                    if (possiblyVulnerable)
-                    {
-                        gridFilterUrls.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(
-                                delegate()
-                                {
-                                    txtProbablyVulnerableUrls.Text += url + Environment.NewLine;
-                                }));
+                        patterns = XmlHelpers.GetObjectsFromXml<PatternDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\patterns.xml", "pattern", null);
+
+                        foreach (var pattern in patterns)
+                        {
+                            if(pattern != null && !string.IsNullOrEmpty(pattern.Value))
+                            if(pageHtml.IndexOf(pattern.Value) > -1)
+                            {
+                                possiblyVulnerable = true; 
+                                break;
+                            }
+                        }
+
+                        if (possiblyVulnerable)
+                        {
+                            gridFilterUrls.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(
+                                    delegate()
+                                    {
+                                        txtProbablyVulnerableUrls.Text += url + Environment.NewLine;
+                                    }));
+                        }
                     }
                 }
 
