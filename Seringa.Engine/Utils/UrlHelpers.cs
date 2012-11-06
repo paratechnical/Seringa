@@ -38,12 +38,23 @@ namespace Seringa.Engine.Utils
 
             Uri uri = new Uri(url);
             var parameters = HttpUtility.ParseQueryString(uri.Query);
-            for(int i = 0; i< parameters.Count;i++)
+            if (parameters.Count > 0)//no obvious parameters
             {
-                parameters[parameters.Keys[i]] = parameters[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix;
-                var builder = new UriBuilder(uri.Scheme + "://" + uri.LocalPath);
-                builder.Query = parameters.ToString();
-                results.Add(builder.ToString());
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    parameters[parameters.Keys[i]] = parameters[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix;
+                    var builder = new UriBuilder(uri.Scheme + "://" + uri.LocalPath);
+                    builder.Query = parameters.ToString();
+                    results.Add(builder.ToString());
+                }
+            }
+            else//might be overrider url so try parsing segments
+            {
+                for(int var segment in uri.Segments)
+                {
+                    results.Add(uri.Scheme + "://" + uri.LocalPath);
+                    builder.
+                }
             }
 
             //return url + GeneralPayloads.UrlVulnerabilityTestingAppendix;
