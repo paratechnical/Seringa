@@ -35,7 +35,7 @@ namespace Seringa.Engine.Utils
         public static IList<string> GeneratePossibleVulnerableUrls(string url)
         {
             IList<string> results = new List<string>();
-
+            UriBuilder builder = null;
             Uri uri = new Uri(url);
             var parameters = HttpUtility.ParseQueryString(uri.Query);
             if (parameters.Count > 0)//no obvious parameters
@@ -43,17 +43,29 @@ namespace Seringa.Engine.Utils
                 for (int i = 0; i < parameters.Count; i++)
                 {
                     parameters[parameters.Keys[i]] = parameters[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix;
-                    var builder = new UriBuilder(uri.Scheme + "://" + uri.LocalPath);
+                    builder = new UriBuilder(uri.Scheme + "://" + uri.Host);
                     builder.Query = parameters.ToString();
                     results.Add(builder.ToString());
                 }
             }
             else//might be overrider url so try parsing segments
             {
-                for(int var segment in uri.Segments)
+                StringBuilder sb = new StringBuilder();
+                for(int i=0;i<uri.Segments.Count();i++)// var segment in uri.Segments)
                 {
-                    results.Add(uri.Scheme + "://" + uri.LocalPath);
-                    builder.
+                    sb.Clear();
+                    sb.Append(uri.Scheme + "://" + uri.Host + "/");
+                    for(int j=0;j<i;j++)
+                        if(!string.IsNullOrEmpty(uri.Segments[j]) && uri.Segments[j] != "/")
+                            sb.Append(uri.Segments[j] + "/");
+                    if (!string.IsNullOrEmpty(uri.Segments[i]) && uri.Segments[i] != "/")
+                        sb.Append(uri.Segments[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix + "/");
+                    else
+                        continue;
+                    for (int h = i+1; h < uri.Segments.Count(); h++)
+                        if (!string.IsNullOrEmpty(uri.Segments[h]) && uri.Segments[h] != "/")
+                            sb.Append(uri.Segments[h] + "/");
+                    results.Add(sb.ToString());
                 }
             }
 

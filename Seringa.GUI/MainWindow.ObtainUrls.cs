@@ -59,6 +59,7 @@ namespace Seringa.GUI
                 string error = string.Empty;
                 string output = string.Empty;
                 ProxyDetails pd = null;
+                IList<string> results = new List<string>();
 
                 useProxy = false;//hardcode this for now so no errors are shown
                 if (useProxy)
@@ -68,7 +69,15 @@ namespace Seringa.GUI
                         ProxyType = proxyType
                     };
 
-                var results = HtmlHelpers.GoogleSearch(url, nrResults,pd, ref error);
+                try
+                {
+                    results = HtmlHelpers.GoogleSearch(url, nrResults, pd, ref error);
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                }
+
 
                 if (results.Count > 0)
                 {
