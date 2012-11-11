@@ -6,6 +6,7 @@ using System.Net;
 using Seringa.Engine.Static;
 using System.Web;
 using System.Collections.Specialized;
+using Seringa.Engine.Utils.Extensions;
 
 namespace Seringa.Engine.Utils
 {
@@ -57,14 +58,14 @@ namespace Seringa.Engine.Utils
                     sb.Append(uri.Scheme + "://" + uri.Host + "/");
                     for(int j=0;j<i;j++)
                         if(!string.IsNullOrEmpty(uri.Segments[j]) && uri.Segments[j] != "/")
-                            sb.Append(uri.Segments[j] + "/");
+                            sb.Append(uri.Segments[j].RemoveLastSlash() + "/");
                     if (!string.IsNullOrEmpty(uri.Segments[i]) && uri.Segments[i] != "/")
-                        sb.Append(uri.Segments[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix + "/");
+                        sb.Append(uri.Segments[i].RemoveLastSlash() + GeneralPayloads.UrlVulnerabilityTestingAppendix + "/");
                     else
                         continue;
                     for (int h = i+1; h < uri.Segments.Count(); h++)
                         if (!string.IsNullOrEmpty(uri.Segments[h]) && uri.Segments[h] != "/")
-                            sb.Append(uri.Segments[h] + "/");
+                            sb.Append(uri.Segments[h].RemoveLastSlash() + "/");
                     results.Add(sb.ToString());
                 }
             }

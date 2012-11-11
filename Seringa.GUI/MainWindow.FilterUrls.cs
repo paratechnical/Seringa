@@ -81,7 +81,7 @@ namespace Seringa.GUI
                                 new Action(
                                     delegate()
                                     {
-                                        txtProbablyVulnerableUrls.Text += url + Environment.NewLine;
+                                        txtProbablyVulnerableUrls.Text += possiblyVulnerableUrl + Environment.NewLine;
                                     }));
                         }
                     }

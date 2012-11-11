@@ -525,13 +525,18 @@ namespace Seringa.GUI
 
         private void cbExploits_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ExploitDetails ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
-                                                            "exploit",
-                                                            cbExploits.SelectedValue != null ? cbExploits.SelectedValue.ToString() : string.Empty);
-            if (_currentInjectionStrategy != null && ed != null)
+            ExploitDetails ed = null;
+
+            if (cbExploits.SelectedItem != null)
             {
-                _currentInjectionStrategy.ExploitDetails = ed;
-                ParameterChange();
+                XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
+                                                                "exploit",
+                                                                cbExploits.SelectedItem.ToString());
+                if (_currentInjectionStrategy != null && ed != null)
+                {
+                    _currentInjectionStrategy.ExploitDetails = ed;
+                    ParameterChange();
+                }
             }
         }
 

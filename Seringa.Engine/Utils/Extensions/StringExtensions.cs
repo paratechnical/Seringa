@@ -11,5 +11,15 @@ namespace Seringa.Engine.Utils.Extensions
         {
             return source.IndexOf(toCheck, comp) >= 0;
         }
+
+        /// <summary>
+        /// Removes the last slash in a string if such a slash exists
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string RemoveLastSlash(this string source)
+        {
+            return ((source.Last() == '/') ? source.Remove(source.Length - 1) : source);
+        }
     }
 }
