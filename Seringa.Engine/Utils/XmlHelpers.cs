@@ -223,7 +223,10 @@ namespace Seringa.Engine.Utils
             var elem = doc.Descendants(elementType)
                             .SingleOrDefault(e => e.Attribute("user-friendly-name").Value == elementUserFriendlyName);
 
-            T createdObj = (T)Activator.CreateInstance(typeof(T),elem);
+            T createdObj = default(T);
+
+            if(elem != null)
+                createdObj = (T)Activator.CreateInstance(typeof(T), elem);
 
             return createdObj;
         }

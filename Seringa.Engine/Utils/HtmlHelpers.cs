@@ -36,7 +36,7 @@ namespace Seringa.Engine.Utils
                                                                             ResultStart = "<h3 class=\"r\"><a href=\"/url?q=",
                                                                             ResultEnd = "&amp;"
                                                                         },
-                                                                        true);
+                                                                        true,true);
                 results.AddRange(curResultBatch);
             }
 
@@ -115,6 +115,10 @@ namespace Seringa.Engine.Utils
 
         public static IList<string> GetMultipleAnswersFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions)
         {
+            return GetMultipleAnswersFromHtml(html, query, ExploitDetails, detailedExceptions, false);
+        }
+        public static IList<string> GetMultipleAnswersFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions,bool urlEscapeResults)
+        {
             IList<string> results = new List<string>();
             string result = string.Empty;
 
@@ -146,6 +150,9 @@ namespace Seringa.Engine.Utils
 
                         if (ExploitDetails.TrimLast)
                             result = result.Remove(result.Length - 1, 1);
+
+                        if (urlEscapeResults)
+                            result = Uri.UnescapeDataString(result);
 
                         results.Add(result);
                     }
