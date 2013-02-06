@@ -11,6 +11,7 @@ namespace Seringa.Engine.Static
         public static string UnionBasedResultSeparator = "|||";
         public static string UnionBasedErrorMessage = "The used SELECT statements have a different number of columns";
         public static string UnionBasedSelectValue = "<injres>{0}</injres>";
+        public static string UnionBasedTestValue = "<injres>";
         public static string UnionBasedSelectResultWrapper = "concat("+UrlHelpers.HexEncodeValue("<injres>")+",({0}),"+UrlHelpers.HexEncodeValue("</injres>")+")";
         public static string UnionBasedSelectCountedResultWrapperPart1 = "CONCAT(";
         public static string UnionBasedSelectCountedResultWrapperPart2 = "<injres>{0}" + UnionBasedResultSeparator;

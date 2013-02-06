@@ -118,10 +118,10 @@ namespace Seringa.Engine.Utils
         public static IList<string> GetMultipleAnswersFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions,
                                                                 Func<string,string> resultFormatter=null)
         {
-            return GetMultipleAnswersFromHtml(html, query, ExploitDetails, detailedExceptions, false);
-        }
-        public static IList<string> GetMultipleAnswersFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions,bool urlEscapeResults)
-        {
+        //    return GetMultipleAnswersFromHtml(html, query, ExploitDetails, detailedExceptions, false);
+        //}
+        //public static IList<string> GetMultipleAnswersFromHtml(string html, string query, ExploitDetails ExploitDetails, bool detailedExceptions,bool urlEscapeResults)
+        //{
             IList<string> results = new List<string>();
             string result = string.Empty;
 
@@ -155,10 +155,10 @@ namespace Seringa.Engine.Utils
                             result = result.Remove(result.Length - 1, 1);
 
 
-                        //results.Add((resultFormatter != null)?resultFormatter(result):result);
+                        results.Add((resultFormatter != null)?resultFormatter(result):result);
 
-                        if (urlEscapeResults)
-                            result = Uri.UnescapeDataString(result);
+                        //if (urlEscapeResults)
+                        //    result = Uri.UnescapeDataString(result);
 
                         results.Add(result);
 

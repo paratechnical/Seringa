@@ -132,10 +132,10 @@ namespace Seringa.Engine.Implementations.InjectionStrategies
                     sbCurExploit.Append(",");
                 //sbCurExploit.AppendFormat(GeneralPayloads.UnionBasedSelectValue,i); 
                 sbCurExploit.Append(UrlHelpers.HexEncodeValue(string.Format(GeneralPayloads.UnionBasedSelectValue, i)));
-
+                //ExploitDetails - check if null because it breaks
                 query = QueryHelper.CreateQuery(Url, ExploitDetails.Exploit, sbCurExploit.ToString());
                 pageHtml = QueryRunner.GetPageHtml(query, UseProxy ? ProxyDetails : null);
-                if (pageHtml.Contains(GeneralPayloads.UnionBasedErrorMessage))
+                if (pageHtml.Contains(GeneralPayloads.UnionBasedErrorMessage) && !pageHtml.Contains(GeneralPayloads.UnionBasedTestValue) )
                     continue;
                 else
                 {
