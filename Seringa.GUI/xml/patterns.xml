@@ -86,6 +86,9 @@
 	<pattern dbms="mysql">
 	<![CDATA[mysql_numrows()]]>
 	</pattern>
+  <pattern dbms="mysql">
+    <![CDATA[You have an error in your SQL syntax]]>
+  </pattern>
 	<pattern dbms="tsql">
 	<![CDATA[Input string was not in a correct format]]>
 	</pattern>
