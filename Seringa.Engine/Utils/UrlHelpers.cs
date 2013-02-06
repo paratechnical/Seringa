@@ -44,7 +44,7 @@ namespace Seringa.Engine.Utils
                 for (int i = 0; i < parameters.Count; i++)
                 {
                     parameters[parameters.Keys[i]] = parameters[i] + GeneralPayloads.UrlVulnerabilityTestingAppendix;
-                    builder = new UriBuilder(uri.Scheme + "://" + uri.Host);
+                    builder = new UriBuilder(uri.Scheme + "://" + uri.Host + uri.AbsolutePath);
                     builder.Query = parameters.ToString();
                     results.Add(builder.ToString());
                 }
