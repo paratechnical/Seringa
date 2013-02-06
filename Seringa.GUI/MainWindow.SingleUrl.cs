@@ -529,7 +529,7 @@ namespace Seringa.GUI
 
             if (cbExploits.SelectedItem != null)
             {
-                XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
+                ed = XmlHelpers.GetObjectFromXml<ExploitDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\exploits.xml",
                                                                 "exploit",
                                                                 cbExploits.SelectedItem.ToString());
                 if (_currentInjectionStrategy != null && ed != null)
