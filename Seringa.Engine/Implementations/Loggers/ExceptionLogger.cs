@@ -17,16 +17,21 @@ namespace Seringa.Engine.Implementations.Loggers
         {
             try
             {
-                if (!File.Exists(fileLocation))
+                // If file do not exis, create it
+                if (File.Exists(fileLocation) == false)
                     File.Create(fileLocation);
 
-                using (FileStream fileStream = File.Open(fileLocation, FileMode.Open, FileAccess.Write))
+                // Open the file to write the message
+                using (FileStream fileStream = 
+                    File.Open(fileLocation, FileMode.Open, FileAccess.Write))
                 {
-                   var message = Encoding.UTF8.GetBytes(
+                    // Generate the message
+                    var message = Encoding.UTF8.GetBytes(
                                     "[" + exception.Source + "] " + exception.Message  + "\n\n" 
                                      + exception.StackTrace + "\n\n\n");
 
-                   fileStream.Write(message, 0, message.Length);
+                    // Write the message down.
+                    fileStream.Write(message, 0, message.Length);
                 }
             }
             catch (Exception ex)
