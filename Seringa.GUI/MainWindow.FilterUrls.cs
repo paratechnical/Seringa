@@ -7,6 +7,7 @@ using System.Threading;
 using Seringa.Engine.Implementations.QueryRunners;
 using Seringa.Engine.Utils;
 using Seringa.Engine.DataObjects;
+using Seringa.Engine.Implementations.Loggers;
 
 namespace Seringa.GUI
 {
@@ -59,7 +60,10 @@ namespace Seringa.GUI
                         }
                         catch (Exception ex)
                         {
-                            //@TODO: Log Exception
+                            // I think it would be nice if users can decide where
+                            // this app will put the logs, but while we do not have
+                            // a configuration tab...
+                            ExceptionLogger.Write(Environment.CurrentDirectory + "/ErrorsLog.txt", ex);
                         }
 
                         patterns = XmlHelpers.GetObjectsFromXml<PatternDetails>(FileHelpers.GetCurrentDirectory() + "\\xml\\patterns.xml", "pattern", null);
