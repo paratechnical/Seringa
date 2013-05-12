@@ -28,6 +28,13 @@ namespace Seringa.GUI
     {
        
         #region General methods
+        private void StopAllThreads()
+        {
+            _stopCurActionObtainUrlsTab = true;
+            _stopCurrentActionSingleUrlTab = true;
+            _stopCurActionFilterUrlsTab = true;
+        }
+        
         private string GenerateProperOutput(string textBoxContent, string text, bool append, bool newLineAfterText)
         {
             var sb = new StringBuilder();
@@ -38,9 +45,6 @@ namespace Seringa.GUI
                 sb.Append(Environment.NewLine);
             return sb.ToString();
         }
-
-
-        
 
         private void AddOutputToMsgBox( string text)
         {
@@ -104,8 +108,14 @@ namespace Seringa.GUI
             cbCurrentInjectionStrategy.DataContext = _injectionStrategies.Select(i => i.DisplayName).ToList();
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            //@TODO: kill all threads
+            StopAllThreads();
+            Application.Current.Shutdown();
+        } 
+
         #endregion Events
-
-
     }
 }

@@ -52,6 +52,9 @@ namespace Seringa.GUI
 
                     foreach(var possiblyVulnerableUrl in possiblyVulnerableUrls)
                     {
+                        if (_stopCurActionFilterUrlsTab == true)
+                            break;
+
                         string pageHtml = string.Empty;
 
                         try
@@ -70,6 +73,9 @@ namespace Seringa.GUI
 
                         foreach (var pattern in patterns)
                         {
+                            if (_stopCurActionFilterUrlsTab == true)
+                                break;
+
                             if(pattern != null && !string.IsNullOrEmpty(pattern.Value))
                             if(pageHtml.IndexOf(pattern.Value) > -1)
                             {
@@ -101,6 +107,8 @@ namespace Seringa.GUI
                         btnCheckUrls.IsEnabled = true;
                     }
                 ));
+
+                //remove from thread lis
             });
             th.Start();
         }
